@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:longClickable="true">
+
+    <ImageView
+        android:id="@+id/typeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="3dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="3dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/multiSelector"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/fileNameText"
+        android:layout_width="0dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="10dp"
+        android:text="fileNameText"
+        app:layout_constraintEnd_toStartOf="@+id/fileSizeText"
+        app:layout_constraintStart_toEndOf="@+id/typeImage"
+        app:layout_constraintTop_toTopOf="@+id/typeImage" />
+
+    <TextView
+        android:id="@+id/dateText"
+        android:layout_width="0dp"
+        android:layout_height="21dp"
+        android:layout_marginTop="4dp"
+        android:text="dateText"
+        app:layout_constraintBottom_toBottomOf="@+id/typeImage"
+        app:layout_constraintEnd_toEndOf="@+id/fileNameText"
+        app:layout_constraintStart_toStartOf="@+id/fileNameText"
+        app:layout_constraintTop_toBottomOf="@+id/fileNameText" />
+
+    <TextView
+        android:id="@+id/fileSizeText"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="5dp"
+        android:text="fileSizeText"
+        app:layout_constraintBottom_toBottomOf="@+id/dateText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/dateText" />
+
+    <RadioButton
+        android:id="@+id/multiSelector"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
