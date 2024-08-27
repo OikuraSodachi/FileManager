@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">FileManager</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="package_name">com.todokanai.filemanager</string>
+    <string name="exitBtn">Exit</string>
+    <string name="button2">Button 2</string>
+    <string name="menuCallbackItem1">Create New Folder</string>
+    <string name="menuCallbackItem2">Sort</string>
+    <string name="menuCallbackItem3">Exit</string>
+
+    <string name="storageBtn">Storage</string>
+
+    <string name="menu_new_folder">New Folder</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_exit">Exit</string>
+
+    <string name="access_fail">Could not access directory</string>
+    <string name="empty_directory">Empty directory</string>
+
+    <string name="bottom_popup_info">Info</string>
+    <string name="bottom_popup_rename">Rename</string>
+    <string name="bottom_popup_menu_zip">Zip</string>
+
+    <string name="delete_dialog_title">Delete?</string>
+    <string name="delete_dialog_message">message</string>
+
+    <string name="rename_dialog_title">Rename</string>
+    <string name="rename_dialog_default_text">name</string>
+
+    <string name="new_folder_dialog_title">New Folder</string>
+    <string name="new_folder_dialog_default_text">Folder Name</string>
+
+    <string name="select_all">Select All</string>
+    <string name="unselect_all">Unselect All</string>
+
+    <string name="sortBy">sortBy</string>
+    <string name="by_default">BY_DEFAULT</string>
+    <string name="by_name_ascending">BY_NAME_ASCENDING</string>
+    <string name="by_name_descending">BY_NAME_DESCENDING</string>
+    <string name="by_size_ascending">BY_SIZE_ASCENDING</string>
+    <string name="by_size_descending">BY_SIZE_DESCENDING</string>
+    <string name="by_type_ascending">BY_TYPE_ASCENDING</string>
+    <string name="by_type_descending">BY_TYPE_DESCENDING</string>
+    <string name="by_date_ascending">BY_DATE_ASCENDING</string>
+    <string name="by_date_descending">BY_DATE_DESCENDING</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>
