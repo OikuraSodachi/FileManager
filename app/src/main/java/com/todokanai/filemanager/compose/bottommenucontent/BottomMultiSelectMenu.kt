@@ -75,7 +75,6 @@ fun BottomMultiSelectMenu(
 @Composable
 fun BottomMultiSelectMenu(
     modifier: Modifier = Modifier,
-    //viewModel: BottomMultiSelectMenuViewModel = hiltViewModel(),
     move:()->Unit,
     copy:()->Unit,
     enablePopupMenu:()->Boolean
@@ -121,7 +120,11 @@ fun BottomMultiSelectMenu(
         ) {
             Text(text="More")
             BottomPopupMenu(
-                expanded = expandedState
+                expanded = expandedState,
+                zip = {},
+                selectAll = {},
+                unselectAll = {},
+                selected = { emptyArray() }
             )
         }
     }

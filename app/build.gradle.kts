@@ -92,6 +92,6 @@ dependencies {
     kapt ("com.google.dagger:hilt-android-compiler:$daggerVersion")
     implementation ("androidx.datastore:datastore-preferences:1.1.0-alpha01")       // enable DataStore
 
-    implementation ("commons-net:commons-net:3.11.1")       /// ftp nas upload (?)
+ //   implementation ("commons-net:commons-net:3.11.1")       /// ftp nas upload (?)
 
 }

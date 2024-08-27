@@ -20,6 +20,7 @@ import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.compose.BottomMenu
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
+import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -52,6 +53,8 @@ class FileListFragment : Fragment() {
             {viewModel.onClick(requireContext(),it)}
         ) { viewModel.onLongClick(it) }
         val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it) }
+
+        val modeManager = Objects.modeManager
         binding.run{
             fileListRecyclerView.run{
                 adapter = fileListAdapter
@@ -81,7 +84,8 @@ class FileListFragment : Fragment() {
                             BottomMenu(
                                 modifier = Modifier
                                     .fillMaxSize(),
-                                selectMode = selectMode.value
+                                selectMode = selectMode.value,
+                                modeManager = modeManager
                             )
                         }
                     }

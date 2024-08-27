@@ -18,14 +18,12 @@ import com.todokanai.filemanager.myobjects.ContextObjects
 import com.todokanai.filemanager.myobjects.Objects.contextObjects
 import com.todokanai.filemanager.myobjects.Objects.fileModel
 import com.todokanai.filemanager.myobjects.Objects.mainActivityProvider
-import com.todokanai.filemanager.myobjects.Objects.modeManager
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.myobjects.Objects.packageName
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.providers.MainActivityProvider
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.SelectModeManager
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestPermission_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td

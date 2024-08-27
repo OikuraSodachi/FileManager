@@ -7,15 +7,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.todokanai.filemanager.viewmodel.compose.BottomConfirmMenuViewModel
 
 @Composable
 fun BottomConfirmMenu(
-    modifier: Modifier = Modifier,
-    viewModel: BottomConfirmMenuViewModel = hiltViewModel(),
+    modifier: Modifier,
+    onCancel:()->Unit,
+    onConfirm:()->Unit
 ){
-
     Row (
         modifier = modifier
             .wrapContentSize()
@@ -23,7 +21,7 @@ fun BottomConfirmMenu(
         TextButton(
             modifier = Modifier
                 .weight(1f),
-            onClick = { viewModel.cancel() }
+            onClick = { onCancel() }
         ) {
             Text(text="Cancel")
         }
@@ -31,7 +29,7 @@ fun BottomConfirmMenu(
         TextButton(
             modifier = Modifier
                 .weight(1f),
-            onClick = {viewModel.confirm() }
+            onClick = { onConfirm() }
         ) {
             Text(text="Confirm")
         }
@@ -42,5 +40,9 @@ fun BottomConfirmMenu(
 @Preview
 @Composable
 private fun BottomConfirmMenuPreview(){
-    BottomConfirmMenu()
+    BottomConfirmMenu(
+        modifier = Modifier,
+        onCancel = {},
+        onConfirm = {}
+    )
 }

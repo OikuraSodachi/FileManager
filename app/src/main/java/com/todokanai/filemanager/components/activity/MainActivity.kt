@@ -57,7 +57,10 @@ class MainActivity : AppCompatActivity() {
                 setContent {
                     MaterialTheme {
                         if (menuBtnExpanded.value) {
-                            MenuBtn(expanded = menuBtnExpanded)
+                            MenuBtn(
+                                expanded = menuBtnExpanded,
+                                exit = {}
+                            )
                         }
                     }
                 }

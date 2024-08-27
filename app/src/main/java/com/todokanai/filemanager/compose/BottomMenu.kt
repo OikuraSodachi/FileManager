@@ -9,15 +9,14 @@ import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP_HERE
 import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
-import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.tools.SelectModeManager
 
 @Composable
 fun BottomMenu(
     modifier:Modifier = Modifier,
-    selectMode: Int
+    selectMode: Int,
+    modeManager: SelectModeManager
 ){
-    val modeManager = Objects.modeManager
     when(selectMode){
         MULTI_SELECT_MODE->{
             BottomMultiSelectMenu(
@@ -29,22 +28,30 @@ fun BottomMenu(
         }
         CONFIRM_MODE_COPY->{
             BottomConfirmMenu(
-                modifier = modifier
+                modifier = modifier,
+                onCancel = {},
+                onConfirm = {}
             )
         }
         CONFIRM_MODE_MOVE->{
             BottomConfirmMenu(
-                modifier = modifier
+                modifier = modifier,
+                onCancel = {},
+                onConfirm = {}
             )
         }
         CONFIRM_MODE_UNZIP->{
             BottomConfirmMenu(
-                modifier = modifier
+                modifier = modifier,
+                onCancel = {},
+                onConfirm = {}
             )
         }
         CONFIRM_MODE_UNZIP_HERE->{
             BottomConfirmMenu(
-                modifier = modifier
+                modifier = modifier,
+                onCancel = {},
+                onConfirm = {}
             )
         }
         else->{

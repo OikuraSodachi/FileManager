@@ -1,25 +1,24 @@
 package com.todokanai.filemanager.compose
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.tooling.preview.Preview
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.compose.dialog.NewFolderDialog
 import com.todokanai.filemanager.compose.dialog.SortDialog
 import com.todokanai.filemanager.compose.presets.dropdownmenu.MyDropdownMenu
-import com.todokanai.filemanager.viewmodel.compose.MenuBtnViewModel
 
 @Composable
 fun MenuBtn(
     modifier: Modifier = Modifier,
     expanded: MutableState<Boolean>,
-    viewModel: MenuBtnViewModel = hiltViewModel(),
+    exit:()->Unit
 ){
-
     val shouldShowDialog = remember{mutableStateOf(false)}
 
     val newFolderDialog = remember{ mutableStateOf(false) }
@@ -27,7 +26,7 @@ fun MenuBtn(
     val contents : List<Pair<String,()->Unit>> = listOf(
         Pair(stringResource(id = R.string.menu_new_folder),{newFolderDialog.value = true}),
         Pair(stringResource(id = R.string.menu_sort),{shouldShowDialog.value = true}),
-        Pair(stringResource(id = R.string.menu_exit),{viewModel.exit()}),
+        Pair(stringResource(id = R.string.menu_exit),{exit()}),
     )
 
     MyDropdownMenu(
@@ -48,4 +47,14 @@ fun MenuBtn(
             onCancel = { newFolderDialog.value = false }
         )
     }
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Preview
+@Composable
+private fun MenuBtnPreview(){
+    MenuBtn(
+        expanded = mutableStateOf(true),
+        exit = {}
+    )
 }

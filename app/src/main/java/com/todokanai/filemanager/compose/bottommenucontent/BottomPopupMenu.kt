@@ -7,18 +7,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.compose.dialog.InfoDialog
 import com.todokanai.filemanager.compose.presets.dropdownmenu.MyDropdownMenu
-import com.todokanai.filemanager.viewmodel.compose.BottomPopupMenuViewModel
 import java.io.File
 
 @Composable
 fun BottomPopupMenu(
     modifier: Modifier = Modifier,
     expanded: MutableState<Boolean>,
-    viewModel: BottomPopupMenuViewModel = hiltViewModel(),
+    zip:()->Unit,
+    selectAll:()->Unit,
+    unselectAll:()->Unit,
+    selected:()->Array<File>
 ){
     val context = LocalContext.current
     val infoDialog = remember{ mutableStateOf(false) }
@@ -28,9 +29,9 @@ fun BottomPopupMenu(
     fun contents(context: Context, items:Array<File>):List<Pair<String,()->Unit>>{
         val result = mutableListOf<Pair<String,()->Unit>>(
             Pair(context.getString(R.string.bottom_popup_info),{infoDialog.value = true}),
-            Pair(context.getString(R.string.bottom_popup_menu_zip),{viewModel.zip()}),
-            Pair(context.getString(R.string.select_all),{viewModel.selectAll()}),
-            Pair(context.getString(R.string.unselect_all),{viewModel.unselectAll()})
+            Pair(context.getString(R.string.bottom_popup_menu_zip),{zip()}),
+            Pair(context.getString(R.string.select_all),{selectAll()}),
+            Pair(context.getString(R.string.unselect_all),{unselectAll()})
 
         )
         //-------------
@@ -44,7 +45,7 @@ fun BottomPopupMenu(
 
     MyDropdownMenu(
         modifier = modifier,
-        contents = contents(context,viewModel.selected()),
+        contents = contents(context,selected()),
         expanded = expanded.value,
         onDismissRequest = {expanded.value = false}
     )
