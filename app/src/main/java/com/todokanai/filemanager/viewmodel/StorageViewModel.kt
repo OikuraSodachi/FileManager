@@ -14,12 +14,8 @@ import javax.inject.Inject
 class StorageViewModel @Inject constructor() : ViewModel(){
 
     val module = fileModule
-    val storageHolderList by lazy{
-        Variables.storages.map{
-            it.map{ file ->
-                file
-            }
-        }
+    val storageHolderList = Variables.storages.map{
+        it.toList()
     }
 
     fun onItemClick(file:File){

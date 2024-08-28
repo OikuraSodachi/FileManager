@@ -13,7 +13,6 @@ import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.independent.dirTree_td
 import com.todokanai.filemanager.tools.independent.isAccessible_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,34 +26,28 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository):ViewModel(){
 
-    private val model by lazy{fileModule}
-    private val modeManager by lazy{ Objects.modeManager}
-    private val currentDirectory by lazy{model.currentDirectory }
+    private val module = fileModule
+    private val modeManager = Objects.modeManager
+    private val currentDirectory = module.currentPath
 
-    val notAccessible by lazy{ model.notAccessible}
-    val isEmpty by lazy{model.isEmpty}        // is directory.listFiles() empty
+    val notAccessible =  module.notAccessible
+    val isEmpty = module.isEmpty        // is directory.listFiles() empty
 
-    val selectMode by lazy{modeManager.selectMode}
+    val selectMode = modeManager.selectMode
+    val selectedFiles = modeManager.selectedFiles
 
-    val selectedFiles by lazy{modeManager.selectedFiles}
-
-    val sortMode = dsRepo.sortBy.stateIn(
+    private val sortMode = dsRepo.sortBy.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5),
         initialValue = BY_DEFAULT
     )
 
-    val directoryList by lazy{
-        currentDirectory.map{ file ->
-            file?.let { dirTree_td(it) }
-        }
+    val directoryList = module.dirTree
+
+    val fileHolderListNew = module.files.map { listFiles ->
+        sortedFileList_td(listFiles,sortMode.value)
     }
 
-    val fileHolderListNew by lazy{
-        model.listFiles.map { listFiles ->
-            sortedFileList_td(listFiles?: emptyArray(),sortMode.value)
-        }
-    }
 
     // ------------------------
 
@@ -75,7 +68,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
                     if (file.isDirectory) {
                         updateDirectory(file)
                     } else {
-                        model.openFile(context,file)
+                        module.onFileClick(context,file)
                     }
                 }
             }
@@ -160,7 +153,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun onBackPressed(mode:Int = selectMode.value){
         when (mode) {
             DEFAULT_MODE -> {
-                currentDirectory.value?.parentFile?.let {
+                currentDirectory.value.parentFile?.let {
                     viewModelScope.launch {
                         if (it.isAccessible_td()) {
                             updateDirectory(it)
@@ -175,7 +168,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             }
 
             else -> {
-                currentDirectory.value?.parentFile?.let {
+                currentDirectory.value.parentFile?.let {
                     viewModelScope.launch {
                         if (it.isAccessible_td()) {
                             updateDirectory(it)
@@ -194,14 +187,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    private suspend fun updateDirectory(file:File){
-        model.setCurrentDirectory(file)
-        val listFiles = file.listFiles()
-
-        notAccessible.value = listFiles == null
-        listFiles?.let {
-            isEmpty.value = it.isEmpty()
-        }
+    private fun updateDirectory(file:File){
+        module.updateCurrentPath(file)
     }
 
     //------------------------------

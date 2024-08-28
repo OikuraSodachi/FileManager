@@ -79,14 +79,11 @@ class MainActivity : AppCompatActivity() {
                 isUserInputEnabled = false
             }
         }
-
-        viewModel.currentDirectory.asLiveData().observe(this){
-            if(it==null){
+        viewModel.isStorageFragment.asLiveData().observe(this){
+            if(it==true){
                 toStorageFrag()
-              //  binding.mainViewPager.setCurrentItem(0,false)
             } else{
                 toFileListFrag()
-              //  binding.mainViewPager.setCurrentItem(1,false)
             }
         }
         setContentView(binding.root)

@@ -102,9 +102,6 @@ class FileListFragment : Fragment() {
                 directoryAdapter.directoryList = it ?: emptyList()
                 directoryAdapter.notifyDataSetChanged()
             }
-            sortMode.asLiveData().observe(viewLifecycleOwner){
-                viewModel.refreshFileList()
-            }
 
             selectMode.asLiveData().observe(viewLifecycleOwner){
                 if(it!= DEFAULT_MODE){

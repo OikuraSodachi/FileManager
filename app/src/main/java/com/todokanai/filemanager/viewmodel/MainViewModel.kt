@@ -16,13 +16,10 @@ import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.ContextObjects
 import com.todokanai.filemanager.myobjects.Objects.contextObjects
-import com.todokanai.filemanager.myobjects.Objects.fileModule
-import com.todokanai.filemanager.myobjects.Objects.mainActivityProvider
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.myobjects.Objects.packageName
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.notifications.MyNotification
-import com.todokanai.filemanager.providers.MainActivityProvider
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
@@ -44,22 +41,17 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
         val myWorkerValue: Int = 1
     }
 
-    val module = fileModule
-    //val currentDirectory by lazy{ fileModel.currentDirectory }
+    /** View로직임. 나중에 View로 옮길 것.**/
+    val isStorageFragment = MutableStateFlow<Boolean>(false)
 
-    val currentDirectory = module.currentPath
-
+    /** View로직임. 나중에 View로 옮길 것.**/
     fun invalidateCurrentDirectory(){
-       // fileModel.setCurrentDirectory(null)
-        module.updateCurrentPath(null)
+        isStorageFragment.value = true
     }
 
     fun prepareObjects(appContext: Context,activity: Activity){
         packageName = appContext.packageName
-      //  fileModel = FileListModel()
-      //  modeManager = SelectModeManager()
         contextObjects = ContextObjects(appContext)
-        mainActivityProvider = MainActivityProvider(activity)
         myNoti = MyNotification(appContext)
     }
 
