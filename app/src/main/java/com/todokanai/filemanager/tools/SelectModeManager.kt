@@ -1,10 +1,8 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.myobjects.Constants
-import com.todokanai.filemanager.myobjects.Objects.fileModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.first
 import java.io.File
 
 class SelectModeManager {
@@ -35,7 +33,7 @@ class SelectModeManager {
     }
 
     suspend fun selectAll(){
-        _selectedFiles.value = fileModel.listFiles.first() ?: emptyArray()
+   //     _selectedFiles.value = fileModel.listFiles.first() ?: emptyArray()
     }
 
     fun toDefaultSelectMode(){

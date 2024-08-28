@@ -2,7 +2,6 @@ package com.todokanai.filemanager.myobjects
 
 import android.os.Environment
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 
 class Variables {

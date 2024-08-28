@@ -44,7 +44,8 @@ fun MenuBtn(
 
     if(newFolderDialog.value){
         NewFolderDialog(
-            onCancel = { newFolderDialog.value = false }
+            onCancel = { newFolderDialog.value = false },
+            onConfirm = {}
         )
     }
 }

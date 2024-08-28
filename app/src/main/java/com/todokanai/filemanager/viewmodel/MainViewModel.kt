@@ -16,7 +16,7 @@ import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.ContextObjects
 import com.todokanai.filemanager.myobjects.Objects.contextObjects
-import com.todokanai.filemanager.myobjects.Objects.fileModel
+import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.myobjects.Objects.mainActivityProvider
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.myobjects.Objects.packageName
@@ -24,10 +24,10 @@ import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.providers.MainActivityProvider
 import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestPermission_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td
-import com.todokanai.filemanager.viewmodel.submodel.FileListModel
 import com.todokanai.filemanager.workers.MyWorker
 import com.todokanai.filemanager.workers.NotiWorker
 import com.todokanai.filemanager.workers.TestWorker
@@ -44,15 +44,19 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
         val myWorkerValue: Int = 1
     }
 
-    val currentDirectory by lazy{ fileModel.currentDirectory }
+    val module = fileModule
+    //val currentDirectory by lazy{ fileModel.currentDirectory }
+
+    val currentDirectory = module.currentPath
 
     fun invalidateCurrentDirectory(){
-        fileModel.setCurrentDirectory(null)
+       // fileModel.setCurrentDirectory(null)
+        module.updateCurrentPath(null)
     }
 
     fun prepareObjects(appContext: Context,activity: Activity){
         packageName = appContext.packageName
-        fileModel = FileListModel()
+      //  fileModel = FileListModel()
       //  modeManager = SelectModeManager()
         contextObjects = ContextObjects(appContext)
         mainActivityProvider = MainActivityProvider(activity)
@@ -83,6 +87,8 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
             }
         }
     }
+
+    fun exit(activity: Activity) = exit_td(activity)
 
 
     fun exitBtn() = workerTest()

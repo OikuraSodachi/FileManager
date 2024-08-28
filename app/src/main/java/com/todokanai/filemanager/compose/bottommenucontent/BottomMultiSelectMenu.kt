@@ -131,7 +131,8 @@ fun BottomMultiSelectMenu(
 
     if(deleteDialog.value){
         DeleteDialog(
-            onCancel = {deleteDialog.value = false}
+            onCancel = {deleteDialog.value = false},
+            delete = {}
         )
     }
 }

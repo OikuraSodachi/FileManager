@@ -5,7 +5,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Objects.myNoti
-import com.todokanai.filemanager.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext

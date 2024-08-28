@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                         if (menuBtnExpanded.value) {
                             MenuBtn(
                                 expanded = menuBtnExpanded,
-                                exit = {}
+                                exit = {viewModel.exit(this@MainActivity)}
                             )
                         }
                     }
@@ -68,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             btn2.setOnClickListener { menuBtnExpanded.value = true }
 
             exitBtn.setOnClickListener {
-                viewModel.exitBtn()
+                viewModel.exit(this@MainActivity)
             }
             storageBtn.setOnClickListener {
                 viewModel.invalidateCurrentDirectory()

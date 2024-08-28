@@ -11,7 +11,7 @@ import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP_HERE
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
 import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.myobjects.Objects
-import com.todokanai.filemanager.myobjects.Objects.fileModel
+import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.dirTree_td
 import com.todokanai.filemanager.tools.independent.isAccessible_td
@@ -27,7 +27,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository):ViewModel(){
 
-    private val model by lazy{fileModel}
+    private val model by lazy{fileModule}
     private val modeManager by lazy{ Objects.modeManager}
     private val currentDirectory by lazy{model.currentDirectory }
 

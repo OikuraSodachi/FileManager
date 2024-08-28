@@ -52,7 +52,9 @@ fun BottomPopupMenu(
 
     if(infoDialog.value){
         InfoDialog(
-            onDismiss = {infoDialog.value = false}
+            onDismiss = {infoDialog.value = false},
+            numberText = "",
+            sizeText = ""
         )
     }
 

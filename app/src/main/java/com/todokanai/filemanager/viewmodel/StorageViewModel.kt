@@ -2,7 +2,7 @@ package com.todokanai.filemanager.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.todokanai.filemanager.myobjects.Objects.fileModel
+import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.myobjects.Variables
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.map
@@ -13,7 +13,7 @@ import javax.inject.Inject
 @HiltViewModel
 class StorageViewModel @Inject constructor() : ViewModel(){
 
-
+    val module = fileModule
     val storageHolderList by lazy{
         Variables.storages.map{
             it.map{ file ->
@@ -24,9 +24,7 @@ class StorageViewModel @Inject constructor() : ViewModel(){
 
     fun onItemClick(file:File){
         viewModelScope.launch {
-            fileModel.run {
-                setCurrentDirectory(file)
-            }
+            module.updateCurrentPath(file)
         }
     }
 }
