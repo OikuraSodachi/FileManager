@@ -29,28 +29,28 @@ fun BottomMenu(
         CONFIRM_MODE_COPY->{
             BottomConfirmMenu(
                 modifier = modifier,
-                onCancel = {},
+                onCancel = {modeManager.toDefaultSelectMode()},
                 onConfirm = {}
             )
         }
         CONFIRM_MODE_MOVE->{
             BottomConfirmMenu(
                 modifier = modifier,
-                onCancel = {},
+                onCancel = {modeManager.toDefaultSelectMode()},
                 onConfirm = {}
             )
         }
         CONFIRM_MODE_UNZIP->{
             BottomConfirmMenu(
                 modifier = modifier,
-                onCancel = {},
+                onCancel = {modeManager.toDefaultSelectMode()},
                 onConfirm = {}
             )
         }
         CONFIRM_MODE_UNZIP_HERE->{
             BottomConfirmMenu(
                 modifier = modifier,
-                onCancel = {},
+                onCancel = {modeManager.toDefaultSelectMode()},
                 onConfirm = {}
             )
         }

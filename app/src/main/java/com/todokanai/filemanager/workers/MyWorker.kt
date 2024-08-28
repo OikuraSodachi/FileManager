@@ -7,7 +7,7 @@ import com.todokanai.filemanager.viewmodel.MainViewModel
 
 class MyWorker(context:Context,params:WorkerParameters):Worker(context,params) {
 
-    val value = MainViewModel.myWorkerValue
+    private val testValue = MainViewModel.myWorkerValue
 
     override fun doWork(): Result {
 
@@ -15,7 +15,7 @@ class MyWorker(context:Context,params:WorkerParameters):Worker(context,params) {
             fun successed(value:Int):Boolean{
                 return 10/value >0
             }
-            val result = successed(value)
+            val result = successed(testValue)
             if(result){
                 println("MyWorker:Success")
                 Result.success()

@@ -3,8 +3,6 @@ package com.todokanai.filemanager.viewmodel
 import android.app.Activity
 import android.content.Context
 import android.os.Environment
-import androidx.activity.ComponentActivity
-import androidx.activity.addCallback
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.Constraints
@@ -69,14 +67,6 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
     fun allowNotification(activity: Activity){
         viewModelScope.launch {
             requestPermission_td(activity, permissions = arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),{})
-        }
-    }
-
-    fun onBackPressedOverride(activity: ComponentActivity){
-        viewModelScope.launch {
-            activity.onBackPressedDispatcher.addCallback {
-                // disable back button by overriding with a empty callback
-            }
         }
     }
 

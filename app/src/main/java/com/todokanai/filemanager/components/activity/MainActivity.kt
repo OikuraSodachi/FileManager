@@ -1,6 +1,7 @@
 package com.todokanai.filemanager.components.activity
 
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
@@ -33,9 +34,9 @@ class MainActivity : AppCompatActivity() {
         val shouldShowDialog =  mutableStateOf(false)
         val menuBtnExpanded = mutableStateOf(false)
 
+        onBackPressedDispatcher.addCallback { /* disable back button by overriding with a empty callback */ }
         viewModel.run {
             prepareObjects(applicationContext,this@MainActivity)
-            onBackPressedOverride(this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
             allowNotification(this@MainActivity)
         }
