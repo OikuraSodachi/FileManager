@@ -19,7 +19,10 @@ import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.compose.BottomMenu
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
+import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,11 +32,8 @@ class FileListFragment : Fragment() {
 
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        println("FileListFrag: onCreate")
-    }
+    private val modeManager = Objects.modeManager
+    private val selectMode = modeManager.selectMode
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,18 +43,20 @@ class FileListFragment : Fragment() {
         println("FileListFrag: onCreateView")
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.onBackPressed()
+                viewModel.onBackPressed(selectMode.value)
             }
         })
         val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
         val fileListAdapter = FileListRecyclerAdapter(
-            {viewModel.onClick(requireContext(),it)}
-        ) { viewModel.onLongClick(it) }
-        val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it) }
+            {viewModel.onClick(requireContext(),it,selectMode.value)}
+        ) {
+            viewModel.onLongClick(it,selectMode.value)
+            modeManager.changeSelectMode(MULTI_SELECT_MODE)
+        }
+        val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it,selectMode.value) }
 
-        val modeManager = Objects.modeManager
         binding.run{
             fileListRecyclerView.run{
                 adapter = fileListAdapter
@@ -74,18 +76,30 @@ class FileListFragment : Fragment() {
                     swipe.isRefreshing = false
                 }
             }
-
             composeBottomMenuList.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     MaterialTheme {
-                        val selectMode = viewModel.selectMode.collectAsStateWithLifecycle()
-                        if (selectMode.value != DEFAULT_MODE) {
+                        val selectMode = selectMode.collectAsStateWithLifecycle()
+
+                        if(selectMode.value == DEFAULT_MODE){
+                            this.visibility = View.GONE
+                            fileListAdapter.isMultiSelectMode = false
+
+                        }else {
+                            this.visibility = View.VISIBLE
+                            fileListAdapter.isMultiSelectMode = true
                             BottomMenu(
                                 modifier = Modifier
                                     .fillMaxSize(),
-                                selectMode = selectMode.value,
-                                modeManager = modeManager
+                                onConfirmTest = { viewModel.onConfirmTest(selectMode.value) },
+                                onCancel = {
+                                    modeManager.changeSelectMode(DEFAULT_MODE)
+                                    modeManager.clearSelectedFiles()
+                                },
+                                move = {modeManager.changeSelectMode(CONFIRM_MODE_MOVE)},
+                                copy = {modeManager.changeSelectMode(CONFIRM_MODE_COPY)},
+                                isMultiSelectMode = selectMode.value == MULTI_SELECT_MODE
                             )
                         }
                     }
@@ -103,22 +117,11 @@ class FileListFragment : Fragment() {
                 directoryAdapter.notifyDataSetChanged()
             }
 
-            selectMode.asLiveData().observe(viewLifecycleOwner){
-                if(it!= DEFAULT_MODE){
-                    binding.composeBottomMenuList.visibility = View.VISIBLE
-                    fileListAdapter.isMultiSelectMode = true
-                } else{
-                    binding.composeBottomMenuList.visibility = View.GONE
-                    fileListAdapter.isMultiSelectMode = false
-                }
-                fileListAdapter.notifyDataSetChanged()
-            }
-
             notAccessible.asLiveData().observe(viewLifecycleOwner){
                 if(it==true) {
                     binding.accessFailText.visibility = View.VISIBLE
                 } else{
-                    binding.accessFailText.visibility = View.INVISIBLE
+                    binding.accessFailText.visibility = View.GONE
                 }
             }
             isEmpty.asLiveData().observe(viewLifecycleOwner){
@@ -138,34 +141,5 @@ class FileListFragment : Fragment() {
         }
 
         return binding.root
-    }
-
-    override fun onStop() {
-        super.onStop()
-        println("FileListFrag: onStop")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        println("FileListFrag: onPause")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        println("FileListFrag: onResume")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        println("FileListFrag: onDetach")
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        println("FileListFrag: onDestroyView")
-    }
-    override fun onDestroy() {
-        super.onDestroy()
-        println("FileListFrag: onDestroy")
     }
 }

@@ -47,8 +47,8 @@ class MainActivity : AppCompatActivity() {
                     MaterialTheme {
                         if (shouldShowDialog.value) {
                             SortDialog(
-                                modifier = Modifier,
-                                onDismissRequest = { shouldShowDialog.value = false })
+                                onDismissRequest = { shouldShowDialog.value = false }
+                            )
                         }
                     }
                 }

@@ -33,7 +33,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     val notAccessible =  module.notAccessible
     val isEmpty = module.isEmpty        // is directory.listFiles() empty
 
-    val selectMode = modeManager.selectMode
     val selectedFiles = modeManager.selectedFiles
 
     private val sortMode = dsRepo.sortBy.stateIn(
@@ -51,7 +50,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     // ------------------------
 
-    fun onDirectoryClick(directory:File,mode:Int = selectMode.value){
+    fun onDirectoryClick(directory:File,mode:Int){
         viewModelScope.launch {
             if(mode != MULTI_SELECT_MODE) {
                 if (directory.isAccessible_td()) {        // 접근 가능여부 체크
@@ -61,7 +60,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    fun onClick(context: Context,file: File,mode:Int = selectMode.value){
+    fun onClick(context: Context,file: File,mode:Int){
         when (mode) {
             DEFAULT_MODE -> {
                 viewModelScope.launch {
@@ -119,12 +118,11 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    fun onLongClick(file: File,mode:Int = selectMode.value){
+    fun onLongClick(file: File,mode:Int,){
         when (mode) {
             DEFAULT_MODE -> {
                 modeManager.run{
                     setSelectedFiles(file)
-                    toMultiSelectMode()
                 }
             }
 
@@ -150,7 +148,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    fun onBackPressed(mode:Int = selectMode.value){
+    fun onBackPressed(mode:Int){
         when (mode) {
             DEFAULT_MODE -> {
                 currentDirectory.value.parentFile?.let {
@@ -187,26 +185,25 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    private fun updateDirectory(file:File){
-        module.updateCurrentPath(file)
-    }
+    private fun updateDirectory(file:File) = module.updateCurrentPath(file)
+
 
     //------------------------------
+    fun onConfirmTest(selectMode:Int){
+        when(selectMode){
+            CONFIRM_MODE_COPY ->{
 
-    fun onFileClick(file: File){
+            }
+            CONFIRM_MODE_MOVE ->{
 
-    }
+            }
+            CONFIRM_MODE_UNZIP ->{
 
-    fun confirmMove(files:Array<File>,target: File){
+            }
+            CONFIRM_MODE_UNZIP_HERE ->{
 
-    }
-
-    fun confirmCopy(files: Array<File>,target:File){
-
-    }
-
-    fun confirmDelete(files:Array<File>){
-
+            }
+        }
     }
 
 

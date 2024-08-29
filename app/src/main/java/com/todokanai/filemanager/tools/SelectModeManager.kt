@@ -7,8 +7,6 @@ import java.io.File
 
 class SelectModeManager {
 
-    lateinit var selectedItemsManager: SelectedItemsManager
-
     private val _selectMode = MutableStateFlow<Int>(Constants.DEFAULT_MODE)
     val selectMode : StateFlow<Int>
         get() = _selectMode
@@ -59,5 +57,10 @@ class SelectModeManager {
 
     fun toConfirmUnzipHereMode(){
         _selectMode.value = Constants.CONFIRM_MODE_UNZIP_HERE
+    }
+    //---------------------
+
+    fun changeSelectMode(mode:Int){
+        _selectMode.value = mode
     }
 }
