@@ -11,8 +11,6 @@ class SelectModeManager {
     val selectMode : StateFlow<Int>
         get() = _selectMode
 
-
-    /** View 단계로 옮겨놔야 함 **/
     private val _selectedFiles = MutableStateFlow<Array<File>>(emptyArray())
     val selectedFiles : StateFlow<Array<File>>
         get() = _selectedFiles
@@ -34,30 +32,6 @@ class SelectModeManager {
    //     _selectedFiles.value = fileModel.listFiles.first() ?: emptyArray()
     }
 
-    fun toDefaultSelectMode(){
-        _selectMode.value = Constants.DEFAULT_MODE
-        clearSelectedFiles()
-    }
-
-    fun toMultiSelectMode(){
-        _selectMode.value = Constants.MULTI_SELECT_MODE
-    }
-
-    fun toConfirmCopyMode(){
-        _selectMode.value = Constants.CONFIRM_MODE_COPY
-    }
-
-    fun toConfirmMoveMode(){
-        _selectMode.value = Constants.CONFIRM_MODE_MOVE
-    }
-
-    fun toConfirmUnzipMode(){
-        _selectMode.value = Constants.CONFIRM_MODE_UNZIP
-    }
-
-    fun toConfirmUnzipHereMode(){
-        _selectMode.value = Constants.CONFIRM_MODE_UNZIP_HERE
-    }
     //---------------------
 
     fun changeSelectMode(mode:Int){

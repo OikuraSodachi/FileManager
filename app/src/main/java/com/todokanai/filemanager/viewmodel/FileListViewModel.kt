@@ -161,7 +161,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             }
             MULTI_SELECT_MODE ->{
                 viewModelScope.launch {
-                    modeManager.toDefaultSelectMode()
+                    modeManager.changeSelectMode(DEFAULT_MODE)
                 }
             }
 

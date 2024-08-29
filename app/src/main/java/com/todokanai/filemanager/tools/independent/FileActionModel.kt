@@ -181,6 +181,8 @@ fun getFileArray_td(file:File):Array<File>{
 /** Todokanai
  *
  *  경로의 Tree를 반환
+ *
+ *   File.walkTopDown() / File.walkBottomUp으로 대체 가능할지도?
  * */
 fun dirTree_td(currentPath:File): List<File> {
     val result = mutableListOf<File>()
