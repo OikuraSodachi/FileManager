@@ -62,5 +62,8 @@ class SelectModeManager {
 
     fun changeSelectMode(mode:Int){
         _selectMode.value = mode
+        if(mode == Constants.DEFAULT_MODE){
+            clearSelectedFiles()
+        }
     }
 }

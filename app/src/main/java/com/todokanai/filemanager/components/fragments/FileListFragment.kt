@@ -93,10 +93,7 @@ class FileListFragment : Fragment() {
                                 modifier = Modifier
                                     .fillMaxSize(),
                                 onConfirmTest = { viewModel.onConfirmTest(selectMode.value) },
-                                onCancel = {
-                                    modeManager.changeSelectMode(DEFAULT_MODE)
-                                    modeManager.clearSelectedFiles()
-                                },
+                                onCancel = { modeManager.changeSelectMode(DEFAULT_MODE) },
                                 move = {modeManager.changeSelectMode(CONFIRM_MODE_MOVE)},
                                 copy = {modeManager.changeSelectMode(CONFIRM_MODE_COPY)},
                                 isMultiSelectMode = selectMode.value == MULTI_SELECT_MODE
