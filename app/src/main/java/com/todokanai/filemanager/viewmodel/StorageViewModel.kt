@@ -19,8 +19,6 @@ class StorageViewModel @Inject constructor() : ViewModel(){
     }
 
     fun onItemClick(file:File){
-        viewModelScope.launch {
-            module.updateCurrentPath(file)
-        }
+        module.updateCurrentPathSafe(file)
     }
 }

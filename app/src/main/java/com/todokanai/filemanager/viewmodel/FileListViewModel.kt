@@ -43,44 +43,45 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     val directoryList = module.dirTree
 
-    val fileHolderListNew = module.files.map { listFiles ->
+    val fileHolderList = module.files.map { listFiles ->
         sortedFileList_td(listFiles,sortMode.value)
     }
 
+    /** dummy data **/
+    fun toggleToSelectedFiles(file: File){
+        modeManager.toggleToSelectedFiles(file)
+    }
 
     // ------------------------
 
     fun onDirectoryClick(directory:File,mode:Int){
         viewModelScope.launch {
             if(mode != MULTI_SELECT_MODE) {
-                if (directory.isAccessible_td()) {        // 접근 가능여부 체크
-                    updateDirectory(directory)
-                }
+                module.updateCurrentPathSafe(directory)
             }
         }
     }
 
     fun onClick(context: Context,file: File,mode:Int){
+        /*
         when (mode) {
             DEFAULT_MODE -> {
-                viewModelScope.launch {
-                    if (file.isDirectory) {
-                        updateDirectory(file)
-                    } else {
-                        module.onFileClick(context,file)
-                    }
+                if (file.isDirectory) {
+                    module.updateCurrentPath(file)
+                } else {
+                    module.onFileClick(context,file)
                 }
             }
             MULTI_SELECT_MODE -> {
                 viewModelScope.launch {
-                    modeManager.setSelectedFiles(file)
+                    modeManager.toggleToSelectedFiles(file)
                 }
             }
 
             CONFIRM_MODE_COPY -> {
                 viewModelScope.launch {
                     if(file.isDirectory){
-                        updateDirectory(file)
+                        module.updateCurrentPath(file)
                     } else{
                         // empty
                     }
@@ -90,7 +91,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             CONFIRM_MODE_MOVE -> {
                 viewModelScope.launch {
                     if(file.isDirectory){
-                        updateDirectory(file)
+                        module.updateCurrentPath(file)
                     } else{
                         // empty
                     }
@@ -100,7 +101,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             CONFIRM_MODE_UNZIP -> {
                 viewModelScope.launch {
                     if(file.isDirectory){
-                        updateDirectory(file)
+                        module.updateCurrentPath(file)
                     } else{
                         // empty
                     }
@@ -109,20 +110,30 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             CONFIRM_MODE_UNZIP_HERE -> {
                 viewModelScope.launch {
                     if(file.isDirectory){
-                        updateDirectory(file)
+                        module.updateCurrentPath(file)
                     } else{
                         // empty
                     }
                 }
             }
+        }
+
+         */
+
+        if(mode== MULTI_SELECT_MODE){
+            modeManager.toggleToSelectedFiles(file)
+        }else{
+            module.onFileClick(context,file)
         }
     }
 
     fun onLongClick(file: File,mode:Int,){
+        /*
+        /*
         when (mode) {
             DEFAULT_MODE -> {
                 modeManager.run{
-                    setSelectedFiles(file)
+                    toggleToSelectedFiles(file)
                 }
             }
 
@@ -146,15 +157,26 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
                 // empty
             }
         }
+
+         */
+
+         */
+
+        if(mode== DEFAULT_MODE){
+            toggleToSelectedFiles(file)
+        } else{
+            //empty
+        }
     }
 
     fun onBackPressed(mode:Int){
+        /*
         when (mode) {
             DEFAULT_MODE -> {
                 currentDirectory.value.parentFile?.let {
                     viewModelScope.launch {
                         if (it.isAccessible_td()) {
-                            updateDirectory(it)
+                            module.updateCurrentPath(it)
                         }
                     }
                 }
@@ -169,10 +191,19 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
                 currentDirectory.value.parentFile?.let {
                     viewModelScope.launch {
                         if (it.isAccessible_td()) {
-                            updateDirectory(it)
+                            module.updateCurrentPath(it)
                         }
                     }
                 }
+            }
+        }
+         */
+
+        if(mode == MULTI_SELECT_MODE){
+            modeManager.changeSelectMode(DEFAULT_MODE)
+        }else{
+            currentDirectory.value.parentFile?.let {
+                module.updateCurrentPathSafe(it)
             }
         }
     }
@@ -180,12 +211,12 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun refreshFileList(directory: File? = currentDirectory.value){
         viewModelScope.launch {
             directory?.let {
-                updateDirectory(it)
+                module.updateCurrentPathSafe(it)
             }
         }
     }
 
-    private fun updateDirectory(file:File) = module.updateCurrentPath(file)
+    private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
 
 
     //------------------------------

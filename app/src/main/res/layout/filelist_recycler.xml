@@ -52,12 +52,16 @@
             android:id="@+id/fileName"
             android:layout_width="match_parent"
             android:layout_height="30dp"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
             android:text="FileName" />
 
         <TextView
             android:id="@+id/lastModified"
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:maxLines="1"
             android:text="LastModified" />
     </LinearLayout>
 

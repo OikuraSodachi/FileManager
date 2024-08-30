@@ -53,7 +53,7 @@ class FileItemHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
         }
     }
 
-    fun setDataNew(file: File){
+    fun setData(file: File){
         val size =
             if(file.isDirectory) {
                 val subFiles = file.listFiles()
@@ -67,6 +67,7 @@ class FileItemHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
             }
         thumbnail.setThumbnail(file)
         fileName.text = file.name
+        fileName.isSelected = true
         fileSize.text = size
         lastModified.text = DateFormat.getDateTimeInstance().format(file.lastModified())
     }
@@ -90,7 +91,7 @@ class FileItemHolder(itemView:View):RecyclerView.ViewHolder(itemView) {
             multiSelectView.setImageDrawable(null)
         }
     }
-    fun defaultMode(){
+    fun onDefaultMode(){
         multiSelectView.visibility = View.GONE
     }
 }

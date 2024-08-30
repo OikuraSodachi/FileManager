@@ -105,7 +105,7 @@ class FileListFragment : Fragment() {
         }
 
         viewModel.run{
-            fileHolderListNew.asLiveData().observe(viewLifecycleOwner){
+            fileHolderList.asLiveData().observe(viewLifecycleOwner){
                 fileListAdapter.itemList = it
                 fileListAdapter.notifyDataSetChanged()
             }
@@ -128,7 +128,6 @@ class FileListFragment : Fragment() {
                     binding.emptyDirectoryText.visibility = View.INVISIBLE
                 }
             }
-            /** viewLifecycleOwner 말고, multiSelectMode가 조건이 되야함 **/
             selectedFiles.asLiveData().observe(viewLifecycleOwner) {
                 fileListAdapter.run{
                     selectedItemList = it

@@ -42,13 +42,23 @@ class FileModule(defaultPath:File) {
     }
 
     /** setter for currentPath **/
-    fun updateCurrentPath(file: File){
-        _currentPath.value = file
+    fun updateCurrentPathSafe(directory: File) {
+        if (directory.isAccessible_td()) {        // 접근 가능여부 체크
+            _currentPath.value = directory
+        }
     }
 
+    /** file.isDirectory == true일 경우, currentPath 값을 update
+     *
+     *  false일 경우, Intent.ACTION_VIEW (파일 열기) 실행
+     * **/
     fun onFileClick(context: Context, file: File){
-        val mimeType = getMimeType_td(file.name)
-        openFile_td(context,file,mimeType)
+        if(file.isDirectory){
+            updateCurrentPathSafe(file)
+        } else {
+            val mimeType = getMimeType_td(file.name)
+            openFile_td(context, file, mimeType)
+        }
     }
 
 

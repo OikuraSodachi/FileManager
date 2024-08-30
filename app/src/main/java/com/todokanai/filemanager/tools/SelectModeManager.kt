@@ -6,6 +6,18 @@ import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 
 class SelectModeManager {
+    /*
+    temporary dummyData
+    companion object{
+        val DEFAULT_MODE : Int = 10
+        val MULTI_SELECT_MODE : Int = 11
+        val CONFIRM_MODE_COPY : Int = 12
+        val CONFIRM_MODE_MOVE : Int = 13
+        val CONFIRM_MODE_UNZIP : Int = 14
+        val CONFIRM_MODE_UNZIP_HERE : Int = 15
+    }
+     */
+
 
     private val _selectMode = MutableStateFlow<Int>(Constants.DEFAULT_MODE)
     val selectMode : StateFlow<Int>
@@ -15,7 +27,7 @@ class SelectModeManager {
     val selectedFiles : StateFlow<Array<File>>
         get() = _selectedFiles
 
-    fun setSelectedFiles(file:File){
+    fun toggleToSelectedFiles(file:File){
         val list = selectedFiles.value.toMutableList()
         if(list.contains(file)){
             _selectedFiles.value = list.minus(file).toTypedArray()
@@ -24,11 +36,7 @@ class SelectModeManager {
         }
     }
 
-    fun clearSelectedFiles(){
-        _selectedFiles.value = emptyArray()
-    }
-
-    suspend fun selectAll(){
+    fun selectAll(){
    //     _selectedFiles.value = fileModel.listFiles.first() ?: emptyArray()
     }
 
@@ -37,7 +45,24 @@ class SelectModeManager {
     fun changeSelectMode(mode:Int){
         _selectMode.value = mode
         if(mode == Constants.DEFAULT_MODE){
-            clearSelectedFiles()
+            _selectedFiles.value = emptyArray()
+        }
+    }
+
+    /** selectMode 값에 따른 callback의 분기점 **/
+    fun callbackJunction(
+        selectMode:Int,
+        default:()->Unit,
+        multiSelect:()->Unit,
+        confirmCopy:()->Unit,
+        confirmMove:()->Unit,
+        confirmUnzip:()->Unit,
+        confirmUnzipHere:()->Unit
+    ){
+        when(selectMode){
+
+
+
         }
     }
 }

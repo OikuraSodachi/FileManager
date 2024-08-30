@@ -28,17 +28,17 @@ class FileListRecyclerAdapter(
 
     override fun onBindViewHolder(holder: FileItemHolder, position: Int) {
         val file = itemList[position]
-        val isSelected by lazy{ selectedItemList.contains(file)}
+        val isFileSelected = selectedItemList.contains(file)
 
         val backgroundColor =
-            if (isSelected) {
+            if (isFileSelected) {
                 Color.GRAY
             } else {
                 0
             }
 
         holder.run {
-            setDataNew(file)
+            setData(file)
             itemView.run{
                 setOnClickListener { onItemClick(file) }
                 setOnLongClickListener {
@@ -47,9 +47,9 @@ class FileListRecyclerAdapter(
                 }
                 setBackgroundColor(backgroundColor)
                 if(isMultiSelectMode) {
-                    multiSelectMode(isSelected)
+                    multiSelectMode(isFileSelected)
                 } else{
-                    defaultMode()
+                    onDefaultMode()
                 }
             }
         }
