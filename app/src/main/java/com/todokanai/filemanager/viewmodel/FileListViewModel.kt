@@ -13,13 +13,11 @@ import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.independent.isAccessible_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -27,11 +25,25 @@ import javax.inject.Inject
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository):ViewModel(){
 
     private val module = fileModule
-    private val modeManager = Objects.modeManager
-    private val currentDirectory = module.currentPath
-
+    val modeManager = Objects.modeManager
+    val selectMode = modeManager.selectMode
     val notAccessible =  module.notAccessible
-    val isEmpty = module.isEmpty        // is directory.listFiles() empty
+
+    val isMultiSelectMode = selectMode.map{ mode ->
+        mode == MULTI_SELECT_MODE
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5),
+        initialValue = false
+    )
+
+    val isDefaultMode = selectMode.map{ mode ->
+        mode == DEFAULT_MODE
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5),
+        initialValue = true
+    )
 
     val selectedFiles = modeManager.selectedFiles
 
@@ -42,126 +54,30 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     )
 
     val directoryList = module.dirTree
-
     val fileHolderList = module.files.map { listFiles ->
         sortedFileList_td(listFiles,sortMode.value)
     }
 
     /** dummy data **/
-    fun toggleToSelectedFiles(file: File){
-        modeManager.toggleToSelectedFiles(file)
-    }
+    fun toggleToSelectedFiles(file: File) = modeManager.toggleToSelectedFiles(file)
 
     // ------------------------
 
-    fun onDirectoryClick(directory:File,mode:Int){
-        viewModelScope.launch {
-            if(mode != MULTI_SELECT_MODE) {
-                module.updateCurrentPathSafe(directory)
-            }
+    fun onDirectoryClick(directory:File,mode:Int = selectMode.value){
+        if(mode != MULTI_SELECT_MODE) {
+            module.updateCurrentPathSafe(directory)
         }
     }
 
-    fun onClick(context: Context,file: File,mode:Int){
-        /*
-        when (mode) {
-            DEFAULT_MODE -> {
-                if (file.isDirectory) {
-                    module.updateCurrentPath(file)
-                } else {
-                    module.onFileClick(context,file)
-                }
-            }
-            MULTI_SELECT_MODE -> {
-                viewModelScope.launch {
-                    modeManager.toggleToSelectedFiles(file)
-                }
-            }
-
-            CONFIRM_MODE_COPY -> {
-                viewModelScope.launch {
-                    if(file.isDirectory){
-                        module.updateCurrentPath(file)
-                    } else{
-                        // empty
-                    }
-                }
-            }
-
-            CONFIRM_MODE_MOVE -> {
-                viewModelScope.launch {
-                    if(file.isDirectory){
-                        module.updateCurrentPath(file)
-                    } else{
-                        // empty
-                    }
-                }
-            }
-
-            CONFIRM_MODE_UNZIP -> {
-                viewModelScope.launch {
-                    if(file.isDirectory){
-                        module.updateCurrentPath(file)
-                    } else{
-                        // empty
-                    }
-                }
-            }
-            CONFIRM_MODE_UNZIP_HERE -> {
-                viewModelScope.launch {
-                    if(file.isDirectory){
-                        module.updateCurrentPath(file)
-                    } else{
-                        // empty
-                    }
-                }
-            }
-        }
-
-         */
-
+    fun onClick(context: Context,file: File,mode:Int = selectMode.value){
         if(mode== MULTI_SELECT_MODE){
-            modeManager.toggleToSelectedFiles(file)
+            toggleToSelectedFiles(file)
         }else{
             module.onFileClick(context,file)
         }
     }
 
-    fun onLongClick(file: File,mode:Int,){
-        /*
-        /*
-        when (mode) {
-            DEFAULT_MODE -> {
-                modeManager.run{
-                    toggleToSelectedFiles(file)
-                }
-            }
-
-            MULTI_SELECT_MODE -> {
-                // empty
-            }
-
-            CONFIRM_MODE_COPY -> {
-                // empty
-            }
-
-            CONFIRM_MODE_MOVE -> {
-                // empty
-            }
-
-            CONFIRM_MODE_UNZIP -> {
-                // empty
-            }
-
-            CONFIRM_MODE_UNZIP_HERE -> {
-                // empty
-            }
-        }
-
-         */
-
-         */
-
+    fun onLongClick(file: File,mode:Int = selectMode.value){
         if(mode== DEFAULT_MODE){
             toggleToSelectedFiles(file)
         } else{
@@ -169,59 +85,32 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    fun onBackPressed(mode:Int){
-        /*
-        when (mode) {
-            DEFAULT_MODE -> {
-                currentDirectory.value.parentFile?.let {
-                    viewModelScope.launch {
-                        if (it.isAccessible_td()) {
-                            module.updateCurrentPath(it)
-                        }
-                    }
-                }
-            }
-            MULTI_SELECT_MODE ->{
-                viewModelScope.launch {
-                    modeManager.changeSelectMode(DEFAULT_MODE)
-                }
-            }
-
-            else -> {
-                currentDirectory.value.parentFile?.let {
-                    viewModelScope.launch {
-                        if (it.isAccessible_td()) {
-                            module.updateCurrentPath(it)
-                        }
-                    }
-                }
-            }
-        }
-         */
-
+    fun onBackPressed(mode:Int = selectMode.value){
         if(mode == MULTI_SELECT_MODE){
             modeManager.changeSelectMode(DEFAULT_MODE)
         }else{
-            currentDirectory.value.parentFile?.let {
+            module.currentPath.value.parentFile?.let {
                 module.updateCurrentPathSafe(it)
             }
         }
     }
 
-    fun refreshFileList(directory: File? = currentDirectory.value){
-        viewModelScope.launch {
-            directory?.let {
-                module.updateCurrentPathSafe(it)
-            }
+    fun refreshFileList(directory: File? = module.currentPath.value){
+        directory?.let {
+            module.updateCurrentPathSafe(it)
         }
     }
 
     private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
 
 
+    fun onDefaultMode() = modeManager.changeSelectMode(DEFAULT_MODE)
+    fun onConfirmMoveMode() = modeManager.changeSelectMode(CONFIRM_MODE_MOVE)
+    fun onConfirmCopyMode() = modeManager.changeSelectMode(CONFIRM_MODE_COPY)
+    fun onMultiSelectMode() = modeManager.changeSelectMode(MULTI_SELECT_MODE)
     //------------------------------
-    fun onConfirmTest(selectMode:Int){
-        when(selectMode){
+    fun onConfirmTest(mode:Int = selectMode.value){
+        when(mode){
             CONFIRM_MODE_COPY ->{
 
             }
@@ -237,6 +126,5 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-
-
+    //------------
 }

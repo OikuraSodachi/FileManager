@@ -36,13 +36,14 @@ class FileModule(defaultPath:File) {
         it == null
     }
 
-    /** whether currentPath is a empty directory **/
-    val isEmpty = files.map{
-        it.isEmpty()
-    }
-
     /** setter for currentPath **/
     fun updateCurrentPathSafe(directory: File) {
+        if (directory.isAccessible_td()) {        // 접근 가능여부 체크
+            _currentPath.value = directory
+        }
+    }
+
+    fun updateCurrentPathSafeTest(directory: File) {
         if (directory.isAccessible_td()) {        // 접근 가능여부 체크
             _currentPath.value = directory
         }

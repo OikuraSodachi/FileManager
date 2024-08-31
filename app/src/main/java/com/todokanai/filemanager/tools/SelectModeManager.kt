@@ -1,6 +1,7 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.myobjects.Constants
+import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
@@ -44,25 +45,8 @@ class SelectModeManager {
 
     fun changeSelectMode(mode:Int){
         _selectMode.value = mode
-        if(mode == Constants.DEFAULT_MODE){
+        if(mode == DEFAULT_MODE){
             _selectedFiles.value = emptyArray()
-        }
-    }
-
-    /** selectMode 값에 따른 callback의 분기점 **/
-    fun callbackJunction(
-        selectMode:Int,
-        default:()->Unit,
-        multiSelect:()->Unit,
-        confirmCopy:()->Unit,
-        confirmMove:()->Unit,
-        confirmUnzip:()->Unit,
-        confirmUnzipHere:()->Unit
-    ){
-        when(selectMode){
-
-
-
         }
     }
 }

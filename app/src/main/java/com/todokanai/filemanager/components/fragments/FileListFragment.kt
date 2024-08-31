@@ -17,13 +17,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
-import com.todokanai.filemanager.compose.BottomMenu
+import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
+import com.todokanai.filemanager.compose.bottommenucontent.BottomMultiSelectMenu
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
-import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
-import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
-import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
-import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
-import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,8 +28,6 @@ class FileListFragment : Fragment() {
 
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
-    private val modeManager = Objects.modeManager
-    private val selectMode = modeManager.selectMode
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,19 +37,20 @@ class FileListFragment : Fragment() {
         println("FileListFrag: onCreateView")
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.onBackPressed(selectMode.value)
+                viewModel.onBackPressed()
             }
         })
         val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
         val fileListAdapter = FileListRecyclerAdapter(
-            {viewModel.onClick(requireContext(),it,selectMode.value)}
-        ) {
-            viewModel.onLongClick(it,selectMode.value)
-            modeManager.changeSelectMode(MULTI_SELECT_MODE)
-        }
-        val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it,selectMode.value) }
+            onItemClick = {viewModel.onClick(requireContext(),it)},
+            onItemLongClick = {
+                viewModel.onLongClick(it)
+                viewModel.onMultiSelectMode()
+            }
+        )
+        val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it) }
 
         binding.run{
             fileListRecyclerView.run{
@@ -80,23 +75,29 @@ class FileListFragment : Fragment() {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
                     MaterialTheme {
-                        val selectMode = selectMode.collectAsStateWithLifecycle()
-
-                        if(selectMode.value == DEFAULT_MODE){
+                        val modifier = Modifier
+                            .fillMaxSize()
+                        val isDefaultMode = viewModel.isDefaultMode.collectAsStateWithLifecycle()
+                        val isMultiSelectMode = viewModel.isMultiSelectMode.collectAsStateWithLifecycle()
+                        val enablePopupMenu = viewModel.selectedFiles.collectAsStateWithLifecycle()
+                        if(isDefaultMode.value){
                             this.visibility = View.GONE
-                            fileListAdapter.isMultiSelectMode = false
-
-                        }else {
+                        } else{
                             this.visibility = View.VISIBLE
-                            fileListAdapter.isMultiSelectMode = true
-                            BottomMenu(
-                                modifier = Modifier
-                                    .fillMaxSize(),
-                                onConfirmTest = { viewModel.onConfirmTest(selectMode.value) },
-                                onCancel = { modeManager.changeSelectMode(DEFAULT_MODE) },
-                                move = {modeManager.changeSelectMode(CONFIRM_MODE_MOVE)},
-                                copy = {modeManager.changeSelectMode(CONFIRM_MODE_COPY)},
-                                isMultiSelectMode = selectMode.value == MULTI_SELECT_MODE
+                        }
+
+                        if(isMultiSelectMode.value){
+                            BottomMultiSelectMenu(
+                                modifier = modifier,
+                                move = {viewModel.onConfirmMoveMode()},
+                                copy = {viewModel.onConfirmCopyMode()},
+                                enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
+                            )
+                        } else{
+                            BottomConfirmMenu(
+                                modifier = modifier,
+                                onCancel = {viewModel.onDefaultMode()},
+                                onConfirm = {viewModel.onConfirmTest()}
                             )
                         }
                     }
@@ -105,8 +106,14 @@ class FileListFragment : Fragment() {
         }
 
         viewModel.run{
-            fileHolderList.asLiveData().observe(viewLifecycleOwner){
-                fileListAdapter.itemList = it
+            fileHolderList.asLiveData().observe(viewLifecycleOwner){ list ->
+                if(list.isEmpty()){
+                    binding.emptyDirectoryText.visibility = View.VISIBLE
+                }else{
+                    binding.emptyDirectoryText.visibility = View.INVISIBLE
+                }
+
+                fileListAdapter.itemList = list
                 fileListAdapter.notifyDataSetChanged()
             }
             directoryList.asLiveData().observe(viewLifecycleOwner){
@@ -121,16 +128,15 @@ class FileListFragment : Fragment() {
                     binding.accessFailText.visibility = View.GONE
                 }
             }
-            isEmpty.asLiveData().observe(viewLifecycleOwner){
-                if(it==true) {
-                    binding.emptyDirectoryText.visibility = View.VISIBLE
-                } else{
-                    binding.emptyDirectoryText.visibility = View.INVISIBLE
-                }
-            }
             selectedFiles.asLiveData().observe(viewLifecycleOwner) {
                 fileListAdapter.run{
                     selectedItemList = it
+                    notifyDataSetChanged()
+                }
+            }
+            isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){
+                fileListAdapter.run {
+                    isMultiSelectMode = it
                     notifyDataSetChanged()
                 }
             }
