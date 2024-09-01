@@ -73,7 +73,7 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
     fun exit(activity: Activity) = exit_td(activity)
 
 
-    fun exitBtn() = workerTest()
+    fun exitBtn(activity: Activity) = workerTest()
 
     /** work이 success를 반환해야 그 다음 work이 실행됨 **/
     private fun workerTest() {
@@ -108,7 +108,7 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
 
         continuation = continuation.then(notiTest).then(workRequestTest)
 
-
+        /** work 시작 **/
         continuation.enqueue()
     }
 }

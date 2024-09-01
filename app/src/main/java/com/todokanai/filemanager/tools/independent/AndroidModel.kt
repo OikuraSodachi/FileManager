@@ -182,7 +182,7 @@ fun openFile_td(
             file
         ), mimeType
     )
-    println("mimeType: $mimeType")
+   // println("mimeType: $mimeType")
     try {
         ActivityCompat.startActivity(context, intent, null)
     } catch (t:Throwable){

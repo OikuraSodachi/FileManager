@@ -275,3 +275,8 @@ else
         ".3gp", ".mpg", ".mpeg", ".mpe", ".mp4", ".avi", ".ogv", ".webm" -> "video/*"
         else -> "*/*"
     }
+
+fun copyFiles_td(selected:Array<File>,targetDirectory:File){
+
+
+}

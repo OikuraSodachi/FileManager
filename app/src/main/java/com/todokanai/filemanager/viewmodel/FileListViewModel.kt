@@ -3,6 +3,14 @@ package com.todokanai.filemanager.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.WorkRequest
+import com.todokanai.filemanager.di.MyApplication.Companion.appContext
+import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Constants.BY_DEFAULT
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
@@ -14,10 +22,15 @@ import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
+import com.todokanai.filemanager.workers.CopyWorker
+import com.todokanai.filemanager.workers.NotiWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -103,28 +116,54 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
 
-
     fun onDefaultMode() = modeManager.changeSelectMode(DEFAULT_MODE)
     fun onConfirmMoveMode() = modeManager.changeSelectMode(CONFIRM_MODE_MOVE)
     fun onConfirmCopyMode() = modeManager.changeSelectMode(CONFIRM_MODE_COPY)
     fun onMultiSelectMode() = modeManager.changeSelectMode(MULTI_SELECT_MODE)
     //------------------------------
-    fun onConfirmTest(mode:Int = selectMode.value){
-        when(mode){
-            CONFIRM_MODE_COPY ->{
+    fun onConfirmTest(
+        mode:Int = selectMode.value,
+        targetDirectory:File = module.currentPath.value,
+        selected:Array<File> = selectedFiles.value
+    ){
+        CoroutineScope(Dispatchers.IO).launch {
+            val workManager = WorkManager.getInstance(appContext)
+            val fileNames : Array<String> = selected.map { it.absolutePath }.toTypedArray()
+            println("stringArray: $fileNames")
+            println("targetDirectory: ${targetDirectory.absolutePath}")
 
-            }
-            CONFIRM_MODE_MOVE ->{
+            when (mode) {
+                CONFIRM_MODE_COPY -> {
+                    val inputData = Data.Builder()
+                        .putString(
+                            Constants.WORKER_KEY_TARGET_DIRECTORY,
+                            targetDirectory.absolutePath
+                        )
+                        .putStringArray(Constants.WORKER_KEY_COPY_FILE, fileNames)
+                        .build()
+                    val copyRequest = OneTimeWorkRequestBuilder<CopyWorker>()
+                        .setInputData(inputData)
+                        .build()
 
-            }
-            CONFIRM_MODE_UNZIP ->{
+                    var continuation = workManager
+                        //.beginWith(OneTimeWorkRequest.from(CopyWorker::class.java))
+                        .beginWith(copyRequest)
 
-            }
-            CONFIRM_MODE_UNZIP_HERE ->{
+                    continuation.enqueue()
+                }
 
+                CONFIRM_MODE_MOVE -> {
+
+                }
+
+                CONFIRM_MODE_UNZIP -> {
+
+                }
+
+                CONFIRM_MODE_UNZIP_HERE -> {
+
+                }
             }
         }
     }
-
-    //------------
 }

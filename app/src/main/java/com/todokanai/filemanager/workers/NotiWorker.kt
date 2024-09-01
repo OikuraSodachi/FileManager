@@ -10,6 +10,7 @@ class NotiWorker(context: Context,params:WorkerParameters):Worker(context,params
     override fun doWork(): Result {
         return try{
 
+            println("notiWorker")
             noti.sendStringNotification("3","3")
 
             Result.success()
