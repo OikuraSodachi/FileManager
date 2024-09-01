@@ -2,16 +2,15 @@ package com.todokanai.filemanager.workers
 
 import android.content.Context
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.todokanai.filemanager.myobjects.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class CopyWorker(context: Context, params: WorkerParameters): Worker(context,params)  {
+class CopyWorker(context: Context, params: WorkerParameters): CoroutineWorker(context,params)  {
 
-    override fun doWork(): Result{
-        return try{
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO){
+        try{
             /** selected Files의 absolutePath 목록 **/
             val stringArray =
                 inputData.getStringArray(Constants.WORKER_KEY_COPY_FILE)
@@ -19,7 +18,7 @@ class CopyWorker(context: Context, params: WorkerParameters): Worker(context,par
             val targetDirectoryName =
                 inputData.getString(Constants.WORKER_KEY_TARGET_DIRECTORY)
 
-            println("Worker_stringArray: $stringArray")
+            println("Worker_stringArray: ${stringArray!!.toList()}")
             println("Worker_targetDirectory: $targetDirectoryName")
 
             Result.success()

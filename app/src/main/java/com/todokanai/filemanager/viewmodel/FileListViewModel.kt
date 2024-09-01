@@ -129,7 +129,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         CoroutineScope(Dispatchers.IO).launch {
             val workManager = WorkManager.getInstance(appContext)
             val fileNames : Array<String> = selected.map { it.absolutePath }.toTypedArray()
-            println("stringArray: $fileNames")
+            println("stringArray: ${fileNames.toList()}")
             println("targetDirectory: ${targetDirectory.absolutePath}")
 
             when (mode) {
