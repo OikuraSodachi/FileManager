@@ -5,13 +5,7 @@ import android.content.Context
 import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.ContextObjects
 import com.todokanai.filemanager.myobjects.Objects.contextObjects
 import com.todokanai.filemanager.myobjects.Objects.myNoti
@@ -23,9 +17,6 @@ import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestPermission_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td
-import com.todokanai.filemanager.workers.MyWorker
-import com.todokanai.filemanager.workers.NotiWorker
-import com.todokanai.filemanager.workers.TestWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -73,6 +64,7 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
     fun exit(activity: Activity) = exit_td(activity)
 
 
+    /*
     fun exitTest(activity: Activity) = workerTest()
 
     /** work이 success를 반환해야 그 다음 work이 실행됨 **/
@@ -112,4 +104,6 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
         /** work 시작 **/
         continuation.enqueue()
     }
+
+     */
 }

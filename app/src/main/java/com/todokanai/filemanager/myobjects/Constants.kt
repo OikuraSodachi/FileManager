@@ -30,8 +30,8 @@ object Constants {
     /** TestWorker seed의 key 값 **/
     const val WORKER_TEST_SEED : String = "seed"
 
-    /** array of Files to copy **/
-    const val WORKER_KEY_COPY_FILE = "copy"
+    /** array of selected Files **/
+    const val WORKER_KEY_SELECTED_FILES = "selected"
 
     /** targeted Directory **/
     const val WORKER_KEY_TARGET_DIRECTORY = "targetDirectory"

@@ -30,7 +30,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     val modeManager = Objects.modeManager
     val selectMode = modeManager.selectMode
     val notAccessible =  module.notAccessible
-    private val workerWrapper = WorkerWrapper(workManager)
 
     val isMultiSelectMode = selectMode.map{ mode ->
         mode == MULTI_SELECT_MODE
@@ -116,34 +115,18 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         targetDirectory:File = module.currentPath.value,
         selected:Array<File> = selectedFiles.value
     ){
+        val wrapper = WorkerWrapper(workManager,selected,targetDirectory)
         when (mode) {
             CONFIRM_MODE_COPY -> {
-                workerWrapper.onConfirmCopy(selected,targetDirectory)
-                    /*
-                    val inputData = Data.Builder()
-                        .putString(
-                            Constants.WORKER_KEY_TARGET_DIRECTORY,
-                            targetDirectory.absolutePath
-                        )
-                        .putStringArray(Constants.WORKER_KEY_COPY_FILE, fileNames)
-                        .build()
-                    val copyRequest = OneTimeWorkRequestBuilder<CopyWorker>()
-                        .setInputData(inputData)
-                        .build()
-
-                    var continuation = workManager
-                        .beginWith(copyRequest)
-
-                    continuation.enqueue()
-                     */
+                wrapper.onConfirmCopy()
             }
 
             CONFIRM_MODE_MOVE -> {
-
+                wrapper.onConfirmMove()
             }
 
             CONFIRM_MODE_UNZIP -> {
-
+                wrapper.onConfirmUnzip()
             }
 
             CONFIRM_MODE_UNZIP_HERE -> {
@@ -151,5 +134,12 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             }
         }
         modeManager.changeSelectMode(DEFAULT_MODE)
+    }
+
+    fun onConfirmDelete(
+        selected: Array<File> = selectedFiles.value
+    ){
+      //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
+
     }
 }
