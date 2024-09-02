@@ -3,14 +3,7 @@ package com.todokanai.filemanager.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Constraints
-import androidx.work.Data
-import androidx.work.OneTimeWorkRequest
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.WorkRequest
-import com.todokanai.filemanager.di.MyApplication.Companion.appContext
-import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Constants.BY_DEFAULT
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
@@ -22,25 +15,22 @@ import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
-import com.todokanai.filemanager.workers.CopyWorker
-import com.todokanai.filemanager.workers.NotiWorker
+import com.todokanai.filemanager.workers.WorkerWrapper
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository):ViewModel(){
+class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository, private val workManager: WorkManager):ViewModel(){
 
     private val module = fileModule
     val modeManager = Objects.modeManager
     val selectMode = modeManager.selectMode
     val notAccessible =  module.notAccessible
+    private val workerWrapper = WorkerWrapper(workManager)
 
     val isMultiSelectMode = selectMode.map{ mode ->
         mode == MULTI_SELECT_MODE
@@ -126,14 +116,10 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         targetDirectory:File = module.currentPath.value,
         selected:Array<File> = selectedFiles.value
     ){
-        CoroutineScope(Dispatchers.IO).launch {
-            val workManager = WorkManager.getInstance(appContext)
-            val fileNames : Array<String> = selected.map { it.absolutePath }.toTypedArray()
-            println("stringArray: ${fileNames.toList()}")
-            println("targetDirectory: ${targetDirectory.absolutePath}")
-
-            when (mode) {
-                CONFIRM_MODE_COPY -> {
+        when (mode) {
+            CONFIRM_MODE_COPY -> {
+                workerWrapper.onConfirmCopy(selected,targetDirectory)
+                    /*
                     val inputData = Data.Builder()
                         .putString(
                             Constants.WORKER_KEY_TARGET_DIRECTORY,
@@ -146,24 +132,24 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
                         .build()
 
                     var continuation = workManager
-                        //.beginWith(OneTimeWorkRequest.from(CopyWorker::class.java))
                         .beginWith(copyRequest)
 
                     continuation.enqueue()
-                }
+                     */
+            }
 
-                CONFIRM_MODE_MOVE -> {
+            CONFIRM_MODE_MOVE -> {
 
-                }
+            }
 
-                CONFIRM_MODE_UNZIP -> {
+            CONFIRM_MODE_UNZIP -> {
 
-                }
+            }
 
-                CONFIRM_MODE_UNZIP_HERE -> {
+            CONFIRM_MODE_UNZIP_HERE -> {
 
-                }
             }
         }
+        modeManager.changeSelectMode(DEFAULT_MODE)
     }
 }

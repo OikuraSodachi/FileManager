@@ -73,7 +73,7 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
     fun exit(activity: Activity) = exit_td(activity)
 
 
-    fun exitBtn(activity: Activity) = workerTest()
+    fun exitTest(activity: Activity) = workerTest()
 
     /** work이 success를 반환해야 그 다음 work이 실행됨 **/
     private fun workerTest() {
@@ -106,6 +106,7 @@ class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,v
             .setConstraints(constraints)
             .build()
 
+        /** myWorker -> notiWorker -> testWorker 순 **/
         continuation = continuation.then(notiTest).then(workRequestTest)
 
         /** work 시작 **/
