@@ -1,7 +1,9 @@
 package com.todokanai.filemanager.workers
 
+import android.app.Notification
 import android.content.Context
 import androidx.work.CoroutineWorker
+import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.todokanai.filemanager.myobjects.Constants
 import kotlinx.coroutines.Dispatchers
@@ -26,5 +28,14 @@ class CopyWorker(context: Context, params: WorkerParameters): CoroutineWorker(co
             e.printStackTrace()
             Result.failure()
         }
+    }
+
+    override suspend fun getForegroundInfo(): ForegroundInfo {
+        val out = ForegroundInfo(Constants.NOTIFICATION_CHANNEL_ID_WORK,notification())
+        return out
+    }
+
+    private fun notification(): Notification {
+        TODO()
     }
 }

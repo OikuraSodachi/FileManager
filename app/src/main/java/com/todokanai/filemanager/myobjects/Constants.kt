@@ -3,6 +3,7 @@ package com.todokanai.filemanager.myobjects
 object Constants {
     const val CHANNEL_ID = "Todokanai_FileManager"
 
+
     const val DEFAULT_MODE : Int = 10
     const val MULTI_SELECT_MODE : Int = 11
     const val CONFIRM_MODE_COPY : Int = 12
@@ -40,6 +41,9 @@ object Constants {
 
     /** notification title when work is completed **/
     const val WORKER_KEY_NOTIFICATION_COMPLETE_TITLE = "notification_complete_title"
+
+    const val NOTIFICATION_CHANNEL_ID_WORK : Int = 1
+
 
 
 
