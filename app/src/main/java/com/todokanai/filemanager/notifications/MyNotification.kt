@@ -23,7 +23,7 @@ class MyNotification(appContext: Context) {
 
     private val notificationManager by lazy{ context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager}
 
-    fun sendStringNotification(title: String, message: String){
+    fun sendStringNotification(title: String?, message: String?){
 
         NotificationCompat.Builder(context, channelId)
             .setSmallIcon(icon)

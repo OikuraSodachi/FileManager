@@ -35,5 +35,12 @@ object Constants {
     /** targeted Directory **/
     const val WORKER_KEY_TARGET_DIRECTORY = "targetDirectory"
 
+    /** notification message when work is completed **/
+    const val WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE = "notification_complete_message"
+
+    /** notification title when work is completed **/
+    const val WORKER_KEY_NOTIFICATION_COMPLETE_TITLE = "notification_complete_title"
+
+
 
 }
