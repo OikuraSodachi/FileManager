@@ -2,8 +2,13 @@ package com.todokanai.filemanager.tools.independent
 
 /** 이 method들은 독립적으로 사용 가능함 */
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
+import java.nio.file.CopyOption
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -276,7 +281,21 @@ else
         else -> "*/*"
     }
 
-fun copyFiles_td(selected:Array<File>,targetDirectory:File){
-
-
+suspend fun copyFiles_Recursive_td(
+    selected:Array<File>,
+    targetDirectory:File,
+    copyOption:CopyOption = StandardCopyOption.REPLACE_EXISTING
+):Unit = withContext(Dispatchers.IO){
+    for (file in selected) {
+        val target = targetDirectory.resolve(file.name)
+        if (file.isDirectory) {
+            // Create the target directory
+            target.mkdirs()
+            // Copy the contents of the directory recursively
+            copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target,copyOption)
+        } else {
+            // Copy the file
+            Files.copy(file.toPath(), target.toPath(),)
+        }
+    }
 }
