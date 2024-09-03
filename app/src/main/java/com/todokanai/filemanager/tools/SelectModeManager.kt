@@ -7,18 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 
 class SelectModeManager {
-    /*
-    temporary dummyData
-    companion object{
-        val DEFAULT_MODE : Int = 10
-        val MULTI_SELECT_MODE : Int = 11
-        val CONFIRM_MODE_COPY : Int = 12
-        val CONFIRM_MODE_MOVE : Int = 13
-        val CONFIRM_MODE_UNZIP : Int = 14
-        val CONFIRM_MODE_UNZIP_HERE : Int = 15
-    }
-     */
-
 
     private val _selectMode = MutableStateFlow<Int>(Constants.DEFAULT_MODE)
     val selectMode : StateFlow<Int>

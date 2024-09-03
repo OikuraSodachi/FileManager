@@ -77,6 +77,7 @@ fun BottomMultiSelectMenu(
     modifier: Modifier = Modifier,
     move:()->Unit,
     copy:()->Unit,
+    delete:()->Unit,
     enablePopupMenu:()->Boolean
 ){
     val expandedState = remember { mutableStateOf(false) }
@@ -132,7 +133,7 @@ fun BottomMultiSelectMenu(
     if(deleteDialog.value){
         DeleteDialog(
             onCancel = {deleteDialog.value = false},
-            delete = {}
+            delete = {delete()}
         )
     }
 }
@@ -143,6 +144,7 @@ private fun BottomMultiSelectMenuPreview(){
     BottomMultiSelectMenu(
         copy = {},
         move = {},
+        delete = {},
         enablePopupMenu = {true}
     )
 }

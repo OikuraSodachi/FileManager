@@ -71,17 +71,18 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    fun onClick(context: Context,file: File,mode:Int = selectMode.value){
-        if(mode== MULTI_SELECT_MODE){
-            toggleToSelectedFiles(file)
+    fun onClick(context: Context,file: File,isMultiSelectMode:Boolean = this.isMultiSelectMode.value){
+        if(isMultiSelectMode){
+            modeManager.toggleToSelectedFiles(file)
         }else{
             module.onFileClick(context,file)
         }
     }
 
-    fun onLongClick(file: File,mode:Int = selectMode.value){
-        if(mode== DEFAULT_MODE){
-            toggleToSelectedFiles(file)
+    fun onLongClick(file: File,isDefaultMode:Boolean = this.isDefaultMode.value){
+        if(isDefaultMode){
+            modeManager.changeSelectMode(MULTI_SELECT_MODE)
+            modeManager.toggleToSelectedFiles(file)
         } else{
             //empty
         }
@@ -97,11 +98,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    fun refreshFileList(directory: File? = module.currentPath.value){
-        directory?.let {
-            module.updateCurrentPathSafe(it)
-        }
-    }
+    /** excute refresh by updating currentPath with same value **/
+    fun refreshFileList(directory: File = module.currentPath.value) = module.updateCurrentPathSafe(directory)
 
     private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
 
@@ -110,7 +108,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun onConfirmCopyMode() = modeManager.changeSelectMode(CONFIRM_MODE_COPY)
     fun onMultiSelectMode() = modeManager.changeSelectMode(MULTI_SELECT_MODE)
     //------------------------------
-    fun onConfirmTest(
+    fun onConfirm(
         mode:Int = selectMode.value,
         targetDirectory:File = module.currentPath.value,
         selected:Array<File> = selectedFiles.value
@@ -141,5 +139,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     ){
       //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
 
+        modeManager.changeSelectMode(DEFAULT_MODE)
     }
 }

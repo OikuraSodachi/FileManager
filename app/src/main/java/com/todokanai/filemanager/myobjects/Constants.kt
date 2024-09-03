@@ -3,7 +3,6 @@ package com.todokanai.filemanager.myobjects
 object Constants {
     const val CHANNEL_ID = "Todokanai_FileManager"
 
-
     const val DEFAULT_MODE : Int = 10
     const val MULTI_SELECT_MODE : Int = 11
     const val CONFIRM_MODE_COPY : Int = 12

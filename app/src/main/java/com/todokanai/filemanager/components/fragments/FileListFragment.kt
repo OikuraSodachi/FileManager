@@ -45,10 +45,7 @@ class FileListFragment : Fragment() {
 
         val fileListAdapter = FileListRecyclerAdapter(
             onItemClick = {viewModel.onClick(requireContext(),it)},
-            onItemLongClick = {
-                viewModel.onLongClick(it)
-                viewModel.onMultiSelectMode()
-            }
+            onItemLongClick = { viewModel.onLongClick(it) }
         )
         val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it) }
 
@@ -91,13 +88,14 @@ class FileListFragment : Fragment() {
                                 modifier = modifier,
                                 move = {viewModel.onConfirmMoveMode()},
                                 copy = {viewModel.onConfirmCopyMode()},
+                                delete = {viewModel.onConfirmDelete()},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
                         } else{
                             BottomConfirmMenu(
                                 modifier = modifier,
                                 onCancel = {viewModel.onDefaultMode()},
-                                onConfirm = {viewModel.onConfirmTest()}
+                                onConfirm = {viewModel.onConfirm()}
                             )
                         }
                     }
