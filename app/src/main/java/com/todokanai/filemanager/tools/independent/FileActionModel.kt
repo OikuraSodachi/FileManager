@@ -154,9 +154,9 @@ fun getFileNumber_td(files:Array<File>):Int{
 /** Todokanai
  *
  * Directory와 File의 총 갯수*/
-fun getFileAndFoldersNumber_td(files:Array<File>):Int{
+fun Array<File>.getFileAndFoldersNumber_td():Int{
     var total = 0
-    for (file in files) {
+    for (file in this) {
         if (file.isFile) {
             total ++
         } else if (file.isDirectory) {
@@ -284,6 +284,7 @@ else
 suspend fun copyFiles_Recursive_td(
     selected:Array<File>,
     targetDirectory:File,
+    onProgress:(File)->Unit,
     copyOption:CopyOption = StandardCopyOption.REPLACE_EXISTING
 ):Unit = withContext(Dispatchers.IO){
     for (file in selected) {
@@ -291,11 +292,13 @@ suspend fun copyFiles_Recursive_td(
         if (file.isDirectory) {
             // Create the target directory
             target.mkdirs()
+            onProgress(file)
             // Copy the contents of the directory recursively
-            copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target,copyOption)
+            copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target,onProgress, copyOption)
         } else {
             // Copy the file
             Files.copy(file.toPath(), target.toPath(),)
+            onProgress(file)
         }
     }
 }
