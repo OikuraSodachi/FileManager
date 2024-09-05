@@ -23,6 +23,7 @@ import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class FileListFragment : Fragment() {
 

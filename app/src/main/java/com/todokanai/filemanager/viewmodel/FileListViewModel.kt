@@ -98,7 +98,10 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    /** excute refresh by updating currentPath with same value **/
+    /** excute refresh by updating currentPath with same value
+     *
+     * 같은 값이 들어가서 livedata가 반응하지 않고 있음
+     * **/
     fun refreshFileList(directory: File = module.currentPath.value) = module.updateCurrentPathSafe(directory)
 
     private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
