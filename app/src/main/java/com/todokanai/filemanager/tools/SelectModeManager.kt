@@ -2,6 +2,7 @@ package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
+import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import java.io.File
@@ -23,6 +24,14 @@ class SelectModeManager {
         } else{
             _selectedFiles.value = list.plus(file).toTypedArray()
         }
+    }
+
+    fun isMultiSelectMode():Boolean{
+        return selectMode.value == MULTI_SELECT_MODE
+    }
+
+    fun isDefaultMode():Boolean{
+        return selectMode.value == DEFAULT_MODE
     }
 
     fun selectAll(){

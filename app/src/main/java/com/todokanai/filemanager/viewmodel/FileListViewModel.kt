@@ -144,4 +144,30 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
         modeManager.changeSelectMode(DEFAULT_MODE)
     }
+
+    //---------------
+
+    fun onDirectoryClick_new(directory:File,isNotMultiSelectMode:Boolean){
+        if(isNotMultiSelectMode) {
+            module.updateCurrentPathSafe(directory)
+        }
+    }
+
+    fun onClick_new(context: Context,file: File,isMultiSelectMode:Boolean){
+        if(isMultiSelectMode){
+            modeManager.toggleToSelectedFiles(file)
+        }else{
+            module.onFileClick(context,file)
+        }
+    }
+
+    fun onLongClick_new(file: File,isDefaultMode:Boolean){
+        if(isDefaultMode){
+            modeManager.changeSelectMode(MULTI_SELECT_MODE)
+            modeManager.toggleToSelectedFiles(file)
+        } else{
+            //empty
+        }
+    }
+
 }

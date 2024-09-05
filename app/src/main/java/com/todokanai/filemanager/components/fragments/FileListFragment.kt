@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
+import com.todokanai.filemanager.adapters.FileListRecyclerAdapterNew
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
 import com.todokanai.filemanager.compose.bottommenucontent.BottomMultiSelectMenu
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
@@ -44,10 +45,26 @@ class FileListFragment : Fragment() {
         val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
-        val fileListAdapter = FileListRecyclerAdapter(
+        /*
+        val fileListAdapterOriginal = FileListRecyclerAdapter(
             onItemClick = {viewModel.onClick(requireContext(),it)},
             onItemLongClick = { viewModel.onLongClick(it) }
         )
+
+         */
+
+        val fileListAdapter = FileListRecyclerAdapterNew(
+            onItemClick = {
+                file,test ->
+                viewModel.onClick_new(
+                requireContext(),file,test)
+                          },
+            onItemLongClick = {
+                    file,test ->
+            viewModel.onLongClick_new(file,test) },
+            modeManager = viewModel.modeManager
+        )
+
         val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it) }
 
         binding.run{
@@ -135,7 +152,7 @@ class FileListFragment : Fragment() {
             }
             isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){
                 fileListAdapter.run {
-                    isMultiSelectMode = it
+                 //   isMultiSelectMode = it
                     notifyDataSetChanged()
                 }
             }
