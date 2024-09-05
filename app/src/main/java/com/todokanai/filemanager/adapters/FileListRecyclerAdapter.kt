@@ -1,5 +1,6 @@
 package com.todokanai.filemanager.adapters
 
+import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,11 +10,13 @@ import com.todokanai.filemanager.holders.FileItemHolder
 import java.io.File
 
 class FileListRecyclerAdapter(
-    private val onItemClick:(File)->Unit,
     private val onItemLongClick:(File)->Unit,
-):RecyclerView.Adapter<FileItemHolder>() {
+    private val isDefaultMode:()->Boolean,
+    private val isMultiSelectMode:()->Boolean,
+    private val toggleToSelectedFiles:(File)->Unit,
+    private val onFileClick:(Context, File)->Unit
+): RecyclerView.Adapter<FileItemHolder>() {
 
-    var isMultiSelectMode = false
     var itemList = emptyList<File>()
     var selectedItemList = emptyArray<File>()
 
@@ -40,13 +43,23 @@ class FileListRecyclerAdapter(
         holder.run {
             setData(file)
             itemView.run{
-                setOnClickListener { onItemClick(file) }
+                setOnClickListener {
+                    if(isMultiSelectMode()){
+                        toggleToSelectedFiles(file)
+                    }else{
+                        onFileClick(context,file)
+                    }
+
+                  //  onItemClick(file,isMultiSelectMode())
+                }
                 setOnLongClickListener {
-                    onItemLongClick(file)
+                    if(isDefaultMode()) {
+                        onItemLongClick(file)
+                    }
                     true
                 }
                 setBackgroundColor(backgroundColor)
-                if(isMultiSelectMode) {
+                if(isMultiSelectMode()) {
                     multiSelectMode(isFileSelected)
                 } else{
                     onDefaultMode()

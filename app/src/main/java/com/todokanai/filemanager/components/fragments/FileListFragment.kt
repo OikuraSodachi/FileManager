@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
-import com.todokanai.filemanager.adapters.FileListRecyclerAdapterNew
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
 import com.todokanai.filemanager.compose.bottommenucontent.BottomMultiSelectMenu
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
@@ -47,27 +46,20 @@ class FileListFragment : Fragment() {
         val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
-        /*
-        val fileListAdapterOriginal = FileListRecyclerAdapter(
-            onItemClick = {viewModel.onClick(requireContext(),it)},
-            onItemLongClick = { viewModel.onLongClick(it) }
+        val fileListAdapter = FileListRecyclerAdapter(
+            onItemLongClick = { viewModel.onLongClick_new(it) },
+            isDefaultMode = {modeManager.isDefaultMode()},
+            isMultiSelectMode = {modeManager.isMultiSelectMode()},
+            toggleToSelectedFiles = {viewModel.toggleToSelectedFiles(it)},
+            onFileClick = { context,file ->
+                viewModel.onFileClick(context,file)
+            }
         )
 
-         */
-
-        val fileListAdapter = FileListRecyclerAdapterNew(
-            onItemClick = {
-                file,test ->
-                viewModel.onClick_new(
-                requireContext(),file,test)
-                          },
-            onItemLongClick = {
-                    file,test ->
-            viewModel.onLongClick_new(file,test) },
-            modeManager = modeManager
+        val directoryAdapter = DirectoryRecyclerAdapter(
+            {viewModel.onDirectoryClick_new(it)},
+            {modeManager.isNotMultiSelectMode()}
         )
-
-        val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it) }
 
         binding.run{
             fileListRecyclerView.run{

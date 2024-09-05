@@ -147,10 +147,10 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     //---------------
 
-    fun onDirectoryClick_new(directory:File,isNotMultiSelectMode:Boolean){
-        if(isNotMultiSelectMode) {
+    fun onDirectoryClick_new(directory:File){
+     //   if(isNotMultiSelectMode) {
             module.updateCurrentPathSafe(directory)
-        }
+      //  }
     }
 
     fun onClick_new(context: Context,file: File,isMultiSelectMode:Boolean){
@@ -161,13 +161,12 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    fun onLongClick_new(file: File,isDefaultMode:Boolean){
-        if(isDefaultMode){
-            modeManager.changeSelectMode(MULTI_SELECT_MODE)
-            modeManager.toggleToSelectedFiles(file)
-        } else{
-            //empty
-        }
+    fun onLongClick_new(file: File){
+        modeManager.changeSelectMode(MULTI_SELECT_MODE)
+        modeManager.toggleToSelectedFiles(file)
     }
 
+    fun onFileClick(context: Context,file: File){
+        module.onFileClick(context,file)
+    }
 }

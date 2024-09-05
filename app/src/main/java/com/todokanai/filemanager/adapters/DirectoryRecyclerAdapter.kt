@@ -9,7 +9,8 @@ import java.io.File
 
 class DirectoryRecyclerAdapter(
     private val onClick:(File)->Unit,
-):RecyclerView.Adapter<DirectoryHolder>() {
+    private val isNotMultiSelectMode:()->Boolean
+): RecyclerView.Adapter<DirectoryHolder>() {
     var directoryList = emptyList<File>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryHolder {
@@ -24,6 +25,10 @@ class DirectoryRecyclerAdapter(
     override fun onBindViewHolder(holder: DirectoryHolder, position: Int) {
         val directory = directoryList[position]
         holder.setHolder(directory)
-        holder.itemView.setOnClickListener { onClick(directory) }
+        holder.itemView.setOnClickListener {
+            if(isNotMultiSelectMode()) {
+                onClick(directory)
+            }
+        }
     }
 }

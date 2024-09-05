@@ -31,6 +31,10 @@ class SelectModeManager {
         return selectMode.value == MULTI_SELECT_MODE
     }
 
+    fun isNotMultiSelectMode():Boolean{
+        return selectMode.value != MULTI_SELECT_MODE
+    }
+
     fun isDefaultMode():Boolean{
         return selectMode.value == DEFAULT_MODE
     }
