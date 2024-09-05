@@ -5,6 +5,7 @@ import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
 import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import java.io.File
 
 class SelectModeManager {
@@ -45,5 +46,14 @@ class SelectModeManager {
         if(mode == DEFAULT_MODE){
             _selectedFiles.value = emptyArray()
         }
+    }
+
+    //--------------
+    val isMultiSelectMode  = selectMode.map { mode ->
+        mode == MULTI_SELECT_MODE
+    }
+
+    val isDefaultMode = selectMode.map { mode ->
+        mode == DEFAULT_MODE
     }
 }

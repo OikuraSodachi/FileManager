@@ -27,7 +27,7 @@ import javax.inject.Inject
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository, private val workManager: WorkManager):ViewModel(){
 
     private val module = fileModule
-    val modeManager = Objects.modeManager
+    private val modeManager = Objects.modeManager
     val selectMode = modeManager.selectMode
     val notAccessible =  module.notAccessible
 

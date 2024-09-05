@@ -21,6 +21,7 @@ import com.todokanai.filemanager.adapters.FileListRecyclerAdapterNew
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
 import com.todokanai.filemanager.compose.bottommenucontent.BottomMultiSelectMenu
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,6 +31,7 @@ class FileListFragment : Fragment() {
 
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
+    private val modeManager = Objects.modeManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,7 +64,7 @@ class FileListFragment : Fragment() {
             onItemLongClick = {
                     file,test ->
             viewModel.onLongClick_new(file,test) },
-            modeManager = viewModel.modeManager
+            modeManager = modeManager
         )
 
         val directoryAdapter = DirectoryRecyclerAdapter { viewModel.onDirectoryClick(it) }
@@ -92,9 +94,9 @@ class FileListFragment : Fragment() {
                     MaterialTheme {
                         val modifier = Modifier
                             .fillMaxSize()
-                        val isDefaultMode = viewModel.isDefaultMode.collectAsStateWithLifecycle()
-                        val isMultiSelectMode = viewModel.isMultiSelectMode.collectAsStateWithLifecycle()
-                        val enablePopupMenu = viewModel.selectedFiles.collectAsStateWithLifecycle()
+                        val isDefaultMode = modeManager.isDefaultMode.collectAsStateWithLifecycle(true,viewLifecycleOwner)
+                        val isMultiSelectMode = modeManager.isMultiSelectMode.collectAsStateWithLifecycle(false,viewLifecycleOwner)
+                        val enablePopupMenu = modeManager.selectedFiles.collectAsStateWithLifecycle()
                         if(isDefaultMode.value){
                             this.visibility = View.GONE
                         } else{
@@ -144,6 +146,9 @@ class FileListFragment : Fragment() {
                     binding.accessFailText.visibility = View.GONE
                 }
             }
+        }
+
+        modeManager.run{
             selectedFiles.asLiveData().observe(viewLifecycleOwner) {
                 fileListAdapter.run{
                     selectedItemList = it
@@ -152,7 +157,7 @@ class FileListFragment : Fragment() {
             }
             isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){
                 fileListAdapter.run {
-                 //   isMultiSelectMode = it
+                    //   isMultiSelectMode = it
                     notifyDataSetChanged()
                 }
             }
