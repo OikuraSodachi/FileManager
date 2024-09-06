@@ -31,9 +31,8 @@ class FileModule(defaultPath:File) {
     val notAccessible = currentPath.map {
         it.listFiles() == null
     }
-   fun refreshListFiles(file: File = currentPath.value){
-       updateCurrentPath(file)
-   }
+    /** currentPath 값에 변화가 없어서 listFiles 갱신이 되지 않고 있음 **/
+    fun refreshListFiles(file: File = currentPath.value) = updateCurrentPath(file)
 
 
     /** setter for currentPath **/
