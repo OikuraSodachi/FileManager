@@ -7,14 +7,43 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP_HERE
+import com.todokanai.filemanager.myobjects.Objects
 import java.io.File
 
 @Composable
 fun BottomConfirmMenu(
     modifier: Modifier,
     onCancel:()->Unit,
-    onConfirm:()->Unit
+    copyWork:(Array<File>,File)->Unit,
+    moveWork:(Array<File>,File)->Unit,
+    selected:Array<File>,
+    getDirectory:()->File
 ){
+    val modeManager = Objects.modeManager
+    fun onConfirmTemp(mode:Int){
+        when(mode){
+            CONFIRM_MODE_COPY -> {
+                copyWork(selected,getDirectory())
+            }
+
+            CONFIRM_MODE_MOVE -> {
+                moveWork(selected,getDirectory())
+            }
+
+            CONFIRM_MODE_UNZIP -> {
+
+            }
+
+            CONFIRM_MODE_UNZIP_HERE -> {
+
+            }
+        }
+    }
+
     Row (
         modifier = modifier
             .wrapContentSize()
@@ -30,7 +59,7 @@ fun BottomConfirmMenu(
         TextButton(
             modifier = Modifier
                 .weight(1f),
-            onClick = { onConfirm() }
+            onClick = {onConfirmTemp(modeManager.selectMode())}
         ) {
             Text(text="Confirm")
         }
@@ -44,6 +73,9 @@ private fun BottomConfirmMenuPreview(){
     BottomConfirmMenu(
         modifier = Modifier,
         onCancel = {},
-        onConfirm = {}
+        copyWork = { array,target->{} },
+        moveWork = {array,target->{}},
+        selected = emptyArray(),
+        getDirectory = {File("")}
     )
 }

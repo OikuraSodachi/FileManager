@@ -9,8 +9,6 @@ import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP
 import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP_HERE
-import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
-import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
@@ -23,34 +21,17 @@ import kotlinx.coroutines.flow.stateIn
 import java.io.File
 import javax.inject.Inject
 
+/** modeManager를 viewModel에서 완전히 제거해야 함 **/
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository, private val workManager: WorkManager):ViewModel(){
 
     private val module = fileModule
     private val modeManager = Objects.modeManager
-    val selectMode = modeManager.selectMode
     val notAccessible =  module.notAccessible
 
-    /*
-    val isMultiSelectMode = selectMode.map{ mode ->
-        mode == MULTI_SELECT_MODE
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = false
-    )
-
-    val isDefaultMode = selectMode.map{ mode ->
-        mode == DEFAULT_MODE
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = true
-    )
-
-     */
-
-    val selectedFiles = modeManager.selectedFiles
+    fun currentDirectory() : File {
+        return module.currentPath.value
+    }
 
     private val sortMode = dsRepo.sortBy.stateIn(
         scope = viewModelScope,
@@ -68,41 +49,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     // ------------------------
 
-    /*
-    fun onDirectoryClick(directory:File,mode:Int = selectMode.value){
-        if(mode != MULTI_SELECT_MODE) {
-            module.updateCurrentPathSafe(directory)
-        }
-    }
-
-    fun onClick(context: Context,file: File,isMultiSelectMode:Boolean = this.isMultiSelectMode.value){
-        if(isMultiSelectMode){
-            modeManager.toggleToSelectedFiles(file)
-        }else{
-            module.onFileClick(context,file)
-        }
-    }
-
-    fun onLongClick(file: File,isDefaultMode:Boolean = this.isDefaultMode.value){
-        if(isDefaultMode){
-            modeManager.changeSelectMode(MULTI_SELECT_MODE)
-            modeManager.toggleToSelectedFiles(file)
-        } else{
-            //empty
-        }
-    }
-    */
-    fun onBackPressed(mode:Int = selectMode.value){
-        if(mode == MULTI_SELECT_MODE){
-            //modeManager.onDefaultMode_new()
-            onDefaultMode()
-        }else{
-            module.currentPath.value.parentFile?.let {
-                module.updateCurrentPathSafe(it)
-            }
-        }
-    }
-
     /** excute refresh by updating currentPath with same value
      *
      * 같은 값이 들어가서 livedata가 반응하지 않고 있음
@@ -114,57 +60,12 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun onDefaultMode() = modeManager.onDefaultMode_new()
     fun onConfirmMoveMode() = modeManager.onConfirmMoveMode_new()
     fun onConfirmCopyMode() = modeManager.onConfirmCopyMode_new()
-    fun onMultiSelectMode() = modeManager.onMultiSelectMode_new()
-    //------------------------------
-    fun onConfirm(
-        mode:Int = selectMode.value,
-        targetDirectory:File = module.currentPath.value,
-        selected:Array<File> = selectedFiles.value
-    ){
-        when (mode) {
-            CONFIRM_MODE_COPY -> {
-                wrapper.onConfirmCopy(selected, targetDirectory)
-            }
-
-            CONFIRM_MODE_MOVE -> {
-                wrapper.onConfirmMove(selected, targetDirectory)
-            }
-
-            CONFIRM_MODE_UNZIP -> {
-                wrapper.onConfirmUnzip()
-            }
-
-            CONFIRM_MODE_UNZIP_HERE -> {
-
-            }
-        }
-        modeManager.changeSelectMode(DEFAULT_MODE)
-
-    }
-
-    fun onConfirmDelete(
-        selected: Array<File> = selectedFiles.value
-    ){
-      //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
-        wrapper.onConfirmDelete(selected)
-        modeManager.onDefaultMode_new()
-    }
 
     //----------------------------------------------------
     //  viewModel에서 selectMode:StateFlow<Int>,selectedFiles : StateFlow<Array<File>> 정보를 걷어낼 목적으로 준비중인 구간
 
     fun onDirectoryClick_new(directory:File){
-     //   if(isNotMultiSelectMode) {
-            module.updateCurrentPathSafe(directory)
-      //  }
-    }
-
-    fun onClick_new(context: Context,file: File,isMultiSelectMode:Boolean){
-        if(isMultiSelectMode){
-            modeManager.toggleToSelectedFiles(file)
-        }else{
-            module.onFileClick(context,file)
-        }
+        module.updateCurrentPathSafe(directory)
     }
 
     fun onLongClick_new(file: File){
@@ -176,14 +77,9 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun onFileClick_new(context: Context, file: File) = module.onFileClick(context,file)
 
 
-    fun onBackPressed_new(isMultiSelectMode: Boolean){
-        if(isMultiSelectMode){
-            //modeManager.changeSelectMode(DEFAULT_MODE)
-            onDefaultMode()
-        }else{
-            module.currentPath.value.parentFile?.let {
-                module.updateCurrentPathSafe(it)
-            }
+    fun onBackPressed_new(){
+        module.currentPath.value.parentFile?.let {
+            module.updateCurrentPathSafe(it)
         }
     }
 
@@ -214,11 +110,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         onDefaultMode()
     }
 
-    fun onConfirmDelete_new(
-        selected: Array<File> = selectedFiles.value
-    ){
+    fun onConfirmDelete_new(selected: Array<File>){
         //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
-
        // modeManager.changeSelectMode(DEFAULT_MODE)
         onDefaultMode()
     }

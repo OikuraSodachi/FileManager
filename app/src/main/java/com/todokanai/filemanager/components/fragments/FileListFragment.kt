@@ -24,7 +24,6 @@ import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class FileListFragment : Fragment() {
 
@@ -40,7 +39,11 @@ class FileListFragment : Fragment() {
         println("FileListFrag: onCreateView")
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.onBackPressed()
+                if(modeManager.isMultiSelectMode()){
+                    modeManager.onDefaultMode_new()
+                }else {
+                    viewModel.onBackPressed_new()
+                }
             }
         })
         val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
@@ -100,14 +103,17 @@ class FileListFragment : Fragment() {
                                 modifier = modifier,
                                 move = {viewModel.onConfirmMoveMode()},
                                 copy = {viewModel.onConfirmCopyMode()},
-                                delete = {viewModel.onConfirmDelete()},
+                                delete = {viewModel.onConfirmDelete_new(fileListAdapter.selectedItemList)},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
                         } else{
                             BottomConfirmMenu(
                                 modifier = modifier,
                                 onCancel = {viewModel.onDefaultMode()},
-                                onConfirm = {viewModel.onConfirm()}
+                                copyWork = { selected,target -> viewModel.copyWork(selected,target) },
+                                moveWork = {selected,target -> viewModel.moveWork(selected,target)},
+                                selected = fileListAdapter.selectedItemList,
+                                getDirectory = {viewModel.currentDirectory()}
                             )
                         }
                     }

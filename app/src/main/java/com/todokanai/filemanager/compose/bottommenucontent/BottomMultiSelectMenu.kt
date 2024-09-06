@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.todokanai.filemanager.compose.dialog.DeleteDialog
+import java.io.File
 
 /*
 @Composable

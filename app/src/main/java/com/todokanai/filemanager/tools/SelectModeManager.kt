@@ -20,6 +20,10 @@ class SelectModeManager {
     val selectedFiles : StateFlow<Array<File>>
         get() = _selectedFiles
 
+    fun selectMode():Int{
+        return selectMode.value
+    }
+
     fun toggleToSelectedFiles(file:File){
         val list = selectedFiles.value.toMutableList()
         if(list.contains(file)){
