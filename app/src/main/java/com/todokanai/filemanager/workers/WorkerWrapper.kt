@@ -7,10 +7,10 @@ import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Constants
 import java.io.File
 
-class WorkerWrapper (private val workManager: WorkManager, private val selected: Array<File>, private val targetDirectory: File) {
+class WorkerWrapper (private val workManager: WorkManager/*, private val selected: Array<File>, private val targetDirectory: File*/) {
 
-    fun onConfirmCopy(){
-        val copyRequest = fileWorkBuilder(OneTimeWorkRequestBuilder<CopyWorker>())
+    fun onConfirmCopy(selected: Array<File>, targetDirectory: File){
+        val copyRequest = fileWorkBuilder(OneTimeWorkRequestBuilder<CopyWorker>(),selected, targetDirectory)
         val notiRequest = completedNotificationRequest()
 
         val continuation = workManager
@@ -19,8 +19,8 @@ class WorkerWrapper (private val workManager: WorkManager, private val selected:
         continuation.enqueue()
     }
 
-    fun onConfirmMove(){
-        val moveRequest = fileWorkBuilder(OneTimeWorkRequestBuilder<MoveWorker>())
+    fun onConfirmMove(selected: Array<File>, targetDirectory: File){
+        val moveRequest = fileWorkBuilder(OneTimeWorkRequestBuilder<MoveWorker>(),selected, targetDirectory)
         val notiRequest = completedNotificationRequest()
         val continuation = workManager
             .beginWith(moveRequest)
@@ -33,7 +33,7 @@ class WorkerWrapper (private val workManager: WorkManager, private val selected:
 
     }
 
-    fun onConfirmDelete(){
+    fun onConfirmDelete(selected: Array<File>){
 
 
     }
@@ -55,8 +55,8 @@ class WorkerWrapper (private val workManager: WorkManager, private val selected:
 
     private fun fileWorkBuilder(
         requestType:OneTimeWorkRequest.Builder,
-        selected: Array<File> = this.selected,
-        targetDirectory: File = this.targetDirectory
+        selected: Array<File>,
+        targetDirectory: File
     ):OneTimeWorkRequest{
         /** selected:Array<File>을 전달에 File.absolutePath 대신 File.toUri().toString() 을 쓰는 방식도 검토해볼 것 **/
         val fileNames = selected.map { it.absolutePath }.toTypedArray()

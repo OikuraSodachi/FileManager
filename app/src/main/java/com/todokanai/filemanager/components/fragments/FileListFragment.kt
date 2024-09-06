@@ -52,7 +52,7 @@ class FileListFragment : Fragment() {
             isMultiSelectMode = {modeManager.isMultiSelectMode()},
             toggleToSelectedFiles = {viewModel.toggleToSelectedFiles(it)},
             onFileClick = { context,file ->
-                viewModel.onFileClick(context,file)
+                viewModel.onFileClick_new(context,file)
             }
         )
 

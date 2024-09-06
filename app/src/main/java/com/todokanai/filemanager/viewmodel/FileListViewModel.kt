@@ -31,6 +31,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     val selectMode = modeManager.selectMode
     val notAccessible =  module.notAccessible
 
+    /*
     val isMultiSelectMode = selectMode.map{ mode ->
         mode == MULTI_SELECT_MODE
     }.stateIn(
@@ -46,6 +47,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         started = SharingStarted.WhileSubscribed(5),
         initialValue = true
     )
+
+     */
 
     val selectedFiles = modeManager.selectedFiles
 
@@ -65,6 +68,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     // ------------------------
 
+    /*
     fun onDirectoryClick(directory:File,mode:Int = selectMode.value){
         if(mode != MULTI_SELECT_MODE) {
             module.updateCurrentPathSafe(directory)
@@ -87,10 +91,11 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             //empty
         }
     }
-
+    */
     fun onBackPressed(mode:Int = selectMode.value){
         if(mode == MULTI_SELECT_MODE){
-            modeManager.changeSelectMode(DEFAULT_MODE)
+            //modeManager.onDefaultMode_new()
+            onDefaultMode()
         }else{
             module.currentPath.value.parentFile?.let {
                 module.updateCurrentPathSafe(it)
@@ -106,24 +111,23 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
 
-    fun onDefaultMode() = modeManager.changeSelectMode(DEFAULT_MODE)
-    fun onConfirmMoveMode() = modeManager.changeSelectMode(CONFIRM_MODE_MOVE)
-    fun onConfirmCopyMode() = modeManager.changeSelectMode(CONFIRM_MODE_COPY)
-    fun onMultiSelectMode() = modeManager.changeSelectMode(MULTI_SELECT_MODE)
+    fun onDefaultMode() = modeManager.onDefaultMode_new()
+    fun onConfirmMoveMode() = modeManager.onConfirmMoveMode_new()
+    fun onConfirmCopyMode() = modeManager.onConfirmCopyMode_new()
+    fun onMultiSelectMode() = modeManager.onMultiSelectMode_new()
     //------------------------------
     fun onConfirm(
         mode:Int = selectMode.value,
         targetDirectory:File = module.currentPath.value,
         selected:Array<File> = selectedFiles.value
     ){
-        val wrapper = WorkerWrapper(workManager,selected,targetDirectory)
         when (mode) {
             CONFIRM_MODE_COPY -> {
-                wrapper.onConfirmCopy()
+                wrapper.onConfirmCopy(selected, targetDirectory)
             }
 
             CONFIRM_MODE_MOVE -> {
-                wrapper.onConfirmMove()
+                wrapper.onConfirmMove(selected, targetDirectory)
             }
 
             CONFIRM_MODE_UNZIP -> {
@@ -135,17 +139,19 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             }
         }
         modeManager.changeSelectMode(DEFAULT_MODE)
+
     }
 
     fun onConfirmDelete(
         selected: Array<File> = selectedFiles.value
     ){
       //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
-
-        modeManager.changeSelectMode(DEFAULT_MODE)
+        wrapper.onConfirmDelete(selected)
+        modeManager.onDefaultMode_new()
     }
 
-    //---------------
+    //----------------------------------------------------
+    //  viewModel에서 selectMode:StateFlow<Int>,selectedFiles : StateFlow<Array<File>> 정보를 걷어낼 목적으로 준비중인 구간
 
     fun onDirectoryClick_new(directory:File){
      //   if(isNotMultiSelectMode) {
@@ -162,11 +168,81 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     }
 
     fun onLongClick_new(file: File){
-        modeManager.changeSelectMode(MULTI_SELECT_MODE)
+      //  modeManager.changeSelectMode(MULTI_SELECT_MODE)
+        modeManager.onMultiSelectMode_new()
         modeManager.toggleToSelectedFiles(file)
     }
 
-    fun onFileClick(context: Context,file: File){
-        module.onFileClick(context,file)
+    fun onFileClick_new(context: Context, file: File) = module.onFileClick(context,file)
+
+
+    fun onBackPressed_new(isMultiSelectMode: Boolean){
+        if(isMultiSelectMode){
+            //modeManager.changeSelectMode(DEFAULT_MODE)
+            onDefaultMode()
+        }else{
+            module.currentPath.value.parentFile?.let {
+                module.updateCurrentPathSafe(it)
+            }
+        }
     }
+
+    //------------------------------
+    fun onConfirm_new(
+        mode:Int,
+        targetDirectory:File,
+        selected:Array<File>
+    ){
+        when (mode) {
+            CONFIRM_MODE_COPY -> {
+                wrapper.onConfirmCopy(selected, targetDirectory)
+            }
+
+            CONFIRM_MODE_MOVE -> {
+                wrapper.onConfirmMove(selected, targetDirectory)
+            }
+
+            CONFIRM_MODE_UNZIP -> {
+                wrapper.onConfirmUnzip()
+            }
+
+            CONFIRM_MODE_UNZIP_HERE -> {
+
+            }
+        }
+        //modeManager.changeSelectMode(DEFAULT_MODE)
+        onDefaultMode()
+    }
+
+    fun onConfirmDelete_new(
+        selected: Array<File> = selectedFiles.value
+    ){
+        //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
+
+       // modeManager.changeSelectMode(DEFAULT_MODE)
+        onDefaultMode()
+    }
+    //------------------------------------------
+    // 동작별로 구분 방식 구간
+
+    private val wrapper = WorkerWrapper(workManager)
+
+    /** Copy 작업 시작 **/
+    fun copyWork(selected: Array<File>,targetDirectory: File) = wrapper.onConfirmCopy(selected, targetDirectory)
+
+
+    /** Move 작업 시작 **/
+    fun moveWork(selected: Array<File>,targetDirectory: File){
+        wrapper.onConfirmMove(selected,targetDirectory)
+    }
+
+    /** Delete 작업 시작 **/
+    fun deleteWork(selected: Array<File>){
+        wrapper.onConfirmDelete(selected)
+    }
+
+    fun unzipWork(selected: Array<File>,targetDirectory: File){
+
+    }
+
 }
