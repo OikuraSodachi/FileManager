@@ -101,15 +101,15 @@ class FileListFragment : Fragment() {
                         if(isMultiSelectMode.value){
                             BottomMultiSelectMenu(
                                 modifier = modifier,
-                                move = {viewModel.onConfirmMoveMode()},
-                                copy = {viewModel.onConfirmCopyMode()},
+                                move = {modeManager.onConfirmMoveMode_new()},
+                                copy = {modeManager.onConfirmCopyMode_new()},
                                 delete = {viewModel.onConfirmDelete_new(fileListAdapter.selectedItemList)},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
                         } else{
                             BottomConfirmMenu(
                                 modifier = modifier,
-                                onCancel = {viewModel.onDefaultMode()},
+                                onCancel = {modeManager.onDefaultMode_new()},
                                 copyWork = { selected,target -> viewModel.copyWork(selected,target) },
                                 moveWork = {selected,target -> viewModel.moveWork(selected,target)},
                                 selected = fileListAdapter.selectedItemList,

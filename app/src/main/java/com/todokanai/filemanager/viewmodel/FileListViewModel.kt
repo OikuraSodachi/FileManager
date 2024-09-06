@@ -57,10 +57,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
 
-    fun onDefaultMode() = modeManager.onDefaultMode_new()
-    fun onConfirmMoveMode() = modeManager.onConfirmMoveMode_new()
-    fun onConfirmCopyMode() = modeManager.onConfirmCopyMode_new()
-
     //----------------------------------------------------
     //  viewModel에서 selectMode:StateFlow<Int>,selectedFiles : StateFlow<Array<File>> 정보를 걷어낼 목적으로 준비중인 구간
 
@@ -107,13 +103,12 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             }
         }
         //modeManager.changeSelectMode(DEFAULT_MODE)
-        onDefaultMode()
+        modeManager.onDefaultMode_new()
     }
 
     fun onConfirmDelete_new(selected: Array<File>){
         //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
-       // modeManager.changeSelectMode(DEFAULT_MODE)
-        onDefaultMode()
+        modeManager.onDefaultMode_new()
     }
     //------------------------------------------
     // 동작별로 구분 방식 구간
