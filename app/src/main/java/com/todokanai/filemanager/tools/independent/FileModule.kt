@@ -3,6 +3,7 @@ package com.todokanai.filemanager.tools.independent
 import android.content.Context
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.io.File
 
@@ -17,23 +18,28 @@ class FileModule(defaultPath:File) {
     val currentPath : StateFlow<File>
         get() = _currentPath
 
-    /** directory tree **/
-    val dirTree = currentPath.map { file ->
-        file.dirTree()
-    }
+    /** listFiles 값 refresh 용도  **/
+    private val updaterFlow = MutableStateFlow<Boolean>(false)
 
-    /** array of files to show **/
-    val listFiles = currentPath.map {
-        it.listFiles() ?: emptyArray()
+    /** directory tree **/
+    val dirTree = currentPath.map { file -> file.dirTree() }
+
+    /** array of files to show
+     *
+     * TODO : combine 대신 sharedFlow를 이용해서  refresh 기능을 만들 것
+     * **/
+    val listFiles = combine(
+        currentPath,
+        updaterFlow
+    ){
+        path,updater ->
+        path.listFiles() ?: emptyArray()
     }
 
     /** whether currentPath is Accessible **/
-    val notAccessible = currentPath.map {
-        it.listFiles() == null
-    }
-    /** currentPath 값에 변화가 없어서 listFiles 갱신이 되지 않고 있음 **/
-    fun refreshListFiles(file: File = currentPath.value) = updateCurrentPath(file)
+    val notAccessible = currentPath.map { it.listFiles() == null }
 
+    fun refreshListFiles(){ updaterFlow.value =!updaterFlow.value }
 
     /** setter for currentPath **/
     fun updateCurrentPath(directory: File) {

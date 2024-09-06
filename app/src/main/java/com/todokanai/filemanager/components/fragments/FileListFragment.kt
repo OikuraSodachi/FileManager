@@ -80,7 +80,6 @@ class FileListFragment : Fragment() {
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
                 swipe.setOnRefreshListener {
-                    /** 같은 값을 넣고있어서 LiveData가 반응하지 않고 있음 **/
                     viewModel.refreshFileList()
                     swipe.isRefreshing = false
                 }
