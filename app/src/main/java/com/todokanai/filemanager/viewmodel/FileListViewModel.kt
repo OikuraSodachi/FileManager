@@ -5,11 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Constants.BY_DEFAULT
-import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
-import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
-import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP
-import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP_HERE
-import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
@@ -26,7 +21,6 @@ import javax.inject.Inject
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository, private val workManager: WorkManager):ViewModel(){
 
     private val module = fileModule
-    private val modeManager = Objects.modeManager
     val notAccessible =  module.notAccessible
 
     fun currentDirectory() : File {
@@ -40,34 +34,24 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     )
 
     val directoryList = module.dirTree
-    val fileHolderList = module.files.map { listFiles ->
+    val fileHolderList = module.listFiles.map { listFiles ->
         sortedFileList_td(listFiles,sortMode.value)
     }
-
-    /** dummy data **/
-    fun toggleToSelectedFiles(file: File) = modeManager.toggleToSelectedFiles(file)
-
     // ------------------------
 
     /** excute refresh by updating currentPath with same value
      *
      * 같은 값이 들어가서 livedata가 반응하지 않고 있음
      * **/
-    fun refreshFileList(directory: File = module.currentPath.value) = module.updateCurrentPathSafe(directory)
+    fun refreshFileList() = module.refreshListFiles()
 
-    private fun updateDirectory(file:File) = module.updateCurrentPathSafe(file)
+    private fun updateDirectory(file:File) = module.updateCurrentPath(file)
 
     //----------------------------------------------------
     //  viewModel에서 selectMode:StateFlow<Int>,selectedFiles : StateFlow<Array<File>> 정보를 걷어낼 목적으로 준비중인 구간
 
     fun onDirectoryClick_new(directory:File){
-        module.updateCurrentPathSafe(directory)
-    }
-
-    fun onLongClick_new(file: File){
-      //  modeManager.changeSelectMode(MULTI_SELECT_MODE)
-        modeManager.onMultiSelectMode_new()
-        modeManager.toggleToSelectedFiles(file)
+        module.updateCurrentPath(directory)
     }
 
     fun onFileClick_new(context: Context, file: File) = module.onFileClick(context,file)
@@ -75,40 +59,15 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     fun onBackPressed_new(){
         module.currentPath.value.parentFile?.let {
-            module.updateCurrentPathSafe(it)
+            module.updateCurrentPath(it)
         }
     }
 
     //------------------------------
-    fun onConfirm_new(
-        mode:Int,
-        targetDirectory:File,
-        selected:Array<File>
-    ){
-        when (mode) {
-            CONFIRM_MODE_COPY -> {
-                wrapper.onConfirmCopy(selected, targetDirectory)
-            }
-
-            CONFIRM_MODE_MOVE -> {
-                wrapper.onConfirmMove(selected, targetDirectory)
-            }
-
-            CONFIRM_MODE_UNZIP -> {
-                wrapper.onConfirmUnzip()
-            }
-
-            CONFIRM_MODE_UNZIP_HERE -> {
-
-            }
-        }
-        //modeManager.changeSelectMode(DEFAULT_MODE)
-        modeManager.onDefaultMode_new()
-    }
 
     fun onConfirmDelete_new(selected: Array<File>){
         //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
-        modeManager.onDefaultMode_new()
+        println("selected: ${selected.map{it.name}}")
     }
     //------------------------------------------
     // 동작별로 구분 방식 구간

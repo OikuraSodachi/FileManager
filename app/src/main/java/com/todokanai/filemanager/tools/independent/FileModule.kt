@@ -17,33 +17,27 @@ class FileModule(defaultPath:File) {
     val currentPath : StateFlow<File>
         get() = _currentPath
 
-    private val listFiles = currentPath.map {
-        it.listFiles()
-    }
-
     /** directory tree **/
     val dirTree = currentPath.map { file ->
         file.dirTree()
     }
 
     /** array of files to show **/
-    val files = listFiles.map{
-        it ?: emptyArray()
+    val listFiles = currentPath.map {
+        it.listFiles() ?: emptyArray()
     }
 
     /** whether currentPath is Accessible **/
-    val notAccessible = listFiles.map {
-        it == null
+    val notAccessible = currentPath.map {
+        it.listFiles() == null
     }
+   fun refreshListFiles(file: File = currentPath.value){
+       updateCurrentPath(file)
+   }
+
 
     /** setter for currentPath **/
-    fun updateCurrentPathSafe(directory: File) {
-        if (directory.isAccessible_td()) {        // 접근 가능여부 체크
-            _currentPath.value = directory
-        }
-    }
-
-    fun updateCurrentPathSafeTest(directory: File) {
+    fun updateCurrentPath(directory: File) {
         if (directory.isAccessible_td()) {        // 접근 가능여부 체크
             _currentPath.value = directory
         }
@@ -55,13 +49,12 @@ class FileModule(defaultPath:File) {
      * **/
     fun onFileClick(context: Context, file: File){
         if(file.isDirectory){
-            updateCurrentPathSafe(file)
+            updateCurrentPath(file)
         } else {
             val mimeType = getMimeType_td(file.name)
             openFile_td(context, file, mimeType)
         }
     }
-
 
     /** Todokanai
      *

@@ -23,6 +23,7 @@ import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment : Fragment() {
@@ -50,10 +51,10 @@ class FileListFragment : Fragment() {
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
         val fileListAdapter = FileListRecyclerAdapter(
-            onItemLongClick = { viewModel.onLongClick_new(it) },
+            onItemLongClick = { onLongClick(it) },
             isDefaultMode = {modeManager.isDefaultMode()},
             isMultiSelectMode = {modeManager.isMultiSelectMode()},
-            toggleToSelectedFiles = {viewModel.toggleToSelectedFiles(it)},
+            toggleToSelectedFiles = {modeManager.toggleToSelectedFiles(it)},
             onFileClick = { context,file ->
                 viewModel.onFileClick_new(context,file)
             }
@@ -79,6 +80,7 @@ class FileListFragment : Fragment() {
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
                 swipe.setOnRefreshListener {
+                    /** 같은 값을 넣고있어서 LiveData가 반응하지 않고 있음 **/
                     viewModel.refreshFileList()
                     swipe.isRefreshing = false
                 }
@@ -103,7 +105,8 @@ class FileListFragment : Fragment() {
                                 modifier = modifier,
                                 move = {modeManager.onConfirmMoveMode_new()},
                                 copy = {modeManager.onConfirmCopyMode_new()},
-                                delete = {viewModel.onConfirmDelete_new(fileListAdapter.selectedItemList)},
+                                //delete = {viewModel.onConfirmDelete_new(fileListAdapter.selectedItemList)},
+                                delete = {onConfirmDelete(fileListAdapter.selectedItemList)},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
                         } else{
@@ -162,5 +165,15 @@ class FileListFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun onConfirmDelete(selected:Array<File>){
+        viewModel.onConfirmDelete_new(selected)
+        modeManager.onDefaultMode_new()
+    }
+
+    private fun onLongClick(file: File){
+        modeManager.onMultiSelectMode_new()
+        modeManager.toggleToSelectedFiles(file)
     }
 }

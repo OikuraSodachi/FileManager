@@ -42,6 +42,7 @@ fun BottomConfirmMenu(
 
             }
         }
+        modeManager.onDefaultMode_new()
     }
 
     Row (
