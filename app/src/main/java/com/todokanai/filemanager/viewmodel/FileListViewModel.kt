@@ -3,12 +3,16 @@ package com.todokanai.filemanager.viewmodel
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Constants.BY_DEFAULT
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
-import com.todokanai.filemanager.workers.WorkerWrapper
+import com.todokanai.filemanager.workers.CopyWorker
+import com.todokanai.filemanager.workers.DeleteWorker
+import com.todokanai.filemanager.workers.MoveWorker
+import com.todokanai.filemanager.workers.Requests
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -20,6 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository, private val workManager: WorkManager):ViewModel(){
 
+    private val request = Requests()
     private val module = fileModule
     val notAccessible =  module.notAccessible
 
@@ -64,24 +69,41 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     //------------------------------------------
     // 동작별로 구분 방식 구간
 
-    private val wrapper = WorkerWrapper(workManager)
-
     /** Copy 작업 시작 **/
-    fun copyWork(selected: Array<File>,targetDirectory: File) = wrapper.onConfirmCopy(selected, targetDirectory)
+    fun copyWork(selected: Array<File>,targetDirectory: File){
+        val copyRequest = request.fileWork(OneTimeWorkRequestBuilder<CopyWorker>(),selected, targetDirectory)
+        val notiRequest = request.completedNotificationRequest()
+
+        workManager
+            .beginWith(copyRequest)
+            .then(notiRequest)
+            .enqueue()
+    }
 
 
     /** Move 작업 시작 **/
     fun moveWork(selected: Array<File>,targetDirectory: File){
-        wrapper.onConfirmMove(selected,targetDirectory)
+        val copyRequest = request.fileWork(OneTimeWorkRequestBuilder<MoveWorker>(),selected, targetDirectory)
+        val notiRequest = request.completedNotificationRequest()
+        workManager
+            .beginWith(copyRequest)
+            .then(notiRequest)
+            .enqueue()
     }
 
     /** Delete 작업 시작 **/
     fun deleteWork(selected: Array<File>){
-        wrapper.onConfirmDelete(selected)
+        val deleteRequest = request.deleteWork(OneTimeWorkRequestBuilder<DeleteWorker>(),selected)
+        val notiRequest = request.completedNotificationRequest()
+        workManager
+            .beginWith(deleteRequest)
+            .then(notiRequest)
+            .enqueue()
     }
 
     fun unzipWork(selected: Array<File>,targetDirectory: File){
 
     }
+
 
 }

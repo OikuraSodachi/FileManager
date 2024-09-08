@@ -3,52 +3,14 @@ package com.todokanai.filemanager.workers
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Constants
 import java.io.File
 
-class WorkerWrapper (private val workManager: WorkManager) {
-
-    fun onConfirmCopy(selected: Array<File>, targetDirectory: File){
-        val copyRequest = fileWorkBuilder(OneTimeWorkRequestBuilder<CopyWorker>(),selected, targetDirectory)
-        val notiRequest = completedNotificationRequest()
-
-        val continuation = workManager
-            .beginWith(copyRequest)
-            .then(notiRequest)
-        continuation.enqueue()
-    }
-
-    fun onConfirmMove(selected: Array<File>, targetDirectory: File){
-        val moveRequest = fileWorkBuilder(OneTimeWorkRequestBuilder<MoveWorker>(),selected, targetDirectory)
-        val notiRequest = completedNotificationRequest()
-        val continuation = workManager
-            .beginWith(moveRequest)
-            .then(notiRequest)
-        continuation.enqueue()
-
-    }
-
-    fun onConfirmUnzip(){
-
-    }
-
-    fun onConfirmDelete(selected: Array<File>){
-        val deleteRequest = deleteWorkBuilder(OneTimeWorkRequestBuilder<DeleteWorker>(),selected)
-        val notiRequest = completedNotificationRequest()
-
-        val continuation = workManager
-            .beginWith(deleteRequest)
-            .then(notiRequest)
-        continuation.enqueue()
-
-    }
-
-
-    /** **/
-    private fun completedNotificationRequest():OneTimeWorkRequest{
-        val notiTitle = "Completed"
-        val notiText = "Work is done"
+class Requests {
+    fun completedNotificationRequest(
+        notiTitle:String = "Completed",
+        notiText:String = "Work is done"
+    ): OneTimeWorkRequest {
         val inputData = Data.Builder()
             .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_TITLE,notiTitle)
             .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE,notiText)
@@ -60,7 +22,7 @@ class WorkerWrapper (private val workManager: WorkManager) {
         return notiTest
     }
 
-    private fun fileWorkBuilder(
+    fun fileWork(
         requestType:OneTimeWorkRequest.Builder,
         selected: Array<File>,
         targetDirectory: File
@@ -77,7 +39,7 @@ class WorkerWrapper (private val workManager: WorkManager) {
         return request
     }
 
-    private fun deleteWorkBuilder(
+    fun deleteWork(
         requestType:OneTimeWorkRequest.Builder,
         selected: Array<File>
     ):OneTimeWorkRequest{
