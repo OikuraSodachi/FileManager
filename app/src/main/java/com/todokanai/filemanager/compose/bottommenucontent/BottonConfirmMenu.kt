@@ -24,7 +24,7 @@ fun BottomConfirmMenu(
     getDirectory:()->File
 ){
     val modeManager = Objects.modeManager
-    fun onConfirmTemp(mode:Int){
+    fun onConfirm(mode:Int){
         when(mode){
             CONFIRM_MODE_COPY -> {
                 copyWork(selected,getDirectory())
@@ -60,7 +60,7 @@ fun BottomConfirmMenu(
         TextButton(
             modifier = Modifier
                 .weight(1f),
-            onClick = {onConfirmTemp(modeManager.selectMode())}
+            onClick = {onConfirm(modeManager.selectMode())}
         ) {
             Text(text="Confirm")
         }
