@@ -7,7 +7,7 @@ import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Constants
 import java.io.File
 
-class WorkerWrapper (private val workManager: WorkManager/*, private val selected: Array<File>, private val targetDirectory: File*/) {
+class WorkerWrapper (private val workManager: WorkManager) {
 
     fun onConfirmCopy(selected: Array<File>, targetDirectory: File){
         val copyRequest = fileWorkBuilder(OneTimeWorkRequestBuilder<CopyWorker>(),selected, targetDirectory)

@@ -9,51 +9,42 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.core.app.NotificationManagerCompat.IMPORTANCE_DEFAULT
-import androidx.core.app.NotificationManagerCompat.IMPORTANCE_LOW
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.myobjects.Constants
-import com.todokanai.filemanager.myobjects.Constants.CHANNEL_ID
 
-class MyNotification(appContext: Context) {
+class MyNotification(context: Context) {
 
-    private val context by lazy{appContext}
-    private val channelId = CHANNEL_ID
-    private val cChannelId = Constants.NOTIFICATION_CHANNEL_ID_COMPLETED
-    private val channel = NotificationChannel(channelId, "My Channel", NotificationManager.IMPORTANCE_LOW).apply {
+    private val context by lazy{context}
+    private val silentChannel = NotificationChannel(Constants.CHANNEL_ID, "My Channel", NotificationManager.IMPORTANCE_LOW).apply {
         description = "This is my notification channel"
     }
 
-    private val completedChannel = NotificationChannel(cChannelId,"My Channel", NotificationManager.IMPORTANCE_DEFAULT)
+    private val completedChannel = NotificationChannel(Constants.NOTIFICATION_CHANNEL_ID_COMPLETED,"My Channel", NotificationManager.IMPORTANCE_DEFAULT)
 
     private val icon by lazy{ R.drawable.ic_launcher_background}
 
     private val notificationManager by lazy{ context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager}
 
-    fun sendStringNotification(title: String?, message: String?,isSilent:Boolean=true){
+    fun sendStringNotification(title: String?, message: String?){
 
-        val test = if(isSilent){
-            channel
-        } else{
-            completedChannel
-        }
-
-        val importance = if(isSilent){
-            IMPORTANCE_LOW
-        }else{
-            IMPORTANCE_DEFAULT
-        }
-
-        test.importance = importance
-        NotificationCompat.Builder(context, test.id)
+        NotificationCompat.Builder(context, silentChannel.id)
             .setSmallIcon(icon)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .launch_td(test)
+            .launch_td(silentChannel)
 
     }
 
+
+    fun sendCompletedNotification(title: String?, message: String?){
+        NotificationCompat.Builder(context, completedChannel.id)
+            .setSmallIcon(icon)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .launch_td(completedChannel)
+    }
     /*
     fun sendSilentNotification(builder:NotificationCompat.Builder){
         NotificationCompat.Builder(context, channelId)
@@ -64,7 +55,7 @@ class MyNotification(appContext: Context) {
 
      */
 
-    val ongoingNotiTest = Notification.Builder(context, channelId)
+    val ongoingNotiTest = Notification.Builder(context, silentChannel.id)
         .setSmallIcon(icon)
         .setPriority(Notification.PRIORITY_DEFAULT)
         .setOngoing(true)
@@ -72,7 +63,7 @@ class MyNotification(appContext: Context) {
 
 
     fun defaultNotificationTest():Notification{
-        val out = Notification.Builder(context, channelId)
+        val out = Notification.Builder(context, silentChannel.id)
             .setSmallIcon(icon)
             .setPriority(Notification.PRIORITY_DEFAULT)
             //.build()

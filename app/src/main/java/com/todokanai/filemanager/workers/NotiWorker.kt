@@ -16,7 +16,11 @@ class NotiWorker(context: Context,params:WorkerParameters):Worker(context,params
             val message = inputData.getString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE)
 
 
-            noti.sendStringNotification(title,message,isSilent)
+            if(isSilent) {
+                noti.sendStringNotification(title, message)
+            }else{
+                noti.sendCompletedNotification(title, message)
+            }
 
             Result.success()
         } catch(exception:Exception){

@@ -45,8 +45,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
      * **/
     fun refreshFileList() = module.refreshListFiles()
 
-    private fun updateDirectory(file:File) = module.updateCurrentPath(file)
-
     //----------------------------------------------------
     //  viewModel에서 selectMode:StateFlow<Int>,selectedFiles : StateFlow<Array<File>> 정보를 걷어낼 목적으로 준비중인 구간
 
@@ -63,12 +61,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    //------------------------------
-
-    fun onConfirmDelete_new(selected: Array<File>){
-        //  val wrapper = WorkerWrapper(workManager,selected,targetDirectory).onConfirmDelete()
-        println("selected: ${selected.map{it.name}}")
-    }
     //------------------------------------------
     // 동작별로 구분 방식 구간
 
