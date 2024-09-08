@@ -29,18 +29,18 @@ class TestWorker(context:Context,params:WorkerParameters):CoroutineWorker(contex
                 delay(10)
                 println("TestWorker: Success")
 
-                noti.sendStringNotification("test","success")
+                noti.sendSilentNotification("test","success")
 
                 Result.success()
             } else{
                 println("TestWorker: Failure")
-                noti.sendStringNotification("test","fail")
+                noti.sendSilentNotification("test","fail")
 
                 Result.failure()
             }
         } catch(exception:Exception){
             println("TestWorker: Exception_Failure  ${exception.message}")
-            noti.sendStringNotification("test","fail_exception")
+            noti.sendSilentNotification("test","fail_exception")
 
             Result.failure()
         }

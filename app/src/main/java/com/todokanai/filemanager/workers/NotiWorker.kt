@@ -17,7 +17,7 @@ class NotiWorker(context: Context,params:WorkerParameters):Worker(context,params
 
 
             if(isSilent) {
-                noti.sendStringNotification(title, message)
+                noti.sendSilentNotification(title, message)
             }else{
                 noti.sendCompletedNotification(title, message)
             }

@@ -27,7 +27,7 @@ class DeleteWorker(context: Context, params: WorkerParameters): CoroutineWorker(
                     file = file,
                     onProgress = {
                         progress++
-                        myNoti.sendStringNotification("titleText","deleted: $progress/$fileQuantity")
+                        myNoti.sendSilentNotification("titleText","deleted: $progress/$fileQuantity")
                     }
                 )
             }

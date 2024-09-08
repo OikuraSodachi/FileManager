@@ -33,7 +33,7 @@ class CopyWorker(context: Context, params: WorkerParameters): CoroutineWorker(co
                 onProgress = {
                     progress++
                     //getForegroundInfo()
-                    myNoti.sendStringNotification("titleText","$progress/$fileQuantity")
+                    myNoti.sendSilentNotification("titleText","$progress/$fileQuantity")
                 }
             )
 
