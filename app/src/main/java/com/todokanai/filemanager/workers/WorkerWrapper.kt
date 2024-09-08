@@ -34,7 +34,13 @@ class WorkerWrapper (private val workManager: WorkManager/*, private val selecte
     }
 
     fun onConfirmDelete(selected: Array<File>){
+        val deleteRequest = deleteWorkBuilder(OneTimeWorkRequestBuilder<DeleteWorker>(),selected)
+        val notiRequest = completedNotificationRequest()
 
+        val continuation = workManager
+            .beginWith(deleteRequest)
+            .then(notiRequest)
+        continuation.enqueue()
 
     }
 
@@ -46,6 +52,7 @@ class WorkerWrapper (private val workManager: WorkManager/*, private val selecte
         val inputData = Data.Builder()
             .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_TITLE,notiTitle)
             .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE,notiText)
+            .putBoolean(Constants.WORKER_KEY_IS_SILENT,false)
             .build()
         val notiTest = OneTimeWorkRequestBuilder<NotiWorker>()
             .setInputData(inputData)
@@ -62,6 +69,21 @@ class WorkerWrapper (private val workManager: WorkManager/*, private val selecte
         val fileNames = selected.map { it.absolutePath }.toTypedArray()
         val inputData = Data.Builder()
             .putString(Constants.WORKER_KEY_TARGET_DIRECTORY, targetDirectory.absolutePath)
+            .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
+            .build()
+        val request = requestType
+            .setInputData(inputData)
+            .build()
+        return request
+    }
+
+    private fun deleteWorkBuilder(
+        requestType:OneTimeWorkRequest.Builder,
+        selected: Array<File>
+    ):OneTimeWorkRequest{
+        /** selected:Array<File>을 전달에 File.absolutePath 대신 File.toUri().toString() 을 쓰는 방식도 검토해볼 것 **/
+        val fileNames = selected.map { it.absolutePath }.toTypedArray()
+        val inputData = Data.Builder()
             .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
             .build()
         val request = requestType

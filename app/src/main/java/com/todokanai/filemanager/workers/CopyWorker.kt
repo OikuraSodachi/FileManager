@@ -28,9 +28,6 @@ class CopyWorker(context: Context, params: WorkerParameters): CoroutineWorker(co
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO){
         try{
-            println("Worker_stringArray: ${stringArray.toList()}")
-            println("Worker_targetDirectory: $targetDirectoryName")
-
             copyFiles_Recursive_td(
                 selected = selectedFiles,
                 targetDirectory = targetDirectory,

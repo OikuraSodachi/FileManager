@@ -167,7 +167,7 @@ class FileListFragment : Fragment() {
     }
 
     private fun onConfirmDelete(selected:Array<File>){
-        viewModel.onConfirmDelete_new(selected)
+        viewModel.deleteWork(selected)
         modeManager.onDefaultMode_new()
     }
 

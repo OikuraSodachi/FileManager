@@ -302,3 +302,22 @@ suspend fun copyFiles_Recursive_td(
         }
     }
 }
+
+suspend fun deleteRecursively_td(
+    file: File,
+    onDeleteFile:(File)->Unit
+):Unit = withContext(Dispatchers.IO){
+    try {
+        if (file.isDirectory) {
+            val files = file.listFiles()
+            if (files != null) {
+                for (child in files) {
+                    deleteRecursively_td(child, onDeleteFile) // 재귀 호출
+                }
+            }
+        }
+        file.delete()
+    }catch (e:Exception){
+        e.printStackTrace()
+    }
+}
