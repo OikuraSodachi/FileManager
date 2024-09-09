@@ -2,21 +2,13 @@ package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.todokanai.filemanager.myobjects.Constants.BY_DEFAULT
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
-import com.todokanai.filemanager.workers.CopyWorker
-import com.todokanai.filemanager.workers.DeleteWorker
-import com.todokanai.filemanager.workers.MoveWorker
 import com.todokanai.filemanager.workers.Requests
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.combine
 import java.io.File
 import javax.inject.Inject
 
@@ -32,35 +24,23 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         return module.currentPath.value
     }
 
-    private val sortMode = dsRepo.sortBy.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = BY_DEFAULT
-    )
-
     val directoryList = module.dirTree
-    val fileHolderList = module.listFiles.map { listFiles ->
-        sortedFileList_td(listFiles,sortMode.value)
-    }
-    // ------------------------
 
-    /** excute refresh by updating currentPath with same value
-     *
-     * 같은 값이 들어가서 livedata가 반응하지 않고 있음
-     * **/
+    val fileHolderList = combine(
+        module.listFiles,
+        dsRepo.sortBy
+    ){
+        listFiles,mode ->
+        sortedFileList_td(listFiles,mode)
+    }
+
     fun refreshFileList() = module.refreshListFiles()
 
-    //----------------------------------------------------
-    //  viewModel에서 selectMode:StateFlow<Int>,selectedFiles : StateFlow<Array<File>> 정보를 걷어낼 목적으로 준비중인 구간
+    fun onDirectoryClick(directory:File) = module.updateCurrentPath(directory)
 
-    fun onDirectoryClick_new(directory:File){
-        module.updateCurrentPath(directory)
-    }
+    fun onFileClick(context: Context, file: File) = module.onFileClick(context,file)
 
-    fun onFileClick_new(context: Context, file: File) = module.onFileClick(context,file)
-
-
-    fun onBackPressed_new(){
+    fun onBackPressed(){
         module.currentPath.value.parentFile?.let {
             module.updateCurrentPath(it)
         }
@@ -71,7 +51,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     /** Copy 작업 시작 **/
     fun copyWork(selected: Array<File>,targetDirectory: File){
-        val copyRequest = request.fileWork(OneTimeWorkRequestBuilder<CopyWorker>(),selected, targetDirectory)
+        val copyRequest = request.copyRequest(selected, targetDirectory)
         val notiRequest = request.completedNotificationRequest()
 
         workManager
@@ -83,17 +63,17 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     /** Move 작업 시작 **/
     fun moveWork(selected: Array<File>,targetDirectory: File){
-        val copyRequest = request.fileWork(OneTimeWorkRequestBuilder<MoveWorker>(),selected, targetDirectory)
+        val moveRequest = request.moveRequest(selected, targetDirectory)
         val notiRequest = request.completedNotificationRequest()
         workManager
-            .beginWith(copyRequest)
+            .beginWith(moveRequest)
             .then(notiRequest)
             .enqueue()
     }
 
     /** Delete 작업 시작 **/
     fun deleteWork(selected: Array<File>){
-        val deleteRequest = request.deleteWork(OneTimeWorkRequestBuilder<DeleteWorker>(),selected)
+        val deleteRequest = request.deleteRequest(selected)
         val notiRequest = request.completedNotificationRequest()
         workManager
             .beginWith(deleteRequest)
@@ -104,6 +84,4 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun unzipWork(selected: Array<File>,targetDirectory: File){
 
     }
-
-
 }

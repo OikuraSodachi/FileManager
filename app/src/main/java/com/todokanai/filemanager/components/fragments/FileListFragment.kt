@@ -37,13 +37,12 @@ class FileListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
 
-        println("FileListFrag: onCreateView")
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if(modeManager.isMultiSelectMode()){
                     modeManager.onDefaultMode_new()
                 }else {
-                    viewModel.onBackPressed_new()
+                    viewModel.onBackPressed()
                 }
             }
         })
@@ -56,12 +55,12 @@ class FileListFragment : Fragment() {
             isMultiSelectMode = {modeManager.isMultiSelectMode()},
             toggleToSelectedFiles = {modeManager.toggleToSelectedFiles(it)},
             onFileClick = { context,file ->
-                viewModel.onFileClick_new(context,file)
+                viewModel.onFileClick(context,file)
             }
         )
 
         val directoryAdapter = DirectoryRecyclerAdapter(
-            {viewModel.onDirectoryClick_new(it)},
+            {viewModel.onDirectoryClick(it)},
             {modeManager.isNotMultiSelectMode()}
         )
 
@@ -104,7 +103,6 @@ class FileListFragment : Fragment() {
                                 modifier = modifier,
                                 move = {modeManager.onConfirmMoveMode_new()},
                                 copy = {modeManager.onConfirmCopyMode_new()},
-                                //delete = {viewModel.onConfirmDelete_new(fileListAdapter.selectedItemList)},
                                 delete = {onConfirmDelete(fileListAdapter.selectedItemList)},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
@@ -130,7 +128,6 @@ class FileListFragment : Fragment() {
                 }else{
                     binding.emptyDirectoryText.visibility = View.INVISIBLE
                 }
-
                 fileListAdapter.itemList = list
                 fileListAdapter.notifyDataSetChanged()
             }
@@ -157,12 +154,10 @@ class FileListFragment : Fragment() {
             }
             isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){
                 fileListAdapter.run {
-                    //   isMultiSelectMode = it
                     notifyDataSetChanged()
                 }
             }
         }
-
         return binding.root
     }
 

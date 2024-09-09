@@ -7,22 +7,8 @@ import com.todokanai.filemanager.myobjects.Constants
 import java.io.File
 
 class Requests {
-    fun completedNotificationRequest(
-        notiTitle:String = "Completed",
-        notiText:String = "Work is done"
-    ): OneTimeWorkRequest {
-        val inputData = Data.Builder()
-            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_TITLE,notiTitle)
-            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE,notiText)
-            .putBoolean(Constants.WORKER_KEY_IS_SILENT,false)
-            .build()
-        val notiTest = OneTimeWorkRequestBuilder<NotiWorker>()
-            .setInputData(inputData)
-            .build()
-        return notiTest
-    }
 
-    fun fileWork(
+    private fun fileWork(
         requestType:OneTimeWorkRequest.Builder,
         selected: Array<File>,
         targetDirectory: File
@@ -39,7 +25,7 @@ class Requests {
         return request
     }
 
-    fun deleteWork(
+    private fun deleteWork(
         requestType:OneTimeWorkRequest.Builder,
         selected: Array<File>
     ):OneTimeWorkRequest{
@@ -52,5 +38,49 @@ class Requests {
             .setInputData(inputData)
             .build()
         return request
+    }
+
+    fun copyRequest(
+        selected: Array<File>,
+        targetDirectory: File
+    ): OneTimeWorkRequest {
+        return fileWork(
+            requestType = OneTimeWorkRequestBuilder<CopyWorker>(),
+            selected = selected,
+            targetDirectory = targetDirectory
+        )
+    }
+
+    fun moveRequest(
+        selected: Array<File>,
+        targetDirectory: File
+    ):OneTimeWorkRequest{
+        return fileWork(
+            requestType = OneTimeWorkRequestBuilder<MoveWorker>(),
+            selected = selected,
+            targetDirectory = targetDirectory
+        )
+    }
+
+    fun deleteRequest(selected: Array<File>):OneTimeWorkRequest{
+        return deleteWork(
+            requestType = OneTimeWorkRequestBuilder<DeleteWorker>(),
+            selected = selected
+        )
+    }
+
+    fun completedNotificationRequest(
+        notiTitle:String = "Completed",
+        notiText:String = "Work is done"
+    ): OneTimeWorkRequest {
+        val inputData = Data.Builder()
+            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_TITLE,notiTitle)
+            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE,notiText)
+            .putBoolean(Constants.WORKER_KEY_IS_SILENT,false)
+            .build()
+        val notiTest = OneTimeWorkRequestBuilder<NotiWorker>()
+            .setInputData(inputData)
+            .build()
+        return notiTest
     }
 }
