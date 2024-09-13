@@ -40,6 +40,23 @@ class Requests {
         return request
     }
 
+    private fun unzipWork(
+        requestType: OneTimeWorkRequest.Builder,
+        selected: Array<File>,
+        targetDirectory: File
+    ):OneTimeWorkRequest{
+        val fileNames = selected.map { it.absolutePath }.toTypedArray()
+        val target = targetDirectory.absolutePath
+        val inputData = Data.Builder()
+            .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
+            .putString(Constants.WORKER_KEY_TARGET_DIRECTORY,target)
+            .build()
+        val request = requestType
+            .setInputData(inputData)
+            .build()
+        return request
+    }
+
     fun copyRequest(
         selected: Array<File>,
         targetDirectory: File
@@ -68,6 +85,15 @@ class Requests {
             selected = selected
         )
     }
+
+    fun unzipRequest(selected: Array<File>,targetDirectory: File):OneTimeWorkRequest{
+        return unzipWork(
+            requestType = OneTimeWorkRequestBuilder<UnzipWorker>(),
+            selected = selected,
+            targetDirectory = targetDirectory
+        )
+    }
+
 
     fun completedNotificationRequest(
         notiTitle:String = "Completed",

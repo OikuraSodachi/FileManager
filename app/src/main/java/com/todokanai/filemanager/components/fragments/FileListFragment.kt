@@ -32,6 +32,9 @@ class FileListFragment : Fragment() {
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
     private val modeManager = Objects.modeManager
 
+    private lateinit var verticalManager: LinearLayoutManager
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -46,7 +49,7 @@ class FileListFragment : Fragment() {
                 }
             }
         })
-        val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
         val fileListAdapter = FileListRecyclerAdapter(
