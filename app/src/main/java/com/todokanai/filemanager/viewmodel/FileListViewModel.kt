@@ -19,11 +19,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     private val request = Requests()
     private val module = fileModule
     val notAccessible =  module.notAccessible
-
-    fun currentDirectory() : File {
-        return module.currentPath.value
-    }
-
     val directoryList = module.dirTree
 
     val fileHolderList = combine(
@@ -32,6 +27,10 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     ){
         listFiles,mode ->
         sortedFileList_td(listFiles,mode)
+    }
+
+    fun currentDirectory() : File {
+        return module.currentPath.value
     }
 
     fun refreshFileList() = module.refreshListFiles()
