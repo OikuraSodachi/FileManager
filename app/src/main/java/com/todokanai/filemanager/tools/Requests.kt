@@ -1,9 +1,15 @@
-package com.todokanai.filemanager.workers
+package com.todokanai.filemanager.tools
 
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import com.todokanai.filemanager.myobjects.Constants
+import com.todokanai.filemanager.workers.CopyWorker
+import com.todokanai.filemanager.workers.DeleteWorker
+import com.todokanai.filemanager.workers.MoveWorker
+import com.todokanai.filemanager.workers.NotiWorker
+import com.todokanai.filemanager.workers.UnzipWorker
+import com.todokanai.filemanager.workers.ZipWorker
 import java.io.File
 
 class Requests {
