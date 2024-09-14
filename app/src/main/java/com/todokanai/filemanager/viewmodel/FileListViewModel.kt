@@ -40,28 +40,17 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     fun onFileClick(context: Context, file: File) = module.onFileClick(context,file)
 
-    fun onBackPressed(){
-        module.currentPath.value.parentFile?.let {
-            module.updateCurrentPath(it)
-        }
-    }
+    fun onBackPressed() = module.onBackPressedCallback()
 
-    //------------------------------------------
-    // 동작별로 구분 방식 구간
-
-    /** Copy 작업 시작 **/
     fun copyWork(selected: Array<File>,targetDirectory: File){
         val copyRequest = request.copyRequest(selected, targetDirectory)
         val notiRequest = request.completedNotificationRequest()
-
         workManager
             .beginWith(copyRequest)
             .then(notiRequest)
             .enqueue()
     }
 
-
-    /** Move 작업 시작 **/
     fun moveWork(selected: Array<File>,targetDirectory: File){
         val moveRequest = request.moveRequest(selected, targetDirectory)
         val notiRequest = request.completedNotificationRequest()
@@ -71,7 +60,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             .enqueue()
     }
 
-    /** Delete 작업 시작 **/
     fun deleteWork(selected: Array<File>){
         val deleteRequest = request.deleteRequest(selected)
         val notiRequest = request.completedNotificationRequest()
@@ -86,6 +74,15 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         val notiRequest = request.completedNotificationRequest()
         workManager
             .beginWith(unzipRequest)
+            .then(notiRequest)
+            .enqueue()
+    }
+
+    fun zipWork(selected:Array<File>,targetDirectory: File){
+        val zipRequest = request.zipRequest(selected, targetDirectory)
+        val notiRequest = request.completedNotificationRequest()
+        workManager
+            .beginWith(zipRequest)
             .then(notiRequest)
             .enqueue()
     }

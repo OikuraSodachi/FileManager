@@ -8,40 +8,60 @@ import java.io.File
 
 class Requests {
 
-    private fun fileWork(
-        requestType:OneTimeWorkRequest.Builder,
+    fun copyRequest(
         selected: Array<File>,
         targetDirectory: File
-    ):OneTimeWorkRequest{
-        /** selected:Array<File>을 전달에 File.absolutePath 대신 File.toUri().toString() 을 쓰는 방식도 검토해볼 것 **/
+    ): OneTimeWorkRequest {
         val fileNames = selected.map { it.absolutePath }.toTypedArray()
         val inputData = Data.Builder()
             .putString(Constants.WORKER_KEY_TARGET_DIRECTORY, targetDirectory.absolutePath)
             .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
             .build()
-        val request = requestType
+        val request = OneTimeWorkRequestBuilder<CopyWorker>()
             .setInputData(inputData)
             .build()
         return request
     }
 
-    private fun deleteWork(
-        requestType:OneTimeWorkRequest.Builder,
-        selected: Array<File>
+    fun moveRequest(
+        selected: Array<File>,
+        targetDirectory: File
     ):OneTimeWorkRequest{
-        /** selected:Array<File>을 전달에 File.absolutePath 대신 File.toUri().toString() 을 쓰는 방식도 검토해볼 것 **/
+        val fileNames = selected.map { it.absolutePath }.toTypedArray()
+        val inputData = Data.Builder()
+            .putString(Constants.WORKER_KEY_TARGET_DIRECTORY, targetDirectory.absolutePath)
+            .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
+            .build()
+        val request = OneTimeWorkRequestBuilder<MoveWorker>()
+            .setInputData(inputData)
+            .build()
+        return request
+    }
+
+    fun deleteRequest(selected: Array<File>):OneTimeWorkRequest{
         val fileNames = selected.map { it.absolutePath }.toTypedArray()
         val inputData = Data.Builder()
             .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
             .build()
-        val request = requestType
+        val request = OneTimeWorkRequestBuilder<DeleteWorker>()
             .setInputData(inputData)
             .build()
         return request
     }
 
-    private fun unzipWork(
-        requestType: OneTimeWorkRequest.Builder,
+    fun unzipRequest(selected: Array<File>,targetDirectory: File):OneTimeWorkRequest{
+        val fileNames = selected.map { it.absolutePath }.toTypedArray()
+        val inputData = Data.Builder()
+            .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
+            .putString(Constants.WORKER_KEY_TARGET_DIRECTORY,targetDirectory.absolutePath)
+            .build()
+        val request = OneTimeWorkRequestBuilder<UnzipWorker>()
+            .setInputData(inputData)
+            .build()
+        return request
+    }
+
+    fun zipRequest(
         selected: Array<File>,
         targetDirectory: File
     ):OneTimeWorkRequest{
@@ -51,49 +71,11 @@ class Requests {
             .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
             .putString(Constants.WORKER_KEY_TARGET_DIRECTORY,target)
             .build()
-        val request = requestType
+        val request = OneTimeWorkRequestBuilder<ZipWorker>()
             .setInputData(inputData)
             .build()
         return request
     }
-
-    fun copyRequest(
-        selected: Array<File>,
-        targetDirectory: File
-    ): OneTimeWorkRequest {
-        return fileWork(
-            requestType = OneTimeWorkRequestBuilder<CopyWorker>(),
-            selected = selected,
-            targetDirectory = targetDirectory
-        )
-    }
-
-    fun moveRequest(
-        selected: Array<File>,
-        targetDirectory: File
-    ):OneTimeWorkRequest{
-        return fileWork(
-            requestType = OneTimeWorkRequestBuilder<MoveWorker>(),
-            selected = selected,
-            targetDirectory = targetDirectory
-        )
-    }
-
-    fun deleteRequest(selected: Array<File>):OneTimeWorkRequest{
-        return deleteWork(
-            requestType = OneTimeWorkRequestBuilder<DeleteWorker>(),
-            selected = selected
-        )
-    }
-
-    fun unzipRequest(selected: Array<File>,targetDirectory: File):OneTimeWorkRequest{
-        return unzipWork(
-            requestType = OneTimeWorkRequestBuilder<UnzipWorker>(),
-            selected = selected,
-            targetDirectory = targetDirectory
-        )
-    }
-
 
     fun completedNotificationRequest(
         notiTitle:String = "Completed",
@@ -104,9 +86,9 @@ class Requests {
             .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE,notiText)
             .putBoolean(Constants.WORKER_KEY_IS_SILENT,false)
             .build()
-        val notiTest = OneTimeWorkRequestBuilder<NotiWorker>()
+        val noti = OneTimeWorkRequestBuilder<NotiWorker>()
             .setInputData(inputData)
             .build()
-        return notiTest
+        return noti
     }
 }

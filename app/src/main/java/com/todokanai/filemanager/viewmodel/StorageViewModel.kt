@@ -12,11 +12,7 @@ import javax.inject.Inject
 class StorageViewModel @Inject constructor() : ViewModel(){
 
     val module = fileModule
-    val storageHolderList = Variables.storages.map{
-        it.toList()
-    }
+    val storageHolderList = Variables.storages.map{ it.toList() }
 
-    fun onItemClick(file:File){
-        module.updateCurrentPath(file)
-    }
+    fun onItemClick(file:File) = module.updateCurrentPath(file)
 }

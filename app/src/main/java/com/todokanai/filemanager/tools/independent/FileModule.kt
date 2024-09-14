@@ -61,6 +61,12 @@ class FileModule(defaultPath:File) {
         }
     }
 
+    fun onBackPressedCallback(){
+        currentPath.value.parentFile?.let{
+            updateCurrentPath(it)
+        }
+    }
+
     /** Todokanai
      *
      *  == File.dirTree_td()
