@@ -31,6 +31,9 @@
     <string name="new_folder_dialog_title">New Folder</string>
     <string name="new_folder_dialog_default_text">Folder Name</string>
 
+    <string name="new_zip_file_title">New ZipFile</string>
+    <string name="new_zip_file_default_text">ZipFile Name</string>
+
     <string name="select_all">Select All</string>
     <string name="unselect_all">Unselect All</string>
 

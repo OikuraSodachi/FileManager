@@ -7,15 +7,15 @@ import com.todokanai.filemanager.R
 import com.todokanai.filemanager.compose.presets.dialog.EditTextDialog
 
 @Composable
-fun NewFolderDialog(
+fun ZipDialog(
     modifier: Modifier = Modifier,
     onCancel: () -> Unit,
     onConfirm:(String)->Unit
 ){
     EditTextDialog(
         modifier = modifier,
-        title = stringResource(id = R.string.new_folder_dialog_title),
-        defaultText = stringResource(id = R.string.new_folder_dialog_default_text),
+        title = stringResource(id = R.string.new_zip_file_title),
+        defaultText = stringResource(id = R.string.new_zip_file_default_text),
         onConfirm = {onConfirm(it)},
         onCancel = {onCancel()}
     )

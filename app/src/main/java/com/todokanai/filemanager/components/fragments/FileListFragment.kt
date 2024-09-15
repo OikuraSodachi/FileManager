@@ -107,6 +107,7 @@ class FileListFragment : Fragment() {
                                 move = {modeManager.onConfirmMoveMode_new()},
                                 copy = {modeManager.onConfirmCopyMode_new()},
                                 delete = {onConfirmDelete(fileListAdapter.selectedItemList)},
+                                zip = {onConfirmZip(selected = fileListAdapter.selectedItemList, targetDirectory = it)},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
                         } else{
@@ -166,6 +167,14 @@ class FileListFragment : Fragment() {
 
     private fun onConfirmDelete(selected:Array<File>){
         viewModel.deleteWork(selected)
+        modeManager.onDefaultMode_new()
+    }
+
+    private fun onConfirmZip(selected: Array<File>, targetDirectory:String){
+        val current = viewModel.currentDirectory().absolutePath
+        val targetFile = File("$current/$targetDirectory.zip")
+
+        viewModel.zipWork(selected, targetFile)
         modeManager.onDefaultMode_new()
     }
 

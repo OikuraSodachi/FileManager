@@ -24,10 +24,9 @@ fun BottomPopupMenu(
     val context = LocalContext.current
     val infoDialog = remember{ mutableStateOf(false) }
 
-
     /** more 버튼 내용물 **/
     fun contents(context: Context, items:Array<File>):List<Pair<String,()->Unit>>{
-        val result = mutableListOf<Pair<String,()->Unit>>(
+        val result = mutableListOf(
             Pair(context.getString(R.string.bottom_popup_info),{infoDialog.value = true}),
             Pair(context.getString(R.string.bottom_popup_menu_zip),{zip()}),
             Pair(context.getString(R.string.select_all),{selectAll()}),
@@ -57,7 +56,4 @@ fun BottomPopupMenu(
             sizeText = ""
         )
     }
-
-
 }
-

@@ -20,7 +20,6 @@ fun MenuBtn(
     exit:()->Unit
 ){
     val shouldShowDialog = remember{mutableStateOf(false)}
-
     val newFolderDialog = remember{ mutableStateOf(false) }
 
     val contents : List<Pair<String,()->Unit>> = listOf(
