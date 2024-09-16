@@ -78,6 +78,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     }
 
     fun zipWork(selected:Array<File>,targetDirectory: File){
+       // println("FileListViewModel.zipWork(): targetDirectory = ${targetDirectory.absolutePath}")
         val zipRequest = request.zipRequest(selected, targetDirectory)
         val notiRequest = request.completedNotificationRequest()
         workManager

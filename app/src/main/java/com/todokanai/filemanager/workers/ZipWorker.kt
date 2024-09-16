@@ -6,6 +6,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Objects.myNoti
+import com.todokanai.filemanager.tools.TestClass
 import com.todokanai.filemanager.tools.independent.getTotalSize_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -14,6 +15,8 @@ import java.io.File
 class ZipWorker(context: Context, params: WorkerParameters): CoroutineWorker(context,params) {
 
     var bytesDone : Long = 0L
+
+    val test = TestClass()
 
     private val stringArray = inputData.getStringArray(Constants.WORKER_KEY_SELECTED_FILES)!!
     private val targetDirectoryName = inputData.getString(Constants.WORKER_KEY_TARGET_DIRECTORY)!!
@@ -27,6 +30,21 @@ class ZipWorker(context: Context, params: WorkerParameters): CoroutineWorker(con
             println("started")
             println("selected: ${selectedFiles.map{it.name}}")
             println("targetZipFile: ${targetDirectory.absolutePath}")
+
+            fun callback(processed:Long){
+                val progress = (processed*100/totalSize).toInt()
+                println("progress: $progress")
+                println("bytes: $processed")
+             //   println("check: ${processed}")
+
+            }
+
+            test.zipFilesWithProgress(
+                selected = selectedFiles,
+                target = targetDirectory,
+                progressCallback = {callback(it)}
+                )
+
 
             Result.success()
         }catch (e:Exception){
@@ -46,4 +64,5 @@ class ZipWorker(context: Context, params: WorkerParameters): CoroutineWorker(con
 
         return ForegroundInfo(0,test.build())
     }
+
 }
