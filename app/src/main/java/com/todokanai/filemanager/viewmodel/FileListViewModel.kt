@@ -7,8 +7,12 @@ import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.tools.Requests
+import com.todokanai.filemanager.tools.actions.ZipAction
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -79,11 +83,19 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     fun zipWork(selected:Array<File>,targetDirectory: File){
        // println("FileListViewModel.zipWork(): targetDirectory = ${targetDirectory.absolutePath}")
+        /*
         val zipRequest = request.zipRequest(selected, targetDirectory)
         val notiRequest = request.completedNotificationRequest()
         workManager
             .beginWith(zipRequest)
             .then(notiRequest)
             .enqueue()
+
+         */
+        CoroutineScope(Dispatchers.IO).launch {
+            val action = ZipAction(selected, targetDirectory)
+
+            action.start()
+        }
     }
 }

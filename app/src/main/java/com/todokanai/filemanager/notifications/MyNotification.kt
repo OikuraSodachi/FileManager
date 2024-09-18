@@ -52,15 +52,23 @@ class MyNotification(context: Context) {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .launch_td()
     }
-
      */
+
+    fun sendProgressNotification(title: String?, message: String?,progress:Int){
+        NotificationCompat.Builder(context, silentChannel.id)
+            .setSmallIcon(icon)
+            .setContentTitle(title)
+            .setContentText(message)
+           // .setOngoing(true)
+            .setProgress(100,progress,false)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .launch_td(silentChannel)
+    }
 
     val ongoingNotiTest = Notification.Builder(context, silentChannel.id)
         .setSmallIcon(icon)
         .setPriority(Notification.PRIORITY_DEFAULT)
         .setOngoing(true)
-
-
 
     fun defaultNotificationTest():Notification{
         val out = Notification.Builder(context, silentChannel.id)

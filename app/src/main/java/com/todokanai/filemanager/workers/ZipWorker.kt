@@ -54,6 +54,7 @@ class ZipWorker(context: Context, params: WorkerParameters): CoroutineWorker(con
                 progressCallback = {callback(it)}
             )
 
+
             val endTime = System.currentTimeMillis()
             println("time: ${SimpleDateFormat("mm:ss").format(endTime - startTime)}")
 
