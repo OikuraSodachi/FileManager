@@ -7,6 +7,7 @@ import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.tools.Requests
+import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.ZipAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -46,12 +47,10 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun onBackPressed() = module.onBackPressedCallback()
 
     fun copyWork(selected: Array<File>,targetDirectory: File){
-        val copyRequest = request.copyRequest(selected, targetDirectory)
-        val notiRequest = request.completedNotificationRequest()
-        workManager
-            .beginWith(copyRequest)
-            .then(notiRequest)
-            .enqueue()
+        val action = CopyAction(selected,targetDirectory)
+        CoroutineScope(Dispatchers.IO).launch {
+            action.start()
+        }
     }
 
     fun moveWork(selected: Array<File>,targetDirectory: File){

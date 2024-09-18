@@ -1,7 +1,13 @@
 package com.todokanai.filemanager.interfaces
 
 interface FileAction {
-    fun start()
+
+    fun start(){
+        main()
+        onComplete()
+    }
+
+    fun main()
 
     fun abort()
 

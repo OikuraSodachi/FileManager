@@ -18,8 +18,7 @@ class ZipAction(
     var prevProgress: Int = 0
     val totalSize = selectedFiles.getTotalSize_td()
 
-    override fun start() {
-
+    override fun main() {
         ZipOutputStream(FileOutputStream(targetZipFile)).use { zipOut ->
             selectedFiles.forEach { file ->
                 addFileToZip(
@@ -51,7 +50,7 @@ class ZipAction(
     }
 
     override fun onComplete() {
-        TODO("Not yet implemented")
+
     }
 
     fun addFileToZip(zipOut: ZipOutputStream, fileToZip: File, fileName: String, progressCallback: (Long) -> Unit) {
