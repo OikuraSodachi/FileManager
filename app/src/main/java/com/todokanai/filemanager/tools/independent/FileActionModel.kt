@@ -281,12 +281,12 @@ else
         else -> "*/*"
     }
 
-suspend fun copyFiles_Recursive_td(
+fun copyFiles_Recursive_td(
     selected:Array<File>,
     targetDirectory:File,
     onProgress:(File)->Unit,
     copyOption:CopyOption = StandardCopyOption.REPLACE_EXISTING
-):Unit = withContext(Dispatchers.IO){
+){
     for (file in selected) {
         val target = targetDirectory.resolve(file.name)
         if (file.isDirectory) {
@@ -303,10 +303,10 @@ suspend fun copyFiles_Recursive_td(
     }
 }
 
-suspend fun deleteRecursively_td(
+fun deleteRecursively_td(
     file: File,
     onDeleteFile:(File)->Unit
-):Unit = withContext(Dispatchers.IO){
+){
     try {
         if (file.isDirectory) {
             val files = file.listFiles()
