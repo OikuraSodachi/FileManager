@@ -4,16 +4,15 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import com.todokanai.filemanager.myobjects.Constants
-import com.todokanai.filemanager.workers.CopyWorker
 import com.todokanai.filemanager.workers.DeleteWorker
 import com.todokanai.filemanager.workers.MoveWorker
 import com.todokanai.filemanager.workers.NotiWorker
 import com.todokanai.filemanager.workers.UnzipWorker
-import com.todokanai.filemanager.workers.ZipWorker
 import java.io.File
 
 class Requests {
 
+    /*
     fun copyRequest(
         selected: Array<File>,
         targetDirectory: File
@@ -28,6 +27,8 @@ class Requests {
             .build()
         return request
     }
+
+     */
 
     fun moveRequest(
         selected: Array<File>,
@@ -67,6 +68,7 @@ class Requests {
         return request
     }
 
+    /*
     fun zipRequest(
         selected: Array<File>,
         targetDirectory: File
@@ -82,6 +84,8 @@ class Requests {
             .build()
         return request
     }
+
+     */
 
     fun completedNotificationRequest(
         notiTitle:String = "Completed",
