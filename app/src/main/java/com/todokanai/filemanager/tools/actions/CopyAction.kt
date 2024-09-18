@@ -15,7 +15,8 @@ class CopyAction(
     val targetDirectory: File
 ) : FileAction {
     var progress : Int = 0
-    val fileQuantity = selectedFiles.getFileAndFoldersNumber_td()
+    private val fileQuantity = selectedFiles.getFileAndFoldersNumber_td()
+    private lateinit var currentFileInProcess : File
 
     override fun main() {
         copyFiles_Recursive_td(
@@ -23,22 +24,23 @@ class CopyAction(
             targetDirectory = targetDirectory,
             onProgress = {
                 progress++
-                //getForegroundInfo()
                 myNoti.sendSilentNotification(it.name,"$progress/$fileQuantity")
             }
         )
     }
 
     override fun abort() {
-        TODO("Not yet implemented")
+
     }
 
-    override fun progressCallback(processedBytes: Long) {
-        TODO("Not yet implemented")
+    override fun progressCallback() {
+        progress++
+        myNoti.sendSilentNotification(currentFileInProcess.name,"$progress/$fileQuantity")
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("complete","copy complete")
+        println("copy complete")
+        myNoti.sendCompletedNotification("copied $fileQuantity files","copy complete")
     }
 
     /** independent **/
@@ -49,6 +51,7 @@ class CopyAction(
         copyOption: CopyOption = StandardCopyOption.REPLACE_EXISTING
     ):Unit{
         for (file in selected) {
+            currentFileInProcess = file
             val target = targetDirectory.resolve(file.name)
             if (file.isDirectory) {
                 // Create the target directory

@@ -1,11 +1,18 @@
 package com.todokanai.filemanager.interfaces
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
 interface FileAction {
 
-    /** this is Not intended to be accessed manually **/
-    fun start(){
-        main()
-        onComplete()
+    /** this is Not intended to be overridden manually **/
+    fun start() {
+        CoroutineScope(Dispatchers.IO).launch {
+            main()
+        }.invokeOnCompletion {
+            onComplete()
+        }
     }
 
     /** main part of the action. will include onComplete() at the end **/
@@ -15,7 +22,7 @@ interface FileAction {
     fun abort()
 
     /** for notification on progress **/
-    fun progressCallback(processedBytes:Long)
+    fun progressCallback()
 
     /** callback when action is completed **/
     fun onComplete()

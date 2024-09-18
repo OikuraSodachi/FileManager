@@ -4,7 +4,6 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import com.todokanai.filemanager.myobjects.Constants
-import com.todokanai.filemanager.workers.DeleteWorker
 import com.todokanai.filemanager.workers.MoveWorker
 import com.todokanai.filemanager.workers.NotiWorker
 import com.todokanai.filemanager.workers.UnzipWorker
@@ -45,6 +44,7 @@ class Requests {
         return request
     }
 
+    /*
     fun deleteRequest(selected: Array<File>):OneTimeWorkRequest{
         val fileNames = selected.map { it.absolutePath }.toTypedArray()
         val inputData = Data.Builder()
@@ -55,6 +55,8 @@ class Requests {
             .build()
         return request
     }
+
+     */
 
     fun unzipRequest(selected: Array<File>,targetDirectory: File):OneTimeWorkRequest{
         val fileNames = selected.map { it.absolutePath }.toTypedArray()

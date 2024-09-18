@@ -27,7 +27,7 @@ class ZipAction(
                     fileName = file.name,
                     progressCallback ={
                         bytesDone += it
-                        progressCallback(bytesDone)
+                        progressCallback()
                     }
                 )
             }
@@ -38,11 +38,13 @@ class ZipAction(
 
     }
 
-    override fun progressCallback(processedBytes: Long) {
-        val progress = (processedBytes * 100 / totalSize).toInt()
+
+
+    override fun progressCallback() {
+        val progress = (bytesDone * 100 / totalSize).toInt()
         if (prevProgress != progress) {
             println("progress: $progress")
-            println("bytes: $processedBytes")
+            println("bytes: $bytesDone")
         //    myNoti.sendSilentNotification("titleText","${progress}%")
             myNoti.sendProgressNotification("titleText","${progress}%",progress)
             prevProgress = progress

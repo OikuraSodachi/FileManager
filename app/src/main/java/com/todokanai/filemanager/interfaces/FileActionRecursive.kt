@@ -5,9 +5,7 @@ import java.io.File
 interface FileActionRecursive {
 
     /** when file.isDirectory == false **/
-    fun mainAction(file: File){
-
-    }
+    fun mainAction(file: File)
 
     fun callback()
 

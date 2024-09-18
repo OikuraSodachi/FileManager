@@ -1,8 +1,8 @@
 package com.todokanai.filemanager.tools.actions
 
 import com.todokanai.filemanager.interfaces.FileAction
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import com.todokanai.filemanager.myobjects.Objects.myNoti
+import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
 import java.io.File
 
 class DeleteAction(
@@ -10,41 +10,48 @@ class DeleteAction(
 ):FileAction {
 
     var progress : Int = 0
-
+    private val fileQuantity = selectedFiles.getFileAndFoldersNumber_td()
+    private lateinit var currentFileInProcess : File
 
     override fun main() {
-        TODO("Not yet implemented")
+        deleteRecursively_td(
+            selected = selectedFiles,
+            onProgress = { progressCallback() }
+        )
     }
 
     override fun abort() {
-        TODO("Not yet implemented")
+
     }
 
-    override fun progressCallback(processedBytes: Long) {
-        TODO("Not yet implemented")
+    override fun progressCallback() {
+        progress++
+        myNoti.sendSilentNotification("titleText","deleted: $progress/$fileQuantity")
     }
 
     override fun onComplete() {
-        TODO("Not yet implemented")
+        myNoti.sendCompletedNotification("completed","delete completed")
     }
 
     /** independent **/
     fun deleteRecursively_td(
-        file: File,
+        selected:Array<File>,
         onProgress:(File)->Unit
     ){
-        try {
+        selected.forEach{ file ->
+            currentFileInProcess = file
             if (file.isDirectory) {
-                val files = file.listFiles()
-                if (files != null) {
-                    for (child in files) {
-                        deleteRecursively_td(child, onProgress) // 재귀 호출
-                    }
+
+                file.listFiles()?.let{
+                    deleteRecursively_td(it, onProgress) // 재귀 호출
                 }
+                /*
+                if (files != null) {
+                        deleteRecursively_td(file.listFiles() ?: arrayOf(), onProgress) // 재귀 호출
+                }
+                 */
             }
             file.delete()
-        }catch (e:Exception){
-            e.printStackTrace()
         }
     }
 }

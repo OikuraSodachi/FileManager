@@ -8,6 +8,7 @@ import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.tools.Requests
 import com.todokanai.filemanager.tools.actions.CopyAction
+import com.todokanai.filemanager.tools.actions.DeleteAction
 import com.todokanai.filemanager.tools.actions.ZipAction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -48,9 +49,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     fun copyWork(selected: Array<File>,targetDirectory: File){
         val action = CopyAction(selected,targetDirectory)
-        CoroutineScope(Dispatchers.IO).launch {
-            action.start()
-        }
+        action.start()
     }
 
     fun moveWork(selected: Array<File>,targetDirectory: File){
@@ -63,12 +62,16 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     }
 
     fun deleteWork(selected: Array<File>){
+        /*
         val deleteRequest = request.deleteRequest(selected)
         val notiRequest = request.completedNotificationRequest()
         workManager
             .beginWith(deleteRequest)
             .then(notiRequest)
             .enqueue()
+
+         */
+        DeleteAction(selected).start()
     }
 
     fun unzipWork(selected: Array<File>,targetDirectory: File){
@@ -91,10 +94,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
             .enqueue()
 
          */
-        CoroutineScope(Dispatchers.IO).launch {
-            val action = ZipAction(selected, targetDirectory)
-
-            action.start()
-        }
+        val action = ZipAction(selected, targetDirectory)
+        action.start()
     }
 }
