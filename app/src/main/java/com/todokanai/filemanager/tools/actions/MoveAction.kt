@@ -48,7 +48,6 @@ class MoveAction(
             currentFileInProcess = file
             val target = targetDirectory.resolve(file.name)
             if (file.isDirectory) {
-                // target.mkdirs()   // TODO: 생략해도 되는거 맞는지 검증할것
                 moveFiles_Recursive_td(file.listFiles() ?: arrayOf(), target, onProgress, onAlreadyExist,onDifferentStorage)
                 if(file.getRootDirectory() == target.getRootDirectory()) {
                     file.renameTo(target)

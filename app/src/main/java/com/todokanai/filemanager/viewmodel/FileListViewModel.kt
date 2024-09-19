@@ -57,15 +57,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     }
 
     fun unzipWork(selected: Array<File>,targetDirectory: File){
-        /*
-        val unzipRequest = request.unzipRequest(selected, targetDirectory)
-        val notiRequest = request.completedNotificationRequest()
-        workManager
-            .beginWith(unzipRequest)
-            .then(notiRequest)
-            .enqueue()
 
-         */
     }
 
     fun zipWork(selected:Array<File>,targetDirectory: File){

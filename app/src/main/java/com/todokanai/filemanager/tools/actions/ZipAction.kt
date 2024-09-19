@@ -38,15 +38,9 @@ class ZipAction(
 
     }
 
-
-
     override fun progressCallback() {
-
         val progress = (bytesDone * 100 / totalSize).toInt()
         if (prevProgress != progress) {
-            println("progress: $progress")
-            println("bytes: $bytesDone")
-        //    myNoti.sendSilentNotification("titleText","${progress}%")
             myNoti.sendProgressNotification("titleText","${progress}%",progress)
             prevProgress = progress
         }
