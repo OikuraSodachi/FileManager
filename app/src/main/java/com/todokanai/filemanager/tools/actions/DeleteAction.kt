@@ -45,11 +45,6 @@ class DeleteAction(
                 file.listFiles()?.let{
                     deleteRecursively_td(it, onProgress) // 재귀 호출
                 }
-                /*
-                if (files != null) {
-                        deleteRecursively_td(file.listFiles() ?: arrayOf(), onProgress) // 재귀 호출
-                }
-                 */
             }
             file.delete()
         }

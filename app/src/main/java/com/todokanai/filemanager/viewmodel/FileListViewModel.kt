@@ -5,16 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.independent.sortedFileList_td
-import com.todokanai.filemanager.tools.Requests
 import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.DeleteAction
+import com.todokanai.filemanager.tools.actions.MoveAction
 import com.todokanai.filemanager.tools.actions.ZipAction
+import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -22,7 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository, private val workManager: WorkManager):ViewModel(){
 
-    private val request = Requests()
     private val module = fileModule
     val notAccessible =  module.notAccessible
     val directoryList = module.dirTree
@@ -53,48 +49,26 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     }
 
     fun moveWork(selected: Array<File>,targetDirectory: File){
-        val moveRequest = request.moveRequest(selected, targetDirectory)
-        val notiRequest = request.completedNotificationRequest()
-        workManager
-            .beginWith(moveRequest)
-            .then(notiRequest)
-            .enqueue()
+        MoveAction(selected,targetDirectory).start()
     }
 
     fun deleteWork(selected: Array<File>){
-        /*
-        val deleteRequest = request.deleteRequest(selected)
-        val notiRequest = request.completedNotificationRequest()
-        workManager
-            .beginWith(deleteRequest)
-            .then(notiRequest)
-            .enqueue()
-
-         */
         DeleteAction(selected).start()
     }
 
     fun unzipWork(selected: Array<File>,targetDirectory: File){
+        /*
         val unzipRequest = request.unzipRequest(selected, targetDirectory)
         val notiRequest = request.completedNotificationRequest()
         workManager
             .beginWith(unzipRequest)
             .then(notiRequest)
             .enqueue()
+
+         */
     }
 
     fun zipWork(selected:Array<File>,targetDirectory: File){
-       // println("FileListViewModel.zipWork(): targetDirectory = ${targetDirectory.absolutePath}")
-        /*
-        val zipRequest = request.zipRequest(selected, targetDirectory)
-        val notiRequest = request.completedNotificationRequest()
-        workManager
-            .beginWith(zipRequest)
-            .then(notiRequest)
-            .enqueue()
-
-         */
-        val action = ZipAction(selected, targetDirectory)
-        action.start()
+        ZipAction(selected, targetDirectory).start()
     }
 }

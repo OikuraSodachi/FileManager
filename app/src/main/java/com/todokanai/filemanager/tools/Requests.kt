@@ -4,7 +4,6 @@ import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.OneTimeWorkRequestBuilder
 import com.todokanai.filemanager.myobjects.Constants
-import com.todokanai.filemanager.workers.MoveWorker
 import com.todokanai.filemanager.workers.NotiWorker
 import com.todokanai.filemanager.workers.UnzipWorker
 import java.io.File
@@ -29,6 +28,7 @@ class Requests {
 
      */
 
+    /*
     fun moveRequest(
         selected: Array<File>,
         targetDirectory: File
@@ -43,6 +43,8 @@ class Requests {
             .build()
         return request
     }
+
+     */
 
     /*
     fun deleteRequest(selected: Array<File>):OneTimeWorkRequest{

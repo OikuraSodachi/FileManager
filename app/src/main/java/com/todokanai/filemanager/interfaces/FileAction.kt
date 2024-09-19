@@ -6,7 +6,12 @@ import kotlinx.coroutines.launch
 
 interface FileAction {
 
-    /** this is Not intended to be overridden manually **/
+    /** this is Not intended to be overridden manually
+     *
+     *  call this method to execute the action
+     *
+     *  calls onComplete() when finished
+     * **/
     fun start() {
         CoroutineScope(Dispatchers.IO).launch {
             main()
@@ -15,7 +20,7 @@ interface FileAction {
         }
     }
 
-    /** main part of the action. will include onComplete() at the end **/
+    /** main part of the action **/
     fun main()
 
     /** cancel the action **/

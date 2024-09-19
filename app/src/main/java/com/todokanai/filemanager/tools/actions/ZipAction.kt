@@ -41,6 +41,7 @@ class ZipAction(
 
 
     override fun progressCallback() {
+
         val progress = (bytesDone * 100 / totalSize).toInt()
         if (prevProgress != progress) {
             println("progress: $progress")
