@@ -14,7 +14,7 @@ class DeleteAction(
     private lateinit var currentFileInProcess : File
 
     override fun main() {
-        deleteRecursively_td(
+        deleteRecursive_td(
             selected = selectedFiles,
             onProgress = { progressCallback() }
         )
@@ -26,27 +26,23 @@ class DeleteAction(
 
     override fun progressCallback() {
         progress++
-        myNoti.sendSilentNotification("titleText","deleted: $progress/$fileQuantity")
+        myNoti.sendSilentNotification(currentFileInProcess.name,"deleted: $progress/$fileQuantity")
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("completed","delete completed")
+        myNoti.sendCompletedNotification("delete completed","deleted $progress files")
     }
 
-    /** independent **/
-    fun deleteRecursively_td(
-        selected:Array<File>,
-        onProgress:(File)->Unit
-    ){
-        selected.forEach{ file ->
+    fun deleteRecursive_td(selected: Array<File>, onProgress: (File) -> Unit){
+        selected.forEach { file ->
             currentFileInProcess = file
             if (file.isDirectory) {
-
-                file.listFiles()?.let{
-                    deleteRecursively_td(it, onProgress) // 재귀 호출
+                file.listFiles()?.let {
+                    deleteRecursive_td(it,onProgress)
                 }
             }
             file.delete()
+            onProgress(file)
         }
     }
 }

@@ -1,27 +1,53 @@
 package com.todokanai.filemanager.interfaces
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 
 interface FileActionRecursive {
 
-    /** when file.isDirectory == false **/
-    fun mainAction(file: File)
+    /** this is Not intended to be overridden manually
+     *
+     *  call this method to execute the action
+     *
+     *  calls onComplete() when finished
+     * **/
+    fun start(selectedFiles:Array<File>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            selectedFiles.forEach { file ->
+                main(file)
+            }
+        }.invokeOnCompletion {
+            onComplete()
+        }
+    }
 
-    fun callback()
-
-    fun wrapper_internal(
-        file: File,
-        temp_callback:()->Unit
-    ){
+    /** main part of the action (recursive part included inside) **/
+    fun main(file: File):Unit{
         if(file.isDirectory){
             val files = file.listFiles()
             if (files != null) {
                 for (child in files) {
-                    wrapper_internal(child,temp_callback) // 재귀 호출
+                    main(child) // 재귀 호출
                 }
             }
         }
-        mainAction(file)
+        defaultAction(file)
     }
+
+    /** cancel the action **/
+    fun abort()
+
+    /** for notification on progress **/
+    fun progressCallback()
+
+    /** callback when action is completed **/
+    fun onComplete()
+
+
+    fun callback()
+
+    fun defaultAction(file: File)
 
 }

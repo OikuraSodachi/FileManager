@@ -4,6 +4,8 @@ import com.todokanai.filemanager.interfaces.FileAction
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 class CopyAction(
     val selectedFiles:Array<File>,
@@ -17,8 +19,7 @@ class CopyAction(
         copyFiles_Recursive_td(
             selected = selectedFiles,
             targetDirectory = targetDirectory,
-            onProgress = { progressCallback() },
-            onAlreadyExist = {}
+            onProgress = { progressCallback() }
         )
     }
 
@@ -32,28 +33,20 @@ class CopyAction(
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("copied $fileQuantity files","copy complete")
+        myNoti.sendCompletedNotification("copied $progress files","copy complete")
     }
 
-    /** independent **/
-    fun copyFiles_Recursive_td(
-        selected:Array<File>,
-        targetDirectory: File,
-        onProgress:(File)->Unit,
-        onAlreadyExist:()->Unit
-    ):Unit{
+    fun copyFiles_Recursive_td(selected: Array<File>, targetDirectory: File,onProgress: (File) -> Unit) {
         selected.forEach{ file ->
-            currentFileInProcess = file
             val target = targetDirectory.resolve(file.name)
+            currentFileInProcess = target
             if (file.isDirectory) {
-                copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target,onProgress,onAlreadyExist)
-                if(target.exists()){
-                    onAlreadyExist()
-                }else{
-                    file.copyTo(target)
-                }
-                onProgress(file)
+                target.mkdirs()
+                copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target,onProgress)
+            } else {
+                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING)
             }
+            onProgress(file)
         }
     }
 }
