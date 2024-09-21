@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.todokanai.filemanager.compose.dialog.DeleteDialog
+import com.todokanai.filemanager.compose.dialog.UnzipDialog
 import com.todokanai.filemanager.compose.dialog.ZipDialog
 
 /*
@@ -80,11 +81,13 @@ fun BottomMultiSelectMenu(
     copy:()->Unit,
     delete:()->Unit,
     zip:(String)->Unit,
+    unzip:(String)->Unit,
     enablePopupMenu:()->Boolean
 ){
     val expandedState = remember { mutableStateOf(false) }
     val deleteDialog = remember{mutableStateOf(false)}
     val zipDialog = remember { mutableStateOf(false) }
+    val unzipDialog = remember { mutableStateOf(false) }
 
     Row (
         modifier = modifier
@@ -146,6 +149,13 @@ fun BottomMultiSelectMenu(
             onConfirm = {zip(it)}
         )
     }
+
+    if(unzipDialog.value){
+        UnzipDialog(
+            onCancel = { unzipDialog.value = false },
+            onConfirm = {unzip(it)}
+        )
+    }
 }
 
 @Preview
@@ -156,6 +166,7 @@ private fun BottomMultiSelectMenuPreview(){
         move = {},
         delete = {},
         zip = {},
+        unzip = {},
         enablePopupMenu = {true}
     )
 }

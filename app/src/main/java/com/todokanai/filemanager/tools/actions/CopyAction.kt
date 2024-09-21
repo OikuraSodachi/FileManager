@@ -29,7 +29,10 @@ class CopyAction(
 
     override fun progressCallback() {
         progress++
-        myNoti.sendSilentNotification(currentFileInProcess.name,"$progress/$fileQuantity")
+        myNoti.sendSilentNotification(
+            title = currentFileInProcess.name,
+            message = "$progress/$fileQuantity"
+        )
     }
 
     override fun onComplete() {

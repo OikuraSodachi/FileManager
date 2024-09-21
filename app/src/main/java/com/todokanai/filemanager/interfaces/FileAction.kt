@@ -2,20 +2,20 @@ package com.todokanai.filemanager.interfaces
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.File
 
 interface FileAction {
 
-    /** this is Not intended to be overridden manually
-     *
-     *  call this method to execute the action
+    /** call this method to execute the action
      *
      *  calls onComplete() when finished
      * **/
     fun start() {
         CoroutineScope(Dispatchers.IO).launch {
             main()
+            delay(5000)
         }.invokeOnCompletion {
             onComplete()
         }

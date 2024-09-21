@@ -18,22 +18,17 @@ class MyNotification(context: Context) {
     private val silentChannel = NotificationChannel(Constants.CHANNEL_ID, "My Channel", NotificationManager.IMPORTANCE_LOW).apply {
         description = "This is my notification channel"
     }
-
     private val completedChannel = NotificationChannel(Constants.NOTIFICATION_CHANNEL_ID_COMPLETED,"My Channel", NotificationManager.IMPORTANCE_DEFAULT)
-
     private val icon by lazy{ R.drawable.ic_launcher_background}
-
     private val notificationManager by lazy{ context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager}
 
     fun sendSilentNotification(title: String?, message: String?){
-
         NotificationCompat.Builder(context, silentChannel.id)
             .setSmallIcon(icon)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .launch_td(silentChannel)
-
     }
 
 
@@ -77,11 +72,9 @@ class MyNotification(context: Context) {
             //.build()
         return out.build()
     }
-
     /** send notification  **/
     private fun NotificationCompat.Builder.launch_td(channel: NotificationChannel){
         notificationManager.createNotificationChannel(channel)
-
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(
                     context,

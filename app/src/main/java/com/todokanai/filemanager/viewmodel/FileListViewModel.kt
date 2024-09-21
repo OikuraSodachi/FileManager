@@ -8,6 +8,7 @@ import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.DeleteAction
 import com.todokanai.filemanager.tools.actions.MoveAction
+import com.todokanai.filemanager.tools.actions.UnzipAction
 import com.todokanai.filemanager.tools.actions.ZipAction
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -56,8 +57,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         DeleteAction(selected).start()
     }
 
-    fun unzipWork(selected: Array<File>,targetDirectory: File){
-
+    fun unzipWork(selected: File,targetDirectory: File){
+        UnzipAction(selected,targetDirectory)
     }
 
     fun zipWork(selected:Array<File>,targetDirectory: File){

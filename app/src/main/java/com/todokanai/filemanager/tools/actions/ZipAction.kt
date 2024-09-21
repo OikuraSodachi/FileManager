@@ -47,7 +47,7 @@ class ZipAction(
     }
 
     override fun onComplete() {
-
+        myNoti.sendCompletedNotification("Zip Complete",targetZipFile.name)
     }
 
     fun addFileToZip(zipOut: ZipOutputStream, fileToZip: File, fileName: String, progressCallback: (Long) -> Unit) {
