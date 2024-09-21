@@ -2,8 +2,6 @@ package com.todokanai.filemanager.tools.independent
 
 /** 이 method들은 독립적으로 사용 가능함 */
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream
 import java.nio.file.CopyOption

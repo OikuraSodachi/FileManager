@@ -3,10 +3,7 @@ package com.todokanai.filemanager.tools.actions
 import com.todokanai.filemanager.interfaces.FileAction
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import java.io.File
-import java.io.FileInputStream
-import java.nio.file.Files
-import java.util.zip.ZipEntry
-import java.util.zip.ZipInputStream
+import java.util.zip.ZipFile
 
 class UnzipAction(
     val selectedZipFile:File,
@@ -17,11 +14,7 @@ class UnzipAction(
     private lateinit var currentFileInProcess : File
 
     override fun main() {
-        extractZipFile(
-            selectedZipFile,
-            targetDirectory
-        )
-
+        unzip(ZipFile(selectedZipFile),targetDirectory)
     }
 
     override fun abort() {
@@ -36,39 +29,31 @@ class UnzipAction(
         myNoti.sendCompletedNotification("unzip completed",targetDirectory.absolutePath)
     }
 
-    fun extractZipFile(file: File, target: File) {
-        val bufferSize = 4096 // 압축 해제할 때 사용할 버퍼 크기
-
-        val zipInputStream = ZipInputStream(FileInputStream(file))
-        var entry: ZipEntry? = zipInputStream.nextEntry
-
-        while (entry != null) {
-            val entryName = entry.name // 압축 해제될 파일 또는 폴더명
-            val entryPath = target.toPath().resolve(entryName)
-
-            if (entry.isDirectory) {
-                // 폴더인 경우 폴더 생성
-                Files.createDirectories(entryPath)
-            } else {
-                // 파일인 경우 파일 추출
-                println("Extracting: $entryName")
-
-                val output = entryPath.toFile().outputStream()
-
-                var read: Int
-                val buffer = ByteArray(bufferSize)
-
-                while (zipInputStream.read(buffer, 0, bufferSize).also { read = it } != -1) {
-                    output.write(buffer, 0, read)
-                }
-
-                output.close()
-            }
-
-            zipInputStream.closeEntry()
-            entry = zipInputStream.nextEntry
+    fun unzip(zipFile: ZipFile, targetDirectory: File) {
+        if (!targetDirectory.exists()) {
+            targetDirectory.mkdirs()
         }
 
-        zipInputStream.close()
+        // zip 파일의 각 엔트리에 대해 처리
+        zipFile.use { zip ->
+            zip.entries().asSequence().forEach { entry ->
+                // TODO: entry.isDirectory() == true 일 경우가 skip되고 있음. 크게 문제되진 않으나, 버그의 원인이 될 가능성이 있음(?)
+                val outputFile = File(targetDirectory, entry.name)
+                currentFileInProcess = outputFile
+                println("current: ${outputFile.name}")
+                // 디렉토리인 경우 디렉토리 생성
+                if (entry.isDirectory) {
+                    outputFile.mkdirs()
+                } else {
+                    // 디렉토리가 아닌 경우 파일을 추출
+                    outputFile.parentFile.mkdirs()  // 부모 디렉토리가 없을 경우 생성
+                    zip.getInputStream(entry).use { input ->
+                        outputFile.outputStream().use { output ->
+                            input.copyTo(output)
+                        }
+                    }
+                }
+            }
+        }
     }
 }

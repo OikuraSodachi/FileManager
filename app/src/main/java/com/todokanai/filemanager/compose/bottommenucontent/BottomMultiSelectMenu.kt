@@ -129,6 +129,7 @@ fun BottomMultiSelectMenu(
             BottomPopupMenu(
                 expanded = expandedState,
                 zip = {zipDialog.value = true},
+                unzip ={unzipDialog.value = true},
                 selectAll = {},
                 unselectAll = {},
                 selected = { emptyArray() }

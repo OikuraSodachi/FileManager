@@ -180,7 +180,8 @@ class FileListFragment : Fragment() {
     }
 
     private fun onConfirmUnzip(selectedZipFile:File,targetDirectory: String){
-        viewModel.unzipWork(selectedZipFile,File(targetDirectory))
+        val target = viewModel.currentDirectory().resolve(targetDirectory)
+        viewModel.unzipWork(selectedZipFile,target)
         modeManager.onDefaultMode_new()
     }
 

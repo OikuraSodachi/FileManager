@@ -17,6 +17,7 @@ fun BottomPopupMenu(
     modifier: Modifier = Modifier,
     expanded: MutableState<Boolean>,
     zip:()->Unit,
+    unzip:()->Unit,
     selectAll:()->Unit,
     unselectAll:()->Unit,
     selected:()->Array<File>
@@ -29,6 +30,7 @@ fun BottomPopupMenu(
         val result = mutableListOf(
             Pair(context.getString(R.string.bottom_popup_info),{infoDialog.value = true}),
             Pair(context.getString(R.string.bottom_popup_menu_zip),{zip()}),
+            Pair(context.getString(R.string.bottom_popup_menu_unzip),{unzip()}),
             Pair(context.getString(R.string.select_all),{selectAll()}),
             Pair(context.getString(R.string.unselect_all),{unselectAll()})
 

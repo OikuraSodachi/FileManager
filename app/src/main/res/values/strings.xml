@@ -21,6 +21,7 @@
     <string name="bottom_popup_info">Info</string>
     <string name="bottom_popup_rename">Rename</string>
     <string name="bottom_popup_menu_zip">Zip</string>
+    <string name="bottom_popup_menu_unzip">Unzip</string>
 
     <string name="delete_dialog_title">Delete?</string>
     <string name="delete_dialog_message">message</string>
