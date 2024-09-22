@@ -62,10 +62,13 @@ class FileListFragment : Fragment() {
             }
         )
 
+
         val directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
             {modeManager.isNotMultiSelectMode()}
         )
+
+
 
         binding.run{
             fileListRecyclerView.run{
