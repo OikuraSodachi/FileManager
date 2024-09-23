@@ -53,6 +53,8 @@ android {
 
 dependencies {
     implementation("androidx.work:work-runtime-ktx:2.9.1")
+    implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
+    implementation("androidx.databinding:library:3.2.0-alpha11")
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
     val roomVersion = "2.6.1"
     val glideVersion = "4.13.0"
@@ -94,5 +96,6 @@ dependencies {
     implementation ("androidx.datastore:datastore-preferences:1.1.0-alpha01")       // enable DataStore
     implementation("net.lingala.zip4j:zip4j:2.6.0")
     //   implementation ("commons-net:commons-net:3.11.1")       /// ftp nas upload (?)
+    implementation("com.github.MFlisar:DragSelectRecyclerView:0.3")
 
 }

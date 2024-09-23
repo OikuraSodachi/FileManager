@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.holders.FileItemHolder
@@ -19,6 +20,11 @@ class FileListRecyclerAdapter(
 
     var itemList = emptyList<File>()
     var selectedItemList = emptyArray<File>()
+    var selectionTracker : SelectionTracker<Long>? = null
+
+    fun setTracker(tracker: SelectionTracker<Long>){
+        selectionTracker = tracker
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.filelist_recycler,parent,false)

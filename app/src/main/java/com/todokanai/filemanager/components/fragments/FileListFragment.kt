@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
+import com.todokanai.filemanager.adapters.FileListAddOn
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
 import com.todokanai.filemanager.compose.bottommenucontent.BottomMultiSelectMenu
@@ -31,9 +32,9 @@ class FileListFragment : Fragment() {
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
     private val modeManager = Objects.modeManager
+    private val addOn by lazy{FileListAddOn(binding.fileListRecyclerView)}
 
     private lateinit var verticalManager: LinearLayoutManager
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,13 +63,10 @@ class FileListFragment : Fragment() {
             }
         )
 
-
         val directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
             {modeManager.isNotMultiSelectMode()}
         )
-
-
 
         binding.run{
             fileListRecyclerView.run{
@@ -79,6 +77,8 @@ class FileListFragment : Fragment() {
                     verticalManager.orientation
                 )
                 addItemDecoration(dividerItemDecoration)
+                /** unstable smart cast. 나중에 보완할 것. **/
+                addOn.attachTo(this.adapter as FileListRecyclerAdapter)
             }
 
             directoryRecyclerViewNew.run{
