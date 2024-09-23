@@ -31,14 +31,13 @@ class FileListFragment : Fragment() {
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
     private val modeManager = Objects.modeManager
-
     private lateinit var verticalManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-
+        /*
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if(modeManager.isMultiSelectMode()){
@@ -48,6 +47,9 @@ class FileListFragment : Fragment() {
                 }
             }
         })
+
+         */
+        onBackPressedOverride()
         verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
@@ -63,8 +65,8 @@ class FileListFragment : Fragment() {
             {modeManager.isNotMultiSelectMode()}
         )
 
-        binding.run{
-            fileListRecyclerView.run{
+        binding.run {
+            fileListRecyclerView.run {
                 adapter = fileListAdapter
                 layoutManager = verticalManager
                 val dividerItemDecoration = DividerItemDecoration(
@@ -73,8 +75,10 @@ class FileListFragment : Fragment() {
                 )
                 addItemDecoration(dividerItemDecoration)
             }
+        }
 
-            directoryRecyclerViewNew.run{
+        binding.run{
+            directoryRecyclerView.run{
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
                 swipe.setOnRefreshListener {
@@ -123,15 +127,18 @@ class FileListFragment : Fragment() {
         }
 
         viewModel.run{
-            fileHolderList.asLiveData().observe(viewLifecycleOwner){ list ->
-                if(list.isEmpty()){
+            fileHolderList.asLiveData().observe(viewLifecycleOwner) { list ->
+                if (list.isEmpty()) {
                     binding.emptyDirectoryText.visibility = View.VISIBLE
-                }else{
+                } else {
                     binding.emptyDirectoryText.visibility = View.INVISIBLE
                 }
+            }
+            fileHolderList.asLiveData().observe(viewLifecycleOwner) { list ->
                 fileListAdapter.itemList = list
                 fileListAdapter.notifyDataSetChanged()
             }
+
             directoryList.asLiveData().observe(viewLifecycleOwner){
                 directoryAdapter.directoryList = it ?: emptyList()
                 directoryAdapter.notifyDataSetChanged()
@@ -185,4 +192,31 @@ class FileListFragment : Fragment() {
         modeManager.onMultiSelectMode_new()
         modeManager.toggleToSelectedFiles(file)
     }
+
+
+    private fun onBackPressedOverride(){
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if(modeManager.isMultiSelectMode()){
+                    modeManager.onDefaultMode_new()
+                }else {
+                    viewModel.onBackPressed()
+                }
+            }
+        })
+    }
+
+    /*
+    fun initDirectoryView(){
+        binding.directoryRecyclerView.run{
+            adapter = directoryAdapter
+            layoutManager = horizontalManager
+            swipe.setOnRefreshListener {
+                viewModel.refreshFileList()
+                swipe.isRefreshing = false
+            }
+        }
+    }
+
+     */
 }
