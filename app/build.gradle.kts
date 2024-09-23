@@ -96,6 +96,7 @@ dependencies {
     implementation ("androidx.datastore:datastore-preferences:1.1.0-alpha01")       // enable DataStore
     implementation("net.lingala.zip4j:zip4j:2.6.0")
     //   implementation ("commons-net:commons-net:3.11.1")       /// ftp nas upload (?)
-    implementation("com.github.MFlisar:DragSelectRecyclerView:0.3")
+   // implementation("com.github.MFlisar:DragSelectRecyclerView:0.3")
+    implementation ("com.afollestad:drag-select-recyclerview:2.4.0")
 
 }

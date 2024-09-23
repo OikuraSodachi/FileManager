@@ -16,7 +16,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
-import com.todokanai.filemanager.adapters.FileListAddOn
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
 import com.todokanai.filemanager.compose.bottommenucontent.BottomMultiSelectMenu
@@ -32,7 +31,6 @@ class FileListFragment : Fragment() {
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
     private val modeManager = Objects.modeManager
-    private val addOn by lazy{FileListAddOn(binding.fileListRecyclerView)}
 
     private lateinit var verticalManager: LinearLayoutManager
 
@@ -77,8 +75,6 @@ class FileListFragment : Fragment() {
                     verticalManager.orientation
                 )
                 addItemDecoration(dividerItemDecoration)
-                /** unstable smart cast. 나중에 보완할 것. **/
-                addOn.attachTo(this.adapter as FileListRecyclerAdapter)
             }
 
             directoryRecyclerViewNew.run{
@@ -109,9 +105,9 @@ class FileListFragment : Fragment() {
                                 modifier = modifier,
                                 move = {modeManager.onConfirmMoveMode_new()},
                                 copy = {modeManager.onConfirmCopyMode_new()},
-                                delete = {onConfirmDelete(fileListAdapter.selectedItemList)},
-                                zip = {onConfirmZip(selected = fileListAdapter.selectedItemList, targetDirectory = it)},
-                                unzip = {onConfirmUnzip(selectedZipFile = fileListAdapter.selectedItemList.first(), targetDirectory = it)},
+                                delete = {onConfirmDelete(fileListAdapter.selectedItems)},
+                                zip = {onConfirmZip(selected = fileListAdapter.selectedItems, targetDirectory = it)},
+                                unzip = {onConfirmUnzip(selectedZipFile = fileListAdapter.selectedItems.first(), targetDirectory = it)},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
                         } else{
@@ -120,7 +116,7 @@ class FileListFragment : Fragment() {
                                 onCancel = {modeManager.onDefaultMode_new()},
                                 copyWork = { selected,target -> viewModel.copyWork(selected,target) },
                                 moveWork = {selected,target -> viewModel.moveWork(selected,target)},
-                                selected = fileListAdapter.selectedItemList,
+                                selected = fileListAdapter.selectedItems,
                                 getDirectory = {viewModel.currentDirectory()}
                             )
                         }
@@ -156,7 +152,7 @@ class FileListFragment : Fragment() {
         modeManager.run{
             selectedFiles.asLiveData().observe(viewLifecycleOwner) {
                 fileListAdapter.run{
-                    selectedItemList = it
+                    selectedItems = it
                     notifyDataSetChanged()
                 }
             }
