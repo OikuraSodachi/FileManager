@@ -53,9 +53,6 @@ class FileListFragment : Fragment() {
 
         val fileListAdapter = FileListRecyclerAdapter(
             onItemLongClick = { onLongClick(it) },
-            isDefaultMode = {modeManager.isDefaultMode()},
-            isMultiSelectMode = {modeManager.isMultiSelectMode()},
-            toggleToSelectedFiles = {modeManager.toggleToSelectedFiles(it)},
             onFileClick = { context,file ->
                 viewModel.onFileClick(context,file)
             }
