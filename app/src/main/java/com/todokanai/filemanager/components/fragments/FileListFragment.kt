@@ -37,8 +37,6 @@ class FileListFragment : Fragment() {
         savedInstanceState: Bundle?,
     ): View? {
         onBackPressedOverride()
-        val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
-        val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
         val fileListAdapter = FileListRecyclerAdapter(
             onItemLongClick = { onLongClick(it) },
@@ -55,8 +53,8 @@ class FileListFragment : Fragment() {
             viewLifecycleOwner
         )
 
-        initDirectoryView(directoryAdapter,horizontalManager)
-        initFileListView(fileListAdapter,verticalManager)
+        initDirectoryView(directoryAdapter)
+        initFileListView(fileListAdapter)
 
         binding.run{
             composeBottomMenuList.apply {
@@ -107,21 +105,6 @@ class FileListFragment : Fragment() {
                     binding.emptyDirectoryText.visibility = View.INVISIBLE
                 }
             }
-            /*
-            fileHolderList.asLiveData().observe(viewLifecycleOwner) { list ->
-                fileListAdapter.itemList = list
-                fileListAdapter.notifyDataSetChanged()
-            }
-
-             */
-
-            /*
-            directoryList.asLiveData().observe(viewLifecycleOwner){
-                directoryAdapter.directoryList = it ?: emptyList()
-                directoryAdapter.notifyDataSetChanged()
-            }
-
-             */
 
             notAccessible.asLiveData().observe(viewLifecycleOwner){
                 if(it==true) {
@@ -185,7 +168,8 @@ class FileListFragment : Fragment() {
         })
     }
 
-    private fun initDirectoryView(directoryAdapter:DirectoryRecyclerAdapter,horizontalManager:LinearLayoutManager){
+    private fun initDirectoryView(directoryAdapter:DirectoryRecyclerAdapter){
+        val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
         binding.directoryRecyclerView.run{
             adapter = directoryAdapter
             layoutManager = horizontalManager
@@ -196,7 +180,9 @@ class FileListFragment : Fragment() {
         }
     }
 
-    private fun initFileListView(fileListAdapter:FileListRecyclerAdapter,verticalManager:LinearLayoutManager){
+    private fun initFileListView(fileListAdapter:FileListRecyclerAdapter){
+        val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+
         binding.fileListRecyclerView.run {
             adapter = fileListAdapter
             layoutManager = verticalManager
