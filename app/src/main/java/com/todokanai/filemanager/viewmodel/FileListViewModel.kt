@@ -2,7 +2,6 @@ package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.actions.CopyAction
@@ -18,7 +17,7 @@ import javax.inject.Inject
 
 /** modeManager를 viewModel에서 완전히 제거해야 함 **/
 @HiltViewModel
-class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository, private val workManager: WorkManager):ViewModel(){
+class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository):ViewModel(){
 
     private val module = fileModule
     val notAccessible =  module.notAccessible

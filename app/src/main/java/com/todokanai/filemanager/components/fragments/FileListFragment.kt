@@ -31,61 +31,34 @@ class FileListFragment : Fragment() {
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
     private val modeManager = Objects.modeManager
-    private lateinit var verticalManager: LinearLayoutManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        /*
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                if(modeManager.isMultiSelectMode()){
-                    modeManager.onDefaultMode_new()
-                }else {
-                    viewModel.onBackPressed()
-                }
-            }
-        })
-
-         */
         onBackPressedOverride()
-        verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
+        val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
         val horizontalManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
 
         val fileListAdapter = FileListRecyclerAdapter(
             onItemLongClick = { onLongClick(it) },
             onFileClick = { context,file ->
                 viewModel.onFileClick(context,file)
-            }
+            },
+            itemListNew = viewModel.fileHolderList,
+            lifecycleOwner = viewLifecycleOwner
         )
 
         val directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
-            {modeManager.isNotMultiSelectMode()}
+            viewModel.directoryList,
+            viewLifecycleOwner
         )
 
-        binding.run {
-            fileListRecyclerView.run {
-                adapter = fileListAdapter
-                layoutManager = verticalManager
-                val dividerItemDecoration = DividerItemDecoration(
-                    fileListRecyclerView.context,
-                    verticalManager.orientation
-                )
-                addItemDecoration(dividerItemDecoration)
-            }
-        }
+        initDirectoryView(directoryAdapter,horizontalManager)
+        initFileListView(fileListAdapter,verticalManager)
 
         binding.run{
-            directoryRecyclerView.run{
-                adapter = directoryAdapter
-                layoutManager = horizontalManager
-                swipe.setOnRefreshListener {
-                    viewModel.refreshFileList()
-                    swipe.isRefreshing = false
-                }
-            }
             composeBottomMenuList.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
@@ -134,15 +107,21 @@ class FileListFragment : Fragment() {
                     binding.emptyDirectoryText.visibility = View.INVISIBLE
                 }
             }
+            /*
             fileHolderList.asLiveData().observe(viewLifecycleOwner) { list ->
                 fileListAdapter.itemList = list
                 fileListAdapter.notifyDataSetChanged()
             }
 
+             */
+
+            /*
             directoryList.asLiveData().observe(viewLifecycleOwner){
                 directoryAdapter.directoryList = it ?: emptyList()
                 directoryAdapter.notifyDataSetChanged()
             }
+
+             */
 
             notAccessible.asLiveData().observe(viewLifecycleOwner){
                 if(it==true) {
@@ -206,17 +185,26 @@ class FileListFragment : Fragment() {
         })
     }
 
-    /*
-    fun initDirectoryView(){
+    private fun initDirectoryView(directoryAdapter:DirectoryRecyclerAdapter,horizontalManager:LinearLayoutManager){
         binding.directoryRecyclerView.run{
             adapter = directoryAdapter
             layoutManager = horizontalManager
-            swipe.setOnRefreshListener {
+            binding.swipe.setOnRefreshListener {
                 viewModel.refreshFileList()
-                swipe.isRefreshing = false
+                binding.swipe.isRefreshing = false
             }
         }
     }
 
-     */
+    private fun initFileListView(fileListAdapter:FileListRecyclerAdapter,verticalManager:LinearLayoutManager){
+        binding.fileListRecyclerView.run {
+            adapter = fileListAdapter
+            layoutManager = verticalManager
+            val dividerItemDecoration = DividerItemDecoration(
+                binding.fileListRecyclerView.context,
+                verticalManager.orientation
+            )
+            addItemDecoration(dividerItemDecoration)
+        }
+    }
 }
