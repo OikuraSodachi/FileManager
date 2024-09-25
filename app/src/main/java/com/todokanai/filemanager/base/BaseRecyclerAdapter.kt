@@ -21,10 +21,7 @@ abstract class BaseRecyclerAdapter<E:Any,VH:RecyclerView.ViewHolder>(
         }
         super.onAttachedToRecyclerView(recyclerView)
     }
-
     override fun getItemCount(): Int {
         return itemList.size
     }
-
-
 }
