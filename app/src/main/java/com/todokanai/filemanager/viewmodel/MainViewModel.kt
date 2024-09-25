@@ -5,14 +5,12 @@ import android.content.Context
 import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.ContextObjects
 import com.todokanai.filemanager.myobjects.Objects.contextObjects
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.myobjects.Objects.packageName
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.notifications.MyNotification
-import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestPermission_td
@@ -24,18 +22,10 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val workManager: WorkManager):ViewModel() {
+class MainViewModel @Inject constructor():ViewModel() {
 
     companion object{
         val myWorkerValue: Int = 1
-    }
-
-    /** View로직임. 나중에 View로 옮길 것.**/
-    val isStorageFragment = MutableStateFlow<Boolean>(false)
-
-    /** View로직임. 나중에 View로 옮길 것.**/
-    fun invalidateCurrentDirectory(){
-        isStorageFragment.value = true
     }
 
     fun prepareObjects(appContext: Context,activity: Activity){

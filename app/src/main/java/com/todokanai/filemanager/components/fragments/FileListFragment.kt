@@ -32,13 +32,16 @@ class FileListFragment : Fragment() {
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
     private val modeManager = Objects.modeManager
 
+    private lateinit var fileListAdapter : FileListRecyclerAdapter
+    private lateinit var directoryAdapter : DirectoryRecyclerAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
         onBackPressedOverride()
 
-        val fileListAdapter = FileListRecyclerAdapter(
+        fileListAdapter = FileListRecyclerAdapter(
             onItemLongClick = { onLongClick(it) },
             onFileClick = { context,file ->
                 viewModel.onFileClick(context,file)
@@ -47,7 +50,7 @@ class FileListFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner
         )
 
-        val directoryAdapter = DirectoryRecyclerAdapter(
+        directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
             viewModel.directoryList,
             viewLifecycleOwner
@@ -114,20 +117,6 @@ class FileListFragment : Fragment() {
                 }
             }
         }
-
-        modeManager.run{
-            selectedFiles.asLiveData().observe(viewLifecycleOwner) {
-                fileListAdapter.run{
-                    selectedItems = it
-                    notifyDataSetChanged()
-                }
-            }
-            isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){
-                fileListAdapter.run {
-                    notifyDataSetChanged()
-                }
-            }
-        }
         return binding.root
     }
 
@@ -182,15 +171,10 @@ class FileListFragment : Fragment() {
 
     private fun initFileListView(fileListAdapter:FileListRecyclerAdapter){
         val verticalManager = LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)
-
         binding.fileListRecyclerView.run {
             adapter = fileListAdapter
             layoutManager = verticalManager
-            val dividerItemDecoration = DividerItemDecoration(
-                binding.fileListRecyclerView.context,
-                verticalManager.orientation
-            )
-            addItemDecoration(dividerItemDecoration)
+            addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
     }
 }

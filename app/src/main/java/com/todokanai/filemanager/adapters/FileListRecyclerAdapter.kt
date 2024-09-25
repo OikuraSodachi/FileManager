@@ -5,6 +5,8 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.asLiveData
+import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.holders.FileItemHolder
 import com.todokanai.filemanager.myobjects.Objects
@@ -16,13 +18,25 @@ class FileListRecyclerAdapter(
     private val onItemLongClick:(File)->Unit,
     private val onFileClick:(Context, File)->Unit,
     itemListNew: Flow<List<File>>,
-    lifecycleOwner: LifecycleOwner,
+    val lifecycleOwner: LifecycleOwner,
 ): BaseRecyclerAdapter<File, FileItemHolder>(itemListNew,lifecycleOwner) {
 
     private val modeManager = Objects.modeManager
     var selectedItems = emptyArray<File>()
-
     //var selectedItemsGeneric = emptyArray<Int>()
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        modeManager.run{
+            selectedFiles.asLiveData().observe(lifecycleOwner){
+                selectedItems = it
+                notifyDataSetChanged()
+            }
+            isMultiSelectMode.asLiveData().observe(lifecycleOwner){
+                notifyDataSetChanged()
+            }
+        }
+        super.onAttachedToRecyclerView(recyclerView)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.filelist_recycler,parent,false)
