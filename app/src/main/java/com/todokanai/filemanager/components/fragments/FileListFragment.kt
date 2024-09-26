@@ -39,7 +39,7 @@ class FileListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        onBackPressedOverride()
+        onBackPressedOverride({viewModel.onBackPressed()})
 
         fileListAdapter = FileListRecyclerAdapter(
             onItemLongClick = { onLongClick(it) },
@@ -145,13 +145,13 @@ class FileListFragment : Fragment() {
     }
 
 
-    private fun onBackPressedOverride(){
+    private fun onBackPressedOverride(onBackPressed:()->Unit){
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if(modeManager.isMultiSelectMode()){
                     modeManager.onDefaultMode_new()
                 }else {
-                    viewModel.onBackPressed()
+                    onBackPressed()
                 }
             }
         })

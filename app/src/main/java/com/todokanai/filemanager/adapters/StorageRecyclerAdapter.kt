@@ -15,7 +15,6 @@ class StorageRecyclerAdapter(
     lifecycleOwner: LifecycleOwner
 ): BaseRecyclerAdapter<File,StorageHolder>(itemFlow =itemFlow ,lifecycleOwner = lifecycleOwner) {
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.storage_recycler,parent,false)
         return StorageHolder(view)
