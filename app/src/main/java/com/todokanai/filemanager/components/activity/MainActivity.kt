@@ -26,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     private val fragmentList = listOf(StorageFragment(), FileListFragment())
     private val viewpagerAdapter by lazy { ViewpagerAdapter(this) }
 
+    val shouldShowDialog = mutableStateOf(false)
+    val menuBtnExpanded = mutableStateOf(false)
+
     companion object {
         /** Todo: 임시조치로 companion object에 배치함. 나중에 옮길 것 **/
         val isStorageFragment = MutableStateFlow<Boolean>(false)
@@ -33,18 +36,23 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        viewpagerAdapter.fragmentList = fragmentList
-
-        val shouldShowDialog = mutableStateOf(false)
-        val menuBtnExpanded = mutableStateOf(false)
-
-        onBackPressedDispatcher.addCallback { /* disable back button by overriding with a empty callback */ }
+        prepareView(viewModel)
         viewModel.run {
             prepareObjects(applicationContext, this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
             allowNotification(this@MainActivity)
         }
+        onBackPressedDispatcher.addCallback { /* disable back button by overriding with a empty callback */ }
+
+        setContentView(binding.root)
+    }
+
+
+
+    /** view 내용 setter 구분 편리성을 위해 묶어서 분리 **/
+    private fun prepareView(viewModel: MainViewModel){
+        viewpagerAdapter.fragmentList = fragmentList
+
         binding.run {
             composeDialogView.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -72,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             btn2.setOnClickListener { menuBtnExpanded.value = true }
-
             exitBtn.setOnClickListener {
                 viewModel.exit(this@MainActivity)
             }
@@ -93,6 +100,5 @@ class MainActivity : AppCompatActivity() {
                 binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
             }
         }
-        setContentView(binding.root)
     }
 }
