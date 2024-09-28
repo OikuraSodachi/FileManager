@@ -17,6 +17,7 @@ import com.todokanai.filemanager.holders.FileItemHolder
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.test.MyItemKeyProvider
 import com.todokanai.filemanager.test.MyItemLookup
+import com.todokanai.filemanager.test.MySelectionObserver
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 
@@ -43,6 +44,8 @@ class FileListRecyclerAdapter(
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything())
             .build()
+            .apply { addObserver(MySelectionObserver()) }
+
 
         modeManager.run{
             selectedFiles.asLiveData().observe(lifecycleOwner){
@@ -114,12 +117,11 @@ class FileListRecyclerAdapter(
 
     fun onClickAddOn(itemId:Long){
         //   /*
-        val test = selectionTracker.hasSelection()      값이  false로 뜨고있음. 여기부터 해결할 것.
-        println("hasSelection: $test")
+        val test = selectionTracker.hasSelection()    //  값이  false로 뜨고있음. 여기부터 해결할 것.
         if(selectionTracker.selection.contains(itemId)) {
-            println("select: ${selectionTracker.deselect(itemId)}")
+            selectionTracker.deselect(itemId)
         }else{
-            println("select: ${selectionTracker.select(itemId)}")
+            selectionTracker.select(itemId)
         }
         println("hasSelection: $test")
         println("fetch: ${fetchSelectedItems(selection_td)}")
