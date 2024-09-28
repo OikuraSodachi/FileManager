@@ -23,7 +23,6 @@ class FileListRecyclerAdapter(
 
     private val modeManager = Objects.modeManager
     var selectedItems = emptyArray<File>()
-    //var selectedItemsGeneric = emptyArray<Int>()
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         modeManager.run{
