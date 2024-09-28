@@ -21,7 +21,7 @@ import com.todokanai.filemanager.test.MySelectionObserver
 import kotlinx.coroutines.flow.Flow
 import java.io.File
 
-class FileListRecyclerAdapterNew(
+class FileListRecyclerAdapter(
     private val onItemLongClick:(File)->Unit,
     private val onFileClick:(Context, File)->Unit,
     itemListNew: Flow<List<File>>,
