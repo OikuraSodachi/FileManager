@@ -32,7 +32,16 @@ class FileListRecyclerAdapter(
     var selectedItems = emptyArray<File>()
     private lateinit var selectionTracker: SelectionTracker<Long>
 
-    var selectedItemsNew = emptyList<File>()
+    fun fetchSelectedItems():List<File>{
+        val out = selectionTracker.selection.map{
+            itemList[it.toInt()]
+        }
+        return out
+    }
+
+    private fun callback(selectedList:List<File>){
+        println("list: ${selectedList.map{it.name}}")
+    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
 
@@ -44,11 +53,13 @@ class FileListRecyclerAdapter(
             StorageStrategy.createLongStorage()
         ).withSelectionPredicate(MySelectionPredicate(recyclerView))
             .build()
-            .apply {
-                addObserver(MySelectionObserver(this))
-            }
 
-
+        selectionTracker.addObserver(
+            MySelectionObserver(
+                selectionTracker = selectionTracker,
+                callback = { callback(it) }
+            )
+        )
         modeManager.run{
             selectedFiles.asLiveData().observe(lifecycleOwner){
                 selectedItems = it
@@ -118,14 +129,14 @@ class FileListRecyclerAdapter(
             selectionTracker.select(itemId)
         }
     }
-    inner class MySelectionObserver(val selectionTracker: SelectionTracker<Long>): SelectionObserver<Long>() {
+    inner class MySelectionObserver(val selectionTracker: SelectionTracker<Long>,val callback:(List<File>)->Unit): SelectionObserver<Long>() {
 
         override fun onSelectionChanged() {
-            val out = selectionTracker.selection.map{
-                itemList[it.toInt()]
-            }
-            selectedItemsNew = out
-            println("list: ${out.map{it.name}}")
+            callback(
+                selectionTracker.selection.map{
+                    itemList[it.toInt()]
+                }
+            )
             super.onSelectionChanged()
         }
     }
