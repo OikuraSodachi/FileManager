@@ -48,7 +48,7 @@ class FileListFragment : Fragment() {
             },
             itemListNew = viewModel.fileHolderList,
             lifecycleOwner = viewLifecycleOwner
-        )
+        ).apply { setHasStableIds(true) }
 
         directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData
+import androidx.recyclerview.selection.Selection
 import androidx.recyclerview.selection.SelectionPredicates
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
@@ -30,6 +31,7 @@ class FileListRecyclerAdapter(
     var selectedItems = emptyArray<File>()
     //var selectedItemsGeneric = emptyArray<Int>()
     lateinit var selectionTracker: SelectionTracker<Long>
+    val selection_td by lazy{selectionTracker.selection}
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
 
@@ -42,7 +44,6 @@ class FileListRecyclerAdapter(
         ).withSelectionPredicate(SelectionPredicates.createSelectAnything())
             .build()
 
-
         modeManager.run{
             selectedFiles.asLiveData().observe(lifecycleOwner){
                 selectedItems = it
@@ -53,6 +54,10 @@ class FileListRecyclerAdapter(
             }
         }
         super.onAttachedToRecyclerView(recyclerView)
+    }
+
+    override fun getItemId(position: Int):Long{
+        return position.toLong()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
@@ -75,22 +80,10 @@ class FileListRecyclerAdapter(
             setData(file)
             itemView.run{
                 setOnClickListener {
-                  //  fetchSelectedItems()
                     if(modeManager.isMultiSelectMode()){
                         modeManager.toggleToSelectedFiles(file)
-                        /*
-                        val pos = position.toLong()
-                        val test = selectionTracker.hasSelection()
-                        println("hasSelection: $test")
-                        if(selection_td.contains(pos)) {
-                            println("select: ${selectionTracker.deselect(pos)}")
-                        }else{
-                            println("select: ${selectionTracker.select(pos)}")
-                        }
-                        println("hasSelection: $test")
-
-                         */
-
+                        onClickAddOn(itemId)
+                        notifyDataSetChanged()
                     }else{
                         onFileClick(context,file)
                     }
@@ -111,12 +104,24 @@ class FileListRecyclerAdapter(
             }
         }
     }
-    fun fetchSelectedItems():Set<File>{
+    fun fetchSelectedItems(selection: Selection<Long>):Set<File>{
         val out = mutableSetOf<File>()
-        selectionTracker.selection.forEach(){
+        selection.forEach(){
             out.add(itemList[it.toInt()])
         }
-        println("fetch: ${out.map { it.name }}")
         return out
+    }
+
+    fun onClickAddOn(itemId:Long){
+        //   /*
+        val test = selectionTracker.hasSelection()      값이  false로 뜨고있음. 여기부터 해결할 것.
+        println("hasSelection: $test")
+        if(selectionTracker.selection.contains(itemId)) {
+            println("select: ${selectionTracker.deselect(itemId)}")
+        }else{
+            println("select: ${selectionTracker.select(itemId)}")
+        }
+        println("hasSelection: $test")
+        println("fetch: ${fetchSelectedItems(selection_td)}")
     }
 }
