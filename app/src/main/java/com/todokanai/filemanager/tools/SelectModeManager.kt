@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import java.io.File
 
+/** RecyclerAdapter쪽에 통합해야 할듯?**/
 class SelectModeManager {
 
     private val _selectMode = MutableStateFlow<Int>(Constants.DEFAULT_MODE)
