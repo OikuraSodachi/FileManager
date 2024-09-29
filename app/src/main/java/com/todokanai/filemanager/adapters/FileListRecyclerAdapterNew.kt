@@ -29,13 +29,12 @@ class FileListRecyclerAdapter(
 ): BaseRecyclerAdapter<File, FileItemHolder>(itemListNew,lifecycleOwner) {
 
     private val modeManager = Objects.modeManager
-    var selectedItems = emptyArray<File>()
     private lateinit var selectionTracker: SelectionTracker<Long>
 
-    fun fetchSelectedItems():List<File>{
+    fun fetchSelectedItems():Array<File>{
         val out = selectionTracker.selection.map{
             itemList[it.toInt()]
-        }
+        }.toTypedArray()
         return out
     }
 
@@ -61,10 +60,13 @@ class FileListRecyclerAdapter(
             )
         )
         modeManager.run{
+            /*
             selectedFiles.asLiveData().observe(lifecycleOwner){
                 selectedItems = it
                 notifyDataSetChanged()
             }
+
+             */
             isMultiSelectMode.asLiveData().observe(lifecycleOwner){
                 notifyDataSetChanged()
             }
@@ -83,7 +85,7 @@ class FileListRecyclerAdapter(
 
     override fun onBindViewHolder(holder: FileItemHolder, position: Int) {
         val file = itemList[position]
-        val isFileSelected = selectedItems.contains(file)
+        val isFileSelected = selectionTracker.selection.contains(position.toLong())
 
         val backgroundColor =
             if (isFileSelected) {

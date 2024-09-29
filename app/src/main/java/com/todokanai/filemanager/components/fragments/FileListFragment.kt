@@ -82,9 +82,9 @@ class FileListFragment : Fragment() {
                                 modifier = modifier,
                                 move = {modeManager.onConfirmMoveMode_new()},
                                 copy = {modeManager.onConfirmCopyMode_new()},
-                                delete = {onConfirmDelete(fileListAdapter.selectedItems)},
-                                zip = {onConfirmZip(selected = fileListAdapter.selectedItems, targetDirectory = it)},
-                                unzip = {onConfirmUnzip(selectedZipFile = fileListAdapter.selectedItems.first(), targetDirectory = it)},
+                                delete = {onConfirmDelete(fileListAdapter.fetchSelectedItems())},
+                                zip = {onConfirmZip(selected = fileListAdapter.fetchSelectedItems(), targetDirectory = it)},
+                                unzip = {onConfirmUnzip(selectedZipFile = fileListAdapter.fetchSelectedItems().first(), targetDirectory = it)},
                                 enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
                             )
                         } else{
@@ -93,7 +93,7 @@ class FileListFragment : Fragment() {
                                 onCancel = {modeManager.onDefaultMode_new()},
                                 copyWork = { selected,target -> viewModel.copyWork(selected,target) },
                                 moveWork = {selected,target -> viewModel.moveWork(selected,target)},
-                                selected = fileListAdapter.selectedItems,
+                                selected = fileListAdapter.fetchSelectedItems(),
                                 getDirectory = {viewModel.currentDirectory()}
                             )
                         }
