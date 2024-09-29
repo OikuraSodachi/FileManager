@@ -1,6 +1,5 @@
 package com.todokanai.filemanager.adapters
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -29,7 +28,7 @@ class FileListRecyclerAdapter(
 ): BaseRecyclerAdapter<File, FileItemHolder>(itemListNew,lifecycleOwner) {
 
     private val modeManager = Objects.modeManager
-    private lateinit var selectionTracker: SelectionTracker<Long>
+    //private lateinit var selectionTracker: SelectionTracker<Long>
 
     fun fetchSelectedItems():Array<File>{
         val out = selectionTracker.selection.map{
@@ -100,7 +99,7 @@ class FileListRecyclerAdapter(
                 setOnClickListener {
                     if(modeManager.isMultiSelectMode()){
                         modeManager.toggleToSelectedFiles(file)
-                        onClickAddOn(itemId)
+                        toggleSelection(itemId)
                     }else{
                         onFileClick(context,file)
                     }
@@ -122,8 +121,8 @@ class FileListRecyclerAdapter(
             }
         }
     }
-
-    fun onClickAddOn(itemId:Long){
+    /*
+    fun toggleSelection(itemId:Long){
        /// val test = selectionTracker.hasSelection()    //  값이  false로 뜨고있음. 여기부터 해결할 것.
         if(selectionTracker.selection.contains(itemId)) {
             selectionTracker.deselect(itemId)
@@ -131,6 +130,8 @@ class FileListRecyclerAdapter(
             selectionTracker.select(itemId)
         }
     }
+
+     */
     inner class MySelectionObserver(val selectionTracker: SelectionTracker<Long>,val callback:(List<File>)->Unit): SelectionObserver<Long>() {
 
         override fun onSelectionChanged() {

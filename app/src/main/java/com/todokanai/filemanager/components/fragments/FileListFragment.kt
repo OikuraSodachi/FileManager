@@ -164,10 +164,6 @@ class FileListFragment : Fragment() {
         binding.directoryRecyclerView.run{
             adapter = directoryAdapter
             layoutManager = horizontalManager
-            binding.swipe.setOnRefreshListener {
-                viewModel.refreshFileList()
-                binding.swipe.isRefreshing = false
-            }
         }
     }
 
@@ -176,6 +172,13 @@ class FileListFragment : Fragment() {
         binding.fileListRecyclerView.run {
             adapter = fileListAdapter
             layoutManager = verticalManager
+            /*
+            binding.swipe.setOnRefreshListener {
+                viewModel.refreshFileList()
+                binding.swipe.isRefreshing = false
+            }
+
+             */
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
     }
