@@ -6,7 +6,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.todokanai.filemanager.R
 
 @Composable
 fun BottomConfirmMenu(
@@ -23,7 +25,7 @@ fun BottomConfirmMenu(
                 .weight(1f),
             onClick = { onCancel() }
         ) {
-            Text(text="Cancel")
+            Text(stringResource(id = R.string.bottom_confirm_menu_on_cancel))
         }
 
         TextButton(
@@ -31,7 +33,7 @@ fun BottomConfirmMenu(
                 .weight(1f),
             onClick = {onConfirm()}
         ) {
-            Text(text="Confirm")
+            Text(stringResource(id = R.string.bottom_confirm_menu_on_confirm))
         }
     }
 }
