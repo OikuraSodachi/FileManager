@@ -51,7 +51,10 @@ class FileListFragment : Fragment() {
                 viewModel.onFileClick(context,file)
             },
             itemListNew = viewModel.fileHolderList,
-            lifecycleOwner = viewLifecycleOwner
+            lifecycleOwner = viewLifecycleOwner,
+            isMultiSelectMode_Unit = {modeManager.isMultiSelectMode()},
+            isMultiSelectMode = modeManager.isMultiSelectMode,
+            isDefaultMode_Unit = {modeManager.isDefaultMode()}
         ).apply {
             setHasStableIds(true)
         }
@@ -74,7 +77,8 @@ class FileListFragment : Fragment() {
                             .fillMaxSize()
                         val isDefaultMode = modeManager.isDefaultMode.collectAsStateWithLifecycle(true,viewLifecycleOwner)
                         val isMultiSelectMode = modeManager.isMultiSelectMode.collectAsStateWithLifecycle(false,viewLifecycleOwner)
-                        val enablePopupMenu = modeManager.selectedFiles.collectAsStateWithLifecycle()
+                        //val enablePopupMenu = modeManager.selectedFiles.collectAsStateWithLifecycle()
+                        val enablePopupMenu = fileListAdapter.selectedFilesNew.collectAsStateWithLifecycle()
                         if(isDefaultMode.value){
                             this.visibility = View.GONE
                         } else{
