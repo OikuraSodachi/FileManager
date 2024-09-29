@@ -28,7 +28,6 @@ class FileListRecyclerAdapter(
 ): BaseRecyclerAdapter<File, FileItemHolder>(itemListNew,lifecycleOwner) {
 
     private val modeManager = Objects.modeManager
-    //private lateinit var selectionTracker: SelectionTracker<Long>
 
     fun fetchSelectedItems():Array<File>{
         val out = selectionTracker.selection.map{

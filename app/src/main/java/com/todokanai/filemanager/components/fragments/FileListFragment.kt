@@ -20,6 +20,10 @@ import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
 import com.todokanai.filemanager.compose.bottommenucontent.BottomMultiSelectMenu
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_UNZIP_HERE
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -91,10 +95,28 @@ class FileListFragment : Fragment() {
                             BottomConfirmMenu(
                                 modifier = modifier,
                                 onCancel = {modeManager.onDefaultMode_new()},
-                                copyWork = { selected,target -> viewModel.copyWork(selected,target) },
-                                moveWork = {selected,target -> viewModel.moveWork(selected,target)},
-                                selected = fileListAdapter.fetchSelectedItems(),
-                                getDirectory = {viewModel.currentDirectory()}
+                                onConfirm = {
+                                    val selected = fileListAdapter.fetchSelectedItems()
+                                    fun getDirectory() = viewModel.currentDirectory()
+                                    when(modeManager.selectMode()){
+                                        CONFIRM_MODE_COPY -> {
+                                            viewModel.copyWork(selected,getDirectory())
+                                        }
+
+                                        CONFIRM_MODE_MOVE -> {
+                                            viewModel.moveWork(selected,getDirectory())
+                                        }
+
+                                        CONFIRM_MODE_UNZIP -> {
+
+                                        }
+
+                                        CONFIRM_MODE_UNZIP_HERE -> {
+
+                                        }
+                                    }
+                                    modeManager.onDefaultMode_new()
+                                }
                             )
                         }
                     }
@@ -177,7 +199,6 @@ class FileListFragment : Fragment() {
                 viewModel.refreshFileList()
                 binding.swipe.isRefreshing = false
             }
-
              */
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
