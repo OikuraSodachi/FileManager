@@ -23,12 +23,22 @@
     <string name="bottom_popup_menu_zip">Zip</string>
     <string name="bottom_popup_menu_unzip">Unzip</string>
 
-    <string name="bottom_confirm_menu_on_cancel">Cancel</string>
-    <string name="bottom_confirm_menu_on_confirm">Confirm</string>
+    <string name="bottom_confirm_menu_onCancel">Cancel</string>
+    <string name="bottom_confirm_menu_onConfirm">Confirm</string>
 
+    <string name="bottom_multi_select_menu_move">Cancel</string>
+    <string name="bottom_multi_select_menu_copy">Confirm</string>
+    <string name="bottom_multi_select_menu_delete">Delete</string>
+    <string name="bottom_multi_select_menu_zip">Zip</string>
+    <string name="bottom_multi_select_menu_more">More</string>
 
     <string name="delete_dialog_title">Delete?</string>
     <string name="delete_dialog_message">message</string>
+    <string name="delete_dialog_onConfirm">Confirm</string>
+    <string name="delete_dialog_onCancel">Cancel</string>
+
+    <string name="info_dialog_selected">Selected</string>
+    <string name="info_dialog_size">Size</string>
 
     <string name="rename_dialog_title">Rename</string>
     <string name="rename_dialog_default_text">name</string>

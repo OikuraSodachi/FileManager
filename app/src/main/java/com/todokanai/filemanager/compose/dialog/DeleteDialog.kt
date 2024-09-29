@@ -17,7 +17,8 @@ fun DeleteDialog(
         onConfirm = { delete() },
         onCancel = { onCancel() },
         title = stringResource(id = R.string.delete_dialog_title),
-        message = stringResource(id = R.string.delete_dialog_message)
+        message = stringResource(id = R.string.delete_dialog_message),
+        confirmText = stringResource(id = R.string.delete_dialog_onConfirm),
+        cancelText = stringResource(id = R.string.delete_dialog_onCancel)
     )
-
 }

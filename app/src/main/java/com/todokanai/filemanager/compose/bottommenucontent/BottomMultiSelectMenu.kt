@@ -8,71 +8,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.todokanai.filemanager.R
 import com.todokanai.filemanager.compose.dialog.DeleteDialog
 import com.todokanai.filemanager.compose.dialog.UnzipDialog
 import com.todokanai.filemanager.compose.dialog.ZipDialog
-
-/*
-@Composable
-fun BottomMultiSelectMenu(
-    modifier: Modifier = Modifier,
-    viewModel: BottomMultiSelectMenuViewModel = hiltViewModel(),
-){
-    val expandedState = remember { mutableStateOf(false) }
-    val deleteDialog = remember{mutableStateOf(false)}
-
-    Row (
-        modifier = modifier
-            .wrapContentSize()
-    ){
-        TextButton(
-            modifier = Modifier
-                .weight(1f),
-            onClick = { viewModel.move() }
-        ) {
-            Text(text="Move")
-        }
-
-        TextButton(
-            modifier = Modifier
-                .weight(1f),
-            onClick = { viewModel.copy() }
-        ) {
-            Text(text="Copy")
-        }
-        TextButton(
-            modifier = Modifier
-                .weight(1f),
-            onClick = { deleteDialog.value = true }
-        ) {
-            Text(text="Delete")
-        }
-
-        TextButton(
-            modifier = Modifier
-                .weight(1f),
-            onClick = {
-                if(viewModel.enablePopupMenu()) {
-                    expandedState.value = true
-                }
-            }
-        ) {
-            Text(text="More")
-            BottomPopupMenu(
-                expanded = expandedState
-            )
-        }
-    }
-
-    if(deleteDialog.value){
-        DeleteDialog(
-            onCancel = {deleteDialog.value = false}
-        )
-    }
-}
-
- */
 
 @Composable
 fun BottomMultiSelectMenu(
@@ -98,7 +39,7 @@ fun BottomMultiSelectMenu(
                 .weight(1f),
             onClick = { move() }
         ) {
-            Text(text="Move")
+            Text(stringResource(id = R.string.bottom_multi_select_menu_move))
         }
 
         TextButton(
@@ -106,14 +47,14 @@ fun BottomMultiSelectMenu(
                 .weight(1f),
             onClick = { copy() }
         ) {
-            Text(text="Copy")
+            Text(stringResource(id = R.string.bottom_multi_select_menu_copy))
         }
         TextButton(
             modifier = Modifier
                 .weight(1f),
             onClick = { deleteDialog.value = true }
         ) {
-            Text(text="Delete")
+            Text(stringResource(id = R.string.bottom_multi_select_menu_delete))
         }
 
         TextButton(
@@ -125,7 +66,7 @@ fun BottomMultiSelectMenu(
                 }
             }
         ) {
-            Text(text="More")
+            Text(stringResource(id = R.string.bottom_multi_select_menu_more))
             BottomPopupMenu(
                 expanded = expandedState,
                 zip = {zipDialog.value = true},

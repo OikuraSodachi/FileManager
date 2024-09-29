@@ -15,6 +15,8 @@ fun BooleanDialog(
     onCancel: () -> Unit,
     title: String,
     message: String,
+    confirmText:String,
+    cancelText:String
 ) {
 
     AlertDialog(
@@ -29,7 +31,7 @@ fun BooleanDialog(
                     onCancel()
                 }
             ) {
-                Text(text = "Confirm")
+                Text(text = confirmText)
             }
         },
         dismissButton = {
@@ -39,7 +41,7 @@ fun BooleanDialog(
 
                 }
             ) {
-                Text(text = "Cancel")
+                Text(text = cancelText)
             }
         }
     )
@@ -54,7 +56,9 @@ private fun BooleanDialogPreview(){
             title = "BooleanDialog",
             message = "Message",
             onConfirm = {  },
-            onCancel = { }
+            onCancel = { },
+            confirmText = "Confirm",
+            cancelText = "Cancel"
         )
     }
 }

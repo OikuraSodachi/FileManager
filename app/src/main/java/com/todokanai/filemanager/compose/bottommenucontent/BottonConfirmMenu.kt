@@ -25,7 +25,7 @@ fun BottomConfirmMenu(
                 .weight(1f),
             onClick = { onCancel() }
         ) {
-            Text(stringResource(id = R.string.bottom_confirm_menu_on_cancel))
+            Text(stringResource(id = R.string.bottom_confirm_menu_onCancel))
         }
 
         TextButton(
@@ -33,7 +33,7 @@ fun BottomConfirmMenu(
                 .weight(1f),
             onClick = {onConfirm()}
         ) {
-            Text(stringResource(id = R.string.bottom_confirm_menu_on_confirm))
+            Text(stringResource(id = R.string.bottom_confirm_menu_onConfirm))
         }
     }
 }
