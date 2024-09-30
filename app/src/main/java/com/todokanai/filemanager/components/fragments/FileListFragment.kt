@@ -198,12 +198,26 @@ class FileListFragment : Fragment() {
         binding.fileListRecyclerView.run {
             adapter = fileListAdapter
             layoutManager = verticalManager
-            /*
+
             binding.swipe.setOnRefreshListener {
                 viewModel.refreshFileList()
                 binding.swipe.isRefreshing = false
             }
-             */
+
+            modeManager.isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){ mode ->
+                binding.swipe.apply{
+                    viewTreeObserver.addOnScrollChangedListener() {
+                        if(mode) {
+                            isEnabled = false
+                        }else{
+                            isEnabled = true
+                        }
+                    }
+                }
+            }
+
+
+
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
     }
