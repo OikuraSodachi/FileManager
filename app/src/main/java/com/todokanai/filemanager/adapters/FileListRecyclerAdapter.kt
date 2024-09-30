@@ -28,7 +28,7 @@ class FileListRecyclerAdapter(
     val lifecycleOwner: LifecycleOwner,
     val isMultiSelectMode_Unit:()->Boolean,
     val isMultiSelectMode:Flow<Boolean>,
-    val isDefaultMode_Unit:()->Boolean
+    val isDefaultMode:()->Boolean
 ): BaseRecyclerAdapter<File, FileItemHolder>(itemListNew,lifecycleOwner) {
 
     fun fetchSelectedItems():Array<File>{
@@ -99,15 +99,16 @@ class FileListRecyclerAdapter(
                     }else{
                         onFileClick(context,file)
                     }
-                    //  onItemClick(file,isMultiSelectMode())
                 }
                 setOnLongClickListener {
-                    if(isDefaultMode_Unit()) {
+                    if(isDefaultMode()) {
                         onItemLongClick(file)
                     }
                     true
                 }
                 setBackgroundColor(backgroundColor)
+
+                // Holder의 Selected 표시 처리
                 if(isMultiSelectMode_Unit()) {
                     multiSelectMode(isFileSelected)
                 } else{

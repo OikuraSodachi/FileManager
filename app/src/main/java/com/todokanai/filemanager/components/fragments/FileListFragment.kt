@@ -15,6 +15,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
@@ -54,7 +55,7 @@ class FileListFragment : Fragment() {
             lifecycleOwner = viewLifecycleOwner,
             isMultiSelectMode_Unit = {modeManager.isMultiSelectMode()},
             isMultiSelectMode = modeManager.isMultiSelectMode,
-            isDefaultMode_Unit = {modeManager.isDefaultMode()}
+            isDefaultMode = {modeManager.isDefaultMode()}
         ).apply {
             setHasStableIds(true)
         }
@@ -62,11 +63,13 @@ class FileListFragment : Fragment() {
         directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
             viewModel.directoryList,
-            viewLifecycleOwner
+            viewLifecycleOwner,
+            isNotMultiSelectMode = {modeManager.isNotMultiSelectMode()}
         )
 
         initDirectoryView(directoryAdapter)
         initFileListView(fileListAdapter)
+        setSwipe()
 
         binding.run{
             composeBottomMenuList.apply {
@@ -101,7 +104,7 @@ class FileListFragment : Fragment() {
                                 onCancel = {modeManager.onDefaultMode_new()},
                                 onConfirm = {
                                     val selected = fileListAdapter.fetchSelectedItems()
-                                    fun getDirectory() = viewModel.currentDirectory()
+                                    fun getDirectory() = viewModel.currentDirectory()       // targetDirectory를 invoke 시점에 get
                                     when(modeManager.selectMode()){
                                         CONFIRM_MODE_COPY -> {
                                             viewModel.copyWork(selected,getDirectory())
@@ -169,7 +172,6 @@ class FileListFragment : Fragment() {
 
     private fun onLongClick(file: File){
         modeManager.onMultiSelectMode_new()
-        modeManager.toggleToSelectedFiles(file)
     }
 
 
@@ -178,6 +180,7 @@ class FileListFragment : Fragment() {
             override fun handleOnBackPressed() {
                 if(modeManager.isMultiSelectMode()){
                     modeManager.onDefaultMode_new()
+                    binding.swipe.isEnabled = true
                 }else {
                     onBackPressed()
                 }
@@ -198,27 +201,27 @@ class FileListFragment : Fragment() {
         binding.fileListRecyclerView.run {
             adapter = fileListAdapter
             layoutManager = verticalManager
+            addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
+        }
+    }
 
-            binding.swipe.setOnRefreshListener {
-                viewModel.refreshFileList()
-                binding.swipe.isRefreshing = false
-            }
+    private fun setSwipe(){
+        val swipe =binding.swipe
+        swipe.setOnRefreshListener {
+            viewModel.refreshFileList()
+            swipe.isRefreshing = false
+        }
 
-            modeManager.isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){ mode ->
-                binding.swipe.apply{
-                    viewTreeObserver.addOnScrollChangedListener() {
-                        if(mode) {
-                            isEnabled = false
-                        }else{
-                            isEnabled = true
-                        }
+        modeManager.isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){ mode ->
+            swipe.apply{
+                viewTreeObserver.addOnScrollChangedListener() {
+                    if(mode) {
+                        isEnabled = false
+                    }else{
+                        isEnabled = true
                     }
                 }
             }
-
-
-
-            addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
     }
 }

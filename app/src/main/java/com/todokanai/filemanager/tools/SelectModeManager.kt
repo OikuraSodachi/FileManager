@@ -17,21 +17,8 @@ class SelectModeManager {
     val selectMode : StateFlow<Int>
         get() = _selectMode
 
-    private val _selectedFiles = MutableStateFlow<Array<File>>(emptyArray())
-    val selectedFiles : StateFlow<Array<File>>
-        get() = _selectedFiles
-
     fun selectMode():Int{
         return selectMode.value
-    }
-
-    fun toggleToSelectedFiles(file:File){
-        val list = selectedFiles.value.toMutableList()
-        if(list.contains(file)){
-            _selectedFiles.value = list.minus(file).toTypedArray()
-        } else{
-            _selectedFiles.value = list.plus(file).toTypedArray()
-        }
     }
 
     fun isMultiSelectMode():Boolean{
@@ -46,17 +33,10 @@ class SelectModeManager {
         return selectMode.value == DEFAULT_MODE
     }
 
-    fun selectAll(){
-   //     _selectedFiles.value = fileModel.listFiles.first() ?: emptyArray()
-    }
-
     //---------------------
 
     fun changeSelectMode(mode:Int){
         _selectMode.value = mode
-        if(mode == DEFAULT_MODE){
-            _selectedFiles.value = emptyArray()
-        }
     }
 
     //--------------
