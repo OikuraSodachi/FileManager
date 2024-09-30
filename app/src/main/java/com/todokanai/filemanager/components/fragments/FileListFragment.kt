@@ -79,8 +79,6 @@ class FileListFragment : Fragment() {
                             .fillMaxSize()
                         val isDefaultMode = modeManager.isDefaultMode.collectAsStateWithLifecycle(true,viewLifecycleOwner)
                         val isMultiSelectMode = modeManager.isMultiSelectMode.collectAsStateWithLifecycle(false,viewLifecycleOwner)
-                        //val enablePopupMenu = modeManager.selectedFiles.collectAsStateWithLifecycle()
-                        val enablePopupMenu = fileListAdapter.selectedFilesNew.collectAsStateWithLifecycle()
                         if(isDefaultMode.value){
                             this.visibility = View.GONE
                         } else{
@@ -95,7 +93,8 @@ class FileListFragment : Fragment() {
                                 delete = {onConfirmDelete(fileListAdapter.fetchSelectedItems())},
                                 zip = {onConfirmZip(selected = fileListAdapter.fetchSelectedItems(), targetDirectory = it)},
                                 unzip = {onConfirmUnzip(selectedZipFile = fileListAdapter.fetchSelectedItems().first(), targetDirectory = it)},
-                                enablePopupMenu = {enablePopupMenu.value.isNotEmpty()}
+                                selected = fileListAdapter.fetchSelectedItems()
+
                             )
                         } else{
                             BottomConfirmMenu(

@@ -20,7 +20,7 @@ fun BottomPopupMenu(
     unzip:()->Unit,
     selectAll:()->Unit,
     unselectAll:()->Unit,
-    selected:()->Array<File>
+    selected:Array<File>
 ){
     val context = LocalContext.current
     val infoDialog = remember{ mutableStateOf(false) }
@@ -46,7 +46,7 @@ fun BottomPopupMenu(
 
     MyDropdownMenu(
         modifier = modifier,
-        contents = contents(context,selected()),
+        contents = contents(context,selected),
         expanded = expanded.value,
         onDismissRequest = {expanded.value = false}
     )

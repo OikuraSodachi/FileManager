@@ -17,8 +17,6 @@ import com.todokanai.filemanager.test.MyItemLookup
 import com.todokanai.filemanager.test.MySelectionObserver
 import com.todokanai.filemanager.test.MySelectionPredicate
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import java.io.File
 
 class FileListRecyclerAdapter(
@@ -37,10 +35,6 @@ class FileListRecyclerAdapter(
         }.toTypedArray()
         return out
     }
-
-    private val _selectedFilesNew = MutableStateFlow<Array<File>>(emptyArray())
-    val selectedFilesNew : StateFlow<Array<File>>
-        get() = _selectedFilesNew
 
     private fun callback(selectedList:List<File>){
         println("list: ${selectedList.map{it.name}}")

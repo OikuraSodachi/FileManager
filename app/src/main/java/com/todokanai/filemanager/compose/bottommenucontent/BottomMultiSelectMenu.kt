@@ -14,6 +14,7 @@ import com.todokanai.filemanager.R
 import com.todokanai.filemanager.compose.dialog.DeleteDialog
 import com.todokanai.filemanager.compose.dialog.UnzipDialog
 import com.todokanai.filemanager.compose.dialog.ZipDialog
+import java.io.File
 
 @Composable
 fun BottomMultiSelectMenu(
@@ -23,7 +24,7 @@ fun BottomMultiSelectMenu(
     delete:()->Unit,
     zip:(String)->Unit,
     unzip:(String)->Unit,
-    enablePopupMenu:()->Boolean
+    selected:Array<File>
 ){
     val expandedState = remember { mutableStateOf(false) }
     val deleteDialog = remember{mutableStateOf(false)}
@@ -61,7 +62,7 @@ fun BottomMultiSelectMenu(
             modifier = Modifier
                 .weight(1f),
             onClick = {
-                if(enablePopupMenu()) {
+                if(expandedState.value == false) {
                     expandedState.value = true
                 }
             }
@@ -73,7 +74,7 @@ fun BottomMultiSelectMenu(
                 unzip ={unzipDialog.value = true},
                 selectAll = {},
                 unselectAll = {},
-                selected = { emptyArray() }
+                selected = selected
             )
         }
     }
@@ -109,6 +110,6 @@ private fun BottomMultiSelectMenuPreview(){
         delete = {},
         zip = {},
         unzip = {},
-        enablePopupMenu = {true}
+        selected = emptyArray()
     )
 }
