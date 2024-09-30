@@ -15,7 +15,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.compose.bottommenucontent.BottomConfirmMenu
@@ -69,7 +68,7 @@ class FileListFragment : Fragment() {
 
         initDirectoryView(directoryAdapter)
         initFileListView(fileListAdapter)
-        setSwipe()
+        initSwipe()
 
         binding.run{
             composeBottomMenuList.apply {
@@ -180,7 +179,6 @@ class FileListFragment : Fragment() {
             override fun handleOnBackPressed() {
                 if(modeManager.isMultiSelectMode()){
                     modeManager.onDefaultMode_new()
-                    binding.swipe.isEnabled = true
                 }else {
                     onBackPressed()
                 }
@@ -205,7 +203,7 @@ class FileListFragment : Fragment() {
         }
     }
 
-    private fun setSwipe(){
+    private fun initSwipe(){
         val swipe =binding.swipe
         swipe.setOnRefreshListener {
             viewModel.refreshFileList()
