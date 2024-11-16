@@ -8,18 +8,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.asLiveData
+import com.todokanai.filemanager.abstracts.BaseActivity
 import com.todokanai.filemanager.adapters.ViewpagerAdapter
 import com.todokanai.filemanager.components.fragments.FileListFragment
 import com.todokanai.filemanager.components.fragments.StorageFragment
 import com.todokanai.filemanager.compose.MenuBtn
 import com.todokanai.filemanager.compose.dialog.SortDialog
 import com.todokanai.filemanager.databinding.ActivityMainBinding
+import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity(override val permissions: Array<String> = Objects.permissions) : BaseActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -34,20 +36,24 @@ class MainActivity : AppCompatActivity() {
         val isStorageFragment = MutableStateFlow<Boolean>(false)
     }
 
+    override val requestCode: Int
+        get() = 111
+    override val backPressedOverride: Boolean
+        get() = true
+
+    override fun onBackPressedOverride() {
+        //TODO("Not yet implemented")
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prepareView(viewModel)
         viewModel.run {
             prepareObjects(applicationContext, this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
-            allowNotification(this@MainActivity)
         }
-        onBackPressedDispatcher.addCallback { /* disable back button by overriding with a empty callback */ }
-
         setContentView(binding.root)
     }
-
-
 
     /** view 내용 setter 구분 편리성을 위해 묶어서 분리 **/
     private fun prepareView(viewModel: MainViewModel){

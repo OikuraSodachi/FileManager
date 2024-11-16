@@ -10,7 +10,7 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.R
-import com.todokanai.filemanager.base.BaseRecyclerAdapter
+import com.todokanai.filemanager.abstracts.BaseRecyclerAdapter
 import com.todokanai.filemanager.holders.FileItemHolder
 import com.todokanai.filemanager.test.MyItemKeyProvider
 import com.todokanai.filemanager.test.MyItemLookup

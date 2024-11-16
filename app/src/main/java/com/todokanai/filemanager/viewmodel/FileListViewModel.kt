@@ -2,13 +2,13 @@ package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
-import com.todokanai.filemanager.myobjects.Objects.fileModule
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.DeleteAction
 import com.todokanai.filemanager.tools.actions.MoveAction
 import com.todokanai.filemanager.tools.actions.UnzipAction
 import com.todokanai.filemanager.tools.actions.ZipAction
+import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
@@ -17,9 +17,9 @@ import javax.inject.Inject
 
 /** modeManager를 viewModel에서 완전히 제거해야 함 **/
 @HiltViewModel
-class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository):ViewModel(){
+class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val module:FileModule):ViewModel(){
 
-    private val module = fileModule
+    //private val module = fileModule
     val notAccessible =  module.notAccessible
     val directoryList = module.dirTree
 

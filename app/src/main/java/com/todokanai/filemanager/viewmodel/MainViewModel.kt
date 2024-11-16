@@ -13,7 +13,6 @@ import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
-import com.todokanai.filemanager.tools.independent.requestPermission_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,14 +44,7 @@ class MainViewModel @Inject constructor():ViewModel() {
         }
     }
 
-    fun allowNotification(activity: Activity){
-        viewModelScope.launch {
-            requestPermission_td(activity, permissions = arrayOf(android.Manifest.permission.POST_NOTIFICATIONS),{})
-        }
-    }
-
     fun exit(activity: Activity) = exit_td(activity)
-
 
     /*
     fun exitTest(activity: Activity) = workerTest()

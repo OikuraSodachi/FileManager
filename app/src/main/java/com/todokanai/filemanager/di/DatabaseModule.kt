@@ -2,8 +2,8 @@ package com.todokanai.filemanager.di
 
 import android.content.Context
 import androidx.work.WorkManager
-import com.todokanai.filemanager.data.datastore.MyDataStore
 import com.todokanai.filemanager.data.room.MyDatabase
+import com.todokanai.filemanager.repository.DataStoreRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,8 +22,8 @@ class DatabaseModule {
     }
 
     @Provides
-    fun providesMyDataStore(@ApplicationContext context: Context):MyDataStore{
-        return MyDataStore(context)
+    fun provideDataStoreRepository(@ApplicationContext context: Context):DataStoreRepository{
+        return DataStoreRepository(context)
     }
 
     @Provides

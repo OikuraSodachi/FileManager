@@ -5,9 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.repository.DataStoreRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,5 +32,9 @@ class SortDialogViewModel @Inject constructor(private val dsRepo:DataStoreReposi
     fun saveByDateAscending() = saveSortBy(Constants.BY_DATE_ASCENDING)
     fun saveByDateDescending() = saveSortBy(Constants.BY_DATE_DESCENDING)
 
-    private fun saveSortBy(value:String) = dsRepo.saveSortBy(value)
+    private fun saveSortBy(value:String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            dsRepo.saveSortBy(value)
+        }
+    }
 }

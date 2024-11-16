@@ -1,24 +1,25 @@
 package com.todokanai.filemanager.repository
 
-import com.todokanai.filemanager.data.datastore.MyDataStore
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
+import com.todokanai.filemanager.abstracts.MyDataStore
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DataStoreRepository @Inject constructor(private val dataStore: MyDataStore){
+class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(appContext){
 
-    fun saveSortBy(value:String){
-        CoroutineScope(Dispatchers.IO).launch {
-            dataStore.saveSortBy(value)
-        }
+    companion object{
+        val DATASTORE_SORT_BY = stringPreferencesKey("datastore_sort_by")
+        val DATASTORE_COPY_OVERWRITE = booleanPreferencesKey("datastore_copy_overwrite")
     }
 
-    suspend fun sortBy() = dataStore.sortBy()
+    suspend fun saveSortBy(value:String) = DATASTORE_SORT_BY.save(value)
 
-    val sortBy = dataStore.sortBy
+    suspend fun sortBy() = DATASTORE_SORT_BY.value()
+
+    val sortBy = DATASTORE_SORT_BY.flow()
 
     /*
     val sortBy_asString = dataStore.sortBy.map {
@@ -55,17 +56,9 @@ class DataStoreRepository @Inject constructor(private val dataStore: MyDataStore
             }
         }
     }
-
      */
 
-    fun saveCopyOverwrite(value:Boolean){
-        CoroutineScope(Dispatchers.IO).launch {
-            dataStore.saveCopyOverwrite(value)
-        }
-    }
+    suspend fun saveCopyOverwrite(value:Boolean) = DATASTORE_COPY_OVERWRITE.save(value)
 
-    suspend fun copyOverwrite() = dataStore.copyOverwrite()
-
-
-
+    suspend fun copyOverwrite() = DATASTORE_COPY_OVERWRITE.value()
 }

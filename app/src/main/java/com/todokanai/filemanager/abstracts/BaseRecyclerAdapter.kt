@@ -1,4 +1,4 @@
-package com.todokanai.filemanager.base
+package com.todokanai.filemanager.abstracts
 
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.asLiveData

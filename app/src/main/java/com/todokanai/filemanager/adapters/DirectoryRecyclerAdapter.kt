@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
 import com.todokanai.filemanager.R
-import com.todokanai.filemanager.base.BaseRecyclerAdapter
+import com.todokanai.filemanager.abstracts.BaseRecyclerAdapter
 import com.todokanai.filemanager.holders.DirectoryHolder
 import kotlinx.coroutines.flow.Flow
 import java.io.File
