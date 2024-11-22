@@ -14,6 +14,7 @@ import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.stateIn
 import java.io.File
 import javax.inject.Inject
@@ -33,6 +34,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         sortedFileList_td(listFiles,mode)
     }
 
+    /** "Hot Flow" of [fileHolderList] **/
     val fileHolderListTest = combine(
         module.listFiles,
         dsRepo.sortBy
@@ -40,10 +42,9 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         println("listFiles: ${listFiles.map { it.name }}")
         println("mode: $mode")
         sortedFileList_td(listFiles,mode)
-    }.stateIn(
+    }.shareIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5),
-        initialValue = emptyList()
+        started = SharingStarted.Eagerly // SharingStarted.Eagerly / Lazily to make the flow hot
     )
 
     fun currentDirectory() : File {
