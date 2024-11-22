@@ -2,6 +2,7 @@ package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.DeleteAction
@@ -11,7 +12,9 @@ import com.todokanai.filemanager.tools.actions.ZipAction
 import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import java.io.File
 import javax.inject.Inject
 
@@ -19,7 +22,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val module:FileModule):ViewModel(){
 
-    //private val module = fileModule
     val notAccessible =  module.notAccessible
     val directoryList = module.dirTree
 
@@ -28,8 +30,23 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         dsRepo.sortBy
     ){
         listFiles,mode ->
+      //  println("listFiles: ${listFiles.map { it.name }}")
+      //  println("mode: $mode")
         sortedFileList_td(listFiles,mode)
     }
+
+    val fileHolderListTest = combine(
+        module.listFiles,
+        dsRepo.sortBy
+    ){ listFiles,mode ->
+        println("listFiles: ${listFiles.map { it.name }}")
+        println("mode: $mode")
+        sortedFileList_td(listFiles,mode)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5),
+        initialValue = emptyList()
+    )
 
     fun currentDirectory() : File {
         return module.currentPath.value

@@ -50,7 +50,7 @@ class FileListFragment : Fragment() {
             onFileClick = { context,file ->
                 viewModel.onFileClick(context,file)
             },
-            itemListNew = viewModel.fileHolderList,
+            itemList = viewModel.fileHolderList,
             lifecycleOwner = viewLifecycleOwner,
             isMultiSelectMode_Unit = {modeManager.isMultiSelectMode()},
             isMultiSelectMode = modeManager.isMultiSelectMode,

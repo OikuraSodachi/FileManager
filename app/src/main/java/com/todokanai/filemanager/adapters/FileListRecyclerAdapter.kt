@@ -22,12 +22,12 @@ import java.io.File
 class FileListRecyclerAdapter(
     private val onItemLongClick:(File)->Unit,
     private val onFileClick:(Context, File)->Unit,
-    itemListNew: Flow<List<File>>,
+    itemList: Flow<List<File>>,
     val lifecycleOwner: LifecycleOwner,
     val isMultiSelectMode_Unit:()->Boolean,
     val isMultiSelectMode:Flow<Boolean>,
     val isDefaultMode:()->Boolean
-): BaseRecyclerAdapter<File, FileItemHolder>(itemListNew,lifecycleOwner) {
+): BaseRecyclerAdapter<File, FileItemHolder>(itemList,lifecycleOwner) {
 
     fun fetchSelectedItems():Array<File>{
         val out = selectionTracker.selection.map{

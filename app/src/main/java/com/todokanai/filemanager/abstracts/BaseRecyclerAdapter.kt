@@ -14,6 +14,7 @@ abstract class BaseRecyclerAdapter<E:Any,VH:RecyclerView.ViewHolder>(
 
     open lateinit var selectionTracker: SelectionTracker<Long>
     open var itemList = emptyList<E>()
+
   //  open var enableSelection:Boolean = false
 
     fun toggleSelection(itemId:Long){
@@ -26,12 +27,12 @@ abstract class BaseRecyclerAdapter<E:Any,VH:RecyclerView.ViewHolder>(
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(recyclerView)
         // Todo: Memory Leak이 발생하는지 여부 체크할 것
         itemFlow.asLiveData().observe(lifecycleOwner){
             itemList = it
             notifyDataSetChanged()
         }
-        super.onAttachedToRecyclerView(recyclerView)
     }
     override fun getItemCount(): Int {
         return itemList.size

@@ -21,6 +21,7 @@ class DatabaseModule {
         return MyDatabase.getInstance(context)
     }
 
+    @Singleton
     @Provides
     fun provideDataStoreRepository(@ApplicationContext context: Context):DataStoreRepository{
         return DataStoreRepository(context)
