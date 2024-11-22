@@ -30,8 +30,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         dsRepo.sortBy
     ){
         listFiles,mode ->
-      //  println("listFiles: ${listFiles.map { it.name }}")
-      //  println("mode: $mode")
         sortedFileList_td(listFiles,mode)
     }
 
