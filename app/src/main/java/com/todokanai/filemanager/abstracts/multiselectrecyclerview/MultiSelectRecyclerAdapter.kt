@@ -63,7 +63,7 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
     }
 
     /** whether if item( itemList[position] )  is selected **/
-    fun isSelected(position: Int): Boolean {
+    private fun isSelected(position: Int): Boolean {
         return selectionTracker.selection.contains(position.toLong())
     }
 

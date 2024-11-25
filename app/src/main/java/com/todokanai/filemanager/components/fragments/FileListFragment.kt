@@ -37,121 +37,37 @@ class FileListFragment : Fragment() {
     private val modeManager = Objects.modeManager
 
     private lateinit var fileListAdapter : FileListRecyclerAdapter
-    ///private lateinit var directoryAdapter : DirectoryRecyclerAdapter
-    private val directoryAdapter by lazy{DirectoryRecyclerAdapter(
-        {viewModel.onDirectoryClick(it)},
-        viewModel.directoryList,
-        isNotMultiSelectMode = {modeManager.isNotMultiSelectMode()})
-    }
+
+    private lateinit var directoryAdapter : DirectoryRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        onBackPressedOverride({viewModel.onBackPressed()})
+        onBackPressedOverride({ viewModel.onBackPressed() })
 
         fileListAdapter = FileListRecyclerAdapter(
             onItemLongClick = { onLongClick(it) },
-            onFileClick = { context,file ->
-                viewModel.onFileClick(context,file)
+            onFileClick = { context, file ->
+                viewModel.onFileClick(context, file)
             },
             itemList = viewModel.fileHolderList,
-            isMultiSelectMode_Unit = {modeManager.isMultiSelectMode()},
-            isMultiSelectMode = modeManager.isMultiSelectMode,
-            isDefaultMode = {modeManager.isDefaultMode()}
+            isDefaultMode = { modeManager.isDefaultMode() }
         ).apply {
             setHasStableIds(true)
         }
 
-        /*
         directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
             viewModel.directoryList,
             isNotMultiSelectMode = {modeManager.isNotMultiSelectMode()}
         )
 
-         */
-
         initDirectoryView(directoryAdapter)
         initFileListView(fileListAdapter)
         initSwipe()
+        prepareView(binding)
 
-        binding.run{
-            composeBottomMenuList.apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    MaterialTheme {
-                        val modifier = Modifier
-                            .fillMaxSize()
-                        val isDefaultMode = modeManager.isDefaultMode.collectAsStateWithLifecycle(true,viewLifecycleOwner)
-                        val isMultiSelectMode = modeManager.isMultiSelectMode.collectAsStateWithLifecycle(false,viewLifecycleOwner)
-                        if(isDefaultMode.value){
-                            this.visibility = View.GONE
-                        } else{
-                            this.visibility = View.VISIBLE
-                        }
-
-                        if(isMultiSelectMode.value){
-                            BottomMultiSelectMenu(
-                                modifier = modifier,
-                                move = {modeManager.onConfirmMoveMode_new()},
-                                copy = {modeManager.onConfirmCopyMode_new()},
-                                delete = {onConfirmDelete(fileListAdapter.fetchSelectedItems())},
-                                zip = {onConfirmZip(selected = fileListAdapter.fetchSelectedItems(), targetDirectory = it)},
-                                unzip = {onConfirmUnzip(selectedZipFile = fileListAdapter.fetchSelectedItems().first(), targetDirectory = it)},
-                                selected = fileListAdapter.fetchSelectedItems()
-
-                            )
-                        } else{
-                            BottomConfirmMenu(
-                                modifier = modifier,
-                                onCancel = {modeManager.onDefaultMode_new()},
-                                onConfirm = {
-                                    val selected = fileListAdapter.fetchSelectedItems()
-                                    fun getDirectory() = viewModel.currentDirectory()       // targetDirectory를 invoke 시점에 get
-                                    when(modeManager.selectMode()){
-                                        CONFIRM_MODE_COPY -> {
-                                            viewModel.copyWork(selected,getDirectory())
-                                        }
-
-                                        CONFIRM_MODE_MOVE -> {
-                                            viewModel.moveWork(selected,getDirectory())
-                                        }
-
-                                        CONFIRM_MODE_UNZIP -> {
-
-                                        }
-
-                                        CONFIRM_MODE_UNZIP_HERE -> {
-
-                                        }
-                                    }
-                                    modeManager.onDefaultMode_new()
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-        }
-
-        viewModel.run{
-            fileHolderList.asLiveData().observe(viewLifecycleOwner) { list ->
-                if (list.isEmpty()) {
-                    binding.emptyDirectoryText.visibility = View.VISIBLE
-                } else {
-                    binding.emptyDirectoryText.visibility = View.INVISIBLE
-                }
-            }
-
-            notAccessible.asLiveData().observe(viewLifecycleOwner){
-                if(it==true) {
-                    binding.accessFailText.visibility = View.VISIBLE
-                } else{
-                    binding.accessFailText.visibility = View.GONE
-                }
-            }
-        }
         return binding.root
     }
 
@@ -222,6 +138,105 @@ class FileListFragment : Fragment() {
                         isEnabled = false
                     }else{
                         isEnabled = true
+                    }
+                }
+            }
+        }
+    }
+
+    private fun prepareView(binding:FragmentFileListBinding){
+        binding.run {
+            composeBottomMenuList.apply {
+                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                setContent {
+                    MaterialTheme {
+                        val modifier = Modifier
+                            .fillMaxSize()
+                        val isDefaultMode = modeManager.isDefaultMode.collectAsStateWithLifecycle(
+                            true,
+                            viewLifecycleOwner
+                        )
+                        val isMultiSelectMode =
+                            modeManager.isMultiSelectMode.collectAsStateWithLifecycle(
+                                false,
+                                viewLifecycleOwner
+                            )
+                        if (isDefaultMode.value) {
+                            this.visibility = View.GONE
+                        } else {
+                            this.visibility = View.VISIBLE
+                        }
+
+                        if (isMultiSelectMode.value) {
+                            BottomMultiSelectMenu(
+                                modifier = modifier,
+                                move = { modeManager.onConfirmMoveMode_new() },
+                                copy = { modeManager.onConfirmCopyMode_new() },
+                                delete = { onConfirmDelete(fileListAdapter.fetchSelectedItems()) },
+                                zip = {
+                                    onConfirmZip(
+                                        selected = fileListAdapter.fetchSelectedItems(),
+                                        targetDirectory = it
+                                    )
+                                },
+                                unzip = {
+                                    onConfirmUnzip(
+                                        selectedZipFile = fileListAdapter.fetchSelectedItems()
+                                            .first(), targetDirectory = it
+                                    )
+                                },
+                                selected = fileListAdapter.fetchSelectedItems()
+
+                            )
+                        } else {
+                            BottomConfirmMenu(
+                                modifier = modifier,
+                                onCancel = { modeManager.onDefaultMode_new() },
+                                onConfirm = {
+                                    val selected = fileListAdapter.fetchSelectedItems()
+                                    fun getDirectory() =
+                                        viewModel.currentDirectory()       // targetDirectory를 invoke 시점에 get
+                                    when (modeManager.selectMode()) {
+                                        CONFIRM_MODE_COPY -> {
+                                            viewModel.copyWork(selected, getDirectory())
+                                        }
+
+                                        CONFIRM_MODE_MOVE -> {
+                                            viewModel.moveWork(selected, getDirectory())
+                                        }
+
+                                        CONFIRM_MODE_UNZIP -> {
+
+                                        }
+
+                                        CONFIRM_MODE_UNZIP_HERE -> {
+
+                                        }
+                                    }
+                                    modeManager.onDefaultMode_new()
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            emptyDirectoryText.visibility.apply {
+                viewModel.fileHolderList.asLiveData().observe(viewLifecycleOwner) {
+                    if (it.isEmpty()) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                }
+            }
+
+            accessFailText.visibility.apply {
+                viewModel.notAccessible.asLiveData().observe(viewLifecycleOwner) {
+                    if (it) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
                     }
                 }
             }
