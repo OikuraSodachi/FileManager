@@ -11,21 +11,25 @@ import kotlinx.coroutines.flow.Flow
  * @param itemFlow [Flow] of recyclerview items
  * **/
 abstract class MultiSelectRecyclerAdapter<E:Any>(
-    itemFlow: Flow<List<E>>,
+    itemFlow: Flow<List<E>>
 ): BaseRecyclerAdapter<E>(itemFlow) {
 
-    abstract val selectionId:String
+    /** selection 기능 활성화 여부 **/
+    abstract var isSelectionEnabled: Boolean
+    abstract val selectionId: String
     private lateinit var selectionTracker: SelectionTracker<Long>
 
     /** instance of selected items **/
     var selectedItems = emptySet<E>()
 
     /** select / deSelect Item **/
-    fun toggleSelection(itemId:Long){
-        if (selectionTracker.selection.contains(itemId)) {
-            selectionTracker.deselect(itemId)
-        } else {
-            selectionTracker.select(itemId)
+    fun toggleSelection(itemId: Long) {
+        if (isSelectionEnabled) {
+            if (selectionTracker.selection.contains(itemId)) {
+                selectionTracker.deselect(itemId)
+            } else {
+                selectionTracker.select(itemId)
+            }
         }
     }
 
@@ -49,17 +53,17 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
         )
     }
 
-    override fun getItemId(position: Int):Long{
+    override fun getItemId(position: Int): Long {
         return position.toLong()
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewHolder<E>, position: Int) {
         super.onBindViewHolder(holder, position)
-        selectedHolderUI(holder,isSelected(position))
+        selectedHolderUI(holder, isSelected(position))
     }
 
     /** whether if item( itemList[position] )  is selected **/
-    fun isSelected(position:Int):Boolean{
+    fun isSelected(position: Int): Boolean {
         return selectionTracker.selection.contains(position.toLong())
     }
 
@@ -67,10 +71,10 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
      *
      * also, setter for selectedItems
      * **/
-    open fun observerCallback(items:List<E>){
-        selectedItems = selectionTracker.selection.map{itemList[it.toInt()]}.toSet()
+    open fun observerCallback(items: List<E>) {
+        selectedItems = selectionTracker.selection.map { itemList[it.toInt()] }.toSet()
     }
 
     /** 선택된 holder에 대한 처리 **/
-    abstract fun selectedHolderUI(holder: BaseRecyclerViewHolder<E>, isSelected:Boolean)
+    abstract fun selectedHolderUI(holder: BaseRecyclerViewHolder<E>, isSelected: Boolean)
 }

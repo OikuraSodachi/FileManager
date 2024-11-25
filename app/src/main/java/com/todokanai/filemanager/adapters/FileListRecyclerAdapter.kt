@@ -30,6 +30,7 @@ class FileListRecyclerAdapter(
     val isDefaultMode:()->Boolean
 ): MultiSelectRecyclerAdapter<File>(itemList) {
 
+    override var isSelectionEnabled: Boolean = false
     fun fetchSelectedItems() = selectedItems.toTypedArray()
     override val selectionId: String
         get() = "selectionId"
