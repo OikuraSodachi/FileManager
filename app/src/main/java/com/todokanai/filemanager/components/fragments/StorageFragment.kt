@@ -30,8 +30,7 @@ class StorageFragment : Fragment() {
                 viewModel.onItemClick(it)
                 isStorageFragment.value = false
             },
-            itemFlow = viewModel.storageHolderList,
-            lifecycleOwner = viewLifecycleOwner
+            itemFlow = viewModel.storageHolderList
         )
         binding.storageRecyclerView.run{
             adapter = storageAdapter

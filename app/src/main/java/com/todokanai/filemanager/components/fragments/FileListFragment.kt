@@ -37,7 +37,12 @@ class FileListFragment : Fragment() {
     private val modeManager = Objects.modeManager
 
     private lateinit var fileListAdapter : FileListRecyclerAdapter
-    private lateinit var directoryAdapter : DirectoryRecyclerAdapter
+    ///private lateinit var directoryAdapter : DirectoryRecyclerAdapter
+    private val directoryAdapter by lazy{DirectoryRecyclerAdapter(
+        {viewModel.onDirectoryClick(it)},
+        viewModel.directoryList,
+        isNotMultiSelectMode = {modeManager.isNotMultiSelectMode()})
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +56,6 @@ class FileListFragment : Fragment() {
                 viewModel.onFileClick(context,file)
             },
             itemList = viewModel.fileHolderList,
-            lifecycleOwner = viewLifecycleOwner,
             isMultiSelectMode_Unit = {modeManager.isMultiSelectMode()},
             isMultiSelectMode = modeManager.isMultiSelectMode,
             isDefaultMode = {modeManager.isDefaultMode()}
@@ -59,12 +63,14 @@ class FileListFragment : Fragment() {
             setHasStableIds(true)
         }
 
+        /*
         directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
             viewModel.directoryList,
-            viewLifecycleOwner,
             isNotMultiSelectMode = {modeManager.isNotMultiSelectMode()}
         )
+
+         */
 
         initDirectoryView(directoryAdapter)
         initFileListView(fileListAdapter)
