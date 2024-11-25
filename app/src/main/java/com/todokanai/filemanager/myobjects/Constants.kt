@@ -6,6 +6,8 @@ object Constants {
     /** notification channel for "onComplete" **/
     const val NOTIFICATION_CHANNEL_ID_COMPLETED : String = "Completed"
 
+    const val PERMISSION_REQUEST_CODE : Int = 111
+
     const val DEFAULT_MODE : Int = 10
     const val MULTI_SELECT_MODE : Int = 11
     const val CONFIRM_MODE_COPY : Int = 12

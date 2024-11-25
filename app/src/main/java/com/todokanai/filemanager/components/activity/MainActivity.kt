@@ -3,7 +3,6 @@ package com.todokanai.filemanager.components.activity
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
@@ -15,13 +14,17 @@ import com.todokanai.filemanager.components.fragments.StorageFragment
 import com.todokanai.filemanager.compose.MenuBtn
 import com.todokanai.filemanager.compose.dialog.SortDialog
 import com.todokanai.filemanager.databinding.ActivityMainBinding
+import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @AndroidEntryPoint
-class MainActivity(override val permissions: Array<String> = Objects.permissions) : BaseActivity() {
+class MainActivity() : BaseActivity() {
+
+    override val permissions = Objects.permissions
+    override val requestCode = Constants.PERMISSION_REQUEST_CODE
 
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -36,21 +39,16 @@ class MainActivity(override val permissions: Array<String> = Objects.permissions
         val isStorageFragment = MutableStateFlow<Boolean>(false)
     }
 
-    override val requestCode: Int
-        get() = 111
-    override val backPressedOverride: Boolean
-        get() = true
-
-    override fun onBackPressedOverride() {
-        //TODO("Not yet implemented")
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prepareView(viewModel)
         viewModel.run {
             prepareObjects(applicationContext, this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
+        }
+
+        onBackPressedDispatcher.addCallback {
+
         }
         setContentView(binding.root)
     }
