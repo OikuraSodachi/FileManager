@@ -44,15 +44,16 @@ class FileListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        onBackPressedOverride({ viewModel.onBackPressed() })
+        onBackPressedOverride(
+            onBackPressed = { viewModel.onBackPressed() },
+            toDefaultMode = {fileListAdapter.isSelectionEnabled = false}
+        )
 
         fileListAdapter = FileListRecyclerAdapter(
-            onItemLongClick = { onLongClick(it) },
-            onFileClick = { context, file ->
-                viewModel.onFileClick(context, file)
+            onFileClick = {
+                viewModel.onFileClick(requireActivity(),it)
             },
-            itemList = viewModel.fileHolderList,
-            isDefaultMode = { modeManager.isDefaultMode() }
+            itemList = viewModel.fileHolderList
         ).apply {
             setHasStableIds(true)
         }
@@ -90,16 +91,13 @@ class FileListFragment : Fragment() {
         modeManager.onDefaultMode_new()
     }
 
-    private fun onLongClick(file: File){
-        modeManager.onMultiSelectMode_new()
-    }
 
-
-    private fun onBackPressedOverride(onBackPressed:()->Unit){
+    private fun onBackPressedOverride(onBackPressed:()->Unit,toDefaultMode:()->Unit){
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if(modeManager.isMultiSelectMode()){
-                    modeManager.onDefaultMode_new()
+                   // modeManager.onDefaultMode_new()
+                    toDefaultMode()
                 }else {
                     onBackPressed()
                 }
