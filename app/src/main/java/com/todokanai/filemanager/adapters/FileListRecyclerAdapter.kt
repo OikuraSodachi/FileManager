@@ -15,7 +15,7 @@ class FileListRecyclerAdapter(
     itemList: Flow<List<File>>
 ): MultiSelectRecyclerAdapter<File>(itemList) {
 
-    override var isSelectionEnabled: Boolean = false
+   // override var isSelectionEnabled: Boolean = false
     fun fetchSelectedItems() = selectedItems.toTypedArray()
     override val selectionId = "selectionId"
 
@@ -31,15 +31,15 @@ class FileListRecyclerAdapter(
         holder.run {
             itemView.run{
                 setOnClickListener {
-                    if(isSelectionEnabled){
+                    if(isSelectionEnabled.value){
                         toggleSelection(itemId)
                     }else{
                         onFileClick(file)       // default
                     }
                 }
                 setOnLongClickListener {
-                    if(!isSelectionEnabled) {
-                        isSelectionEnabled = true
+                    if(!isSelectionEnabled.value) {
+                        isSelectionEnabled.value = true
                     }
                     true
                 }
@@ -53,5 +53,10 @@ class FileListRecyclerAdapter(
         }else{
             holder.view.setBackgroundColor(0)
         }
+    }
+
+    fun toDefaultMode(){
+        selectionTracker.clearSelection()
+        isSelectionEnabled.value = false
     }
 }

@@ -53,5 +53,4 @@ class SelectModeManager {
     fun onDefaultMode_new() = changeSelectMode(DEFAULT_MODE)
     fun onConfirmMoveMode_new() = changeSelectMode(CONFIRM_MODE_MOVE)
     fun onConfirmCopyMode_new() = changeSelectMode(CONFIRM_MODE_COPY)
-    fun onMultiSelectMode_new() = changeSelectMode(MULTI_SELECT_MODE)
 }

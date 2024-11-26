@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.abstracts.BaseRecyclerAdapter
 import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /** [BaseRecyclerAdapter] with multi-selection feature
  * @param itemFlow [Flow] of recyclerview items
@@ -15,16 +16,16 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
 ): BaseRecyclerAdapter<E>(itemFlow) {
 
     /** selection 기능 활성화 여부 **/
-    abstract var isSelectionEnabled: Boolean
+    val isSelectionEnabled = MutableStateFlow<Boolean>(false)
     abstract val selectionId: String
-    private lateinit var selectionTracker: SelectionTracker<Long>
+    lateinit var selectionTracker: SelectionTracker<Long>
 
     /** instance of selected items **/
     var selectedItems = emptySet<E>()
 
     /** select / deSelect Item **/
     fun toggleSelection(itemId: Long) {
-        if (isSelectionEnabled) {
+        if (isSelectionEnabled.value) {
             if (selectionTracker.selection.contains(itemId)) {
                 selectionTracker.deselect(itemId)
             } else {

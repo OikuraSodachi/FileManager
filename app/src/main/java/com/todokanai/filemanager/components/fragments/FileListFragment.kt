@@ -46,7 +46,7 @@ class FileListFragment : Fragment() {
     ): View? {
         onBackPressedOverride(
             onBackPressed = { viewModel.onBackPressed() },
-            toDefaultMode = {fileListAdapter.isSelectionEnabled = false}
+            toDefaultMode = {fileListAdapter.toDefaultMode()}
         )
 
         fileListAdapter = FileListRecyclerAdapter(
@@ -66,7 +66,7 @@ class FileListFragment : Fragment() {
 
         initDirectoryView(directoryAdapter)
         initFileListView(fileListAdapter)
-        initSwipe()
+       // initSwipe()
         prepareView(binding)
 
         return binding.root
@@ -95,7 +95,7 @@ class FileListFragment : Fragment() {
     private fun onBackPressedOverride(onBackPressed:()->Unit,toDefaultMode:()->Unit){
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(modeManager.isMultiSelectMode()){
+                if(fileListAdapter.isSelectionEnabled.value){
                    // modeManager.onDefaultMode_new()
                     toDefaultMode()
                 }else {
@@ -122,6 +122,7 @@ class FileListFragment : Fragment() {
         }
     }
 
+    /*
     private fun initSwipe(){
         val swipe =binding.swipe
         swipe.setOnRefreshListener {
@@ -129,10 +130,11 @@ class FileListFragment : Fragment() {
             swipe.isRefreshing = false
         }
 
+        /*
         modeManager.isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){ mode ->
             swipe.apply{
                 viewTreeObserver.addOnScrollChangedListener() {
-                    if(mode) {
+                    if(fileListAdapter.isSelectionEnabled) {
                         isEnabled = false
                     }else{
                         isEnabled = true
@@ -140,7 +142,19 @@ class FileListFragment : Fragment() {
                 }
             }
         }
+
+         */
+
+        fileListAdapter.isSelectionEnabled.asLiveData().observe(viewLifecycleOwner){
+            swipe.apply {
+                viewTreeObserver.addOnScrollChangedListener {
+                    isEnabled = !it
+                }
+            }
+        }
     }
+
+     */
 
     private fun prepareView(binding:FragmentFileListBinding){
         binding.run {
