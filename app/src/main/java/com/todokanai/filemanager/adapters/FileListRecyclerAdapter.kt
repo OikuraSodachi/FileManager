@@ -31,15 +31,15 @@ class FileListRecyclerAdapter(
         holder.run {
             itemView.run{
                 setOnClickListener {
-                    if(isSelectionEnabled.value){
+                    if(isSelectionEnabled){
                         toggleSelection(itemId)
                     }else{
                         onFileClick(file)       // default
                     }
                 }
                 setOnLongClickListener {
-                    if(!isSelectionEnabled.value) {
-                        isSelectionEnabled.value = true
+                    if(!isSelectionEnabled) {
+                        isSelectionEnabled = true
                     }
                     true
                 }
@@ -57,6 +57,6 @@ class FileListRecyclerAdapter(
 
     fun toDefaultMode(){
         selectionTracker.clearSelection()
-        isSelectionEnabled.value = false
+        isSelectionEnabled = false
     }
 }

@@ -95,7 +95,7 @@ class FileListFragment : Fragment() {
     private fun onBackPressedOverride(onBackPressed:()->Unit,toDefaultMode:()->Unit){
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(fileListAdapter.isSelectionEnabled.value){
+                if(fileListAdapter.isSelectionEnabled){
                    // modeManager.onDefaultMode_new()
                     toDefaultMode()
                 }else {
