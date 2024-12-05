@@ -20,12 +20,21 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
 ): BaseRecyclerAdapter<E>(itemFlow) {
 
     /** selection 기능 활성화 여부 **/
-    open var isSelectionEnabled :Boolean = false
+    private var isSelectionEnabled :Boolean = false
     abstract val selectionId:String
     lateinit var selectionTracker: SelectionTracker<Long>
 
+    fun isSelectionEnabled() = isSelectionEnabled
+
+    open fun toggleSelection(enabled:Boolean){
+        if(!enabled){
+            selectionTracker.clearSelection()
+        }
+        isSelectionEnabled = enabled
+    }
+
     /** select / deSelect Item **/
-    fun toggleSelection(position: Int){
+    fun updateToSelection(position: Int){
         val itemId = getItemId(position)
         if (selectionTracker.selection.contains(itemId)) {
             selectionTracker.deselect(itemId)

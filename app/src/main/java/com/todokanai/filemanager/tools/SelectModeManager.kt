@@ -13,7 +13,7 @@ import java.io.File
 /** RecyclerAdapter쪽에 통합해야 할듯?**/
 class SelectModeManager {
 
-    private val _selectMode = MutableStateFlow<Int>(Constants.DEFAULT_MODE)
+    private val _selectMode = MutableStateFlow<Int>(Constants.MULTI_SELECT_MODE)
     val selectMode : StateFlow<Int>
         get() = _selectMode
 
@@ -36,7 +36,7 @@ class SelectModeManager {
     //---------------------
 
     fun changeSelectMode(mode:Int){
-        _selectMode.value = mode
+     //   _selectMode.value = mode
     }
 
     //--------------

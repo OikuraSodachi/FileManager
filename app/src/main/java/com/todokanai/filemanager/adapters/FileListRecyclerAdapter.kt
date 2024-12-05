@@ -2,6 +2,8 @@ package com.todokanai.filemanager.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
 import com.todokanai.filemanager.abstracts.multiselectrecyclerview.MultiSelectRecyclerAdapter
@@ -13,6 +15,10 @@ class FileListRecyclerAdapter(
     private val onFileClick:(File)->Unit,
     itemList: Flow<List<File>>
 ): MultiSelectRecyclerAdapter<File>(itemList) {
+
+    private val _bottomMenuEnabled = MutableLiveData<Boolean>(false)
+    val bottomMenuEnabled : LiveData<Boolean>
+        get() = _bottomMenuEnabled
 
     fun fetchSelectedItems() = selectedItems().toTypedArray()
     override val selectionId = "selectionId"
@@ -29,39 +35,30 @@ class FileListRecyclerAdapter(
         holder.run {
             itemView.run{
                 setOnClickListener {
-                    if(isSelectionEnabled){
-                        toggleSelection(position)
+                    if(isSelectionEnabled()){
+                        updateToSelection(position)
                     }else{
                         onFileClick(file)       // default
                     }
                 }
                 setOnLongClickListener {
-                    if(!isSelectionEnabled) {
-                        isSelectionEnabled = true
+                    if(!isSelectionEnabled()) {
+                        toggleSelection(true)
                     }
                     true
                 }
             }
         }
     }
-    /*
-    override fun selectedHolderUI(holder: BaseRecyclerViewHolder<File>, isSelected: Boolean) {
-        if(isSelected){
-            holder.view.setBackgroundColor(Color.GRAY)
-        }else{
-            holder.view.setBackgroundColor(0)
-        }
-    }
-     */
 
     override fun observerCallback() {
         /** position of item (starts from 0 ) **/
         val position = selectionTracker.selection.map{it.toInt()}
-        println("observerCallback: $position")    }
-
-
-    fun toDefaultMode(){
-        selectionTracker.clearSelection()
-        isSelectionEnabled = false
+        println("observerCallback: $position")
     }
+
+    fun disableSelection(){
+        toggleSelection(false)
+    }
+
 }
