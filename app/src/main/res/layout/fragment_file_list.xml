@@ -62,4 +62,10 @@
         android:layout_width="match_parent"
         android:layout_height="60dp" />
 
+    <LinearLayout
+        android:id="@+id/bottomMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"></LinearLayout>
+
 </LinearLayout>

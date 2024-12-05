@@ -1,6 +1,7 @@
 package com.todokanai.filemanager.holders
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.widget.ImageView
@@ -82,6 +83,7 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<File>(itemView) {
         }
     }
 
+    /*
     fun multiSelectMode(isSelected: Boolean){
         multiSelectView.visibility = View.VISIBLE
         if(isSelected){
@@ -91,6 +93,20 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<File>(itemView) {
         }
     }
     fun onDefaultMode(){
-        multiSelectView.visibility = View.GONE
+        multiSelectView.visibility = View.VISIBLE
+    }
+     */
+
+    override fun onSelectionChanged(isSelected: Boolean) {
+        super.onSelectionChanged(isSelected)
+        if(isSelected){
+            multiSelectView.visibility = View.VISIBLE
+            multiSelectView.setImageDrawable(getDrawable(itemView.context,R.drawable.baseline_check_24))
+            itemView.setBackgroundColor(Color.GRAY)
+        } else{
+            multiSelectView.visibility = View.GONE
+            itemView.setBackgroundColor(0)
+            multiSelectView.setImageDrawable(null)
+        }
     }
 }

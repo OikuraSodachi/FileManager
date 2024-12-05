@@ -1,6 +1,5 @@
 package com.todokanai.filemanager.adapters
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.todokanai.filemanager.R
@@ -15,8 +14,7 @@ class FileListRecyclerAdapter(
     itemList: Flow<List<File>>
 ): MultiSelectRecyclerAdapter<File>(itemList) {
 
-   // override var isSelectionEnabled: Boolean = false
-    fun fetchSelectedItems() = selectedItems.toTypedArray()
+    fun fetchSelectedItems() = selectedItems().toTypedArray()
     override val selectionId = "selectionId"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
@@ -32,7 +30,7 @@ class FileListRecyclerAdapter(
             itemView.run{
                 setOnClickListener {
                     if(isSelectionEnabled){
-                        toggleSelection(itemId)
+                        toggleSelection(position)
                     }else{
                         onFileClick(file)       // default
                     }
@@ -46,7 +44,7 @@ class FileListRecyclerAdapter(
             }
         }
     }
-
+    /*
     override fun selectedHolderUI(holder: BaseRecyclerViewHolder<File>, isSelected: Boolean) {
         if(isSelected){
             holder.view.setBackgroundColor(Color.GRAY)
@@ -54,6 +52,13 @@ class FileListRecyclerAdapter(
             holder.view.setBackgroundColor(0)
         }
     }
+     */
+
+    override fun observerCallback() {
+        /** position of item (starts from 0 ) **/
+        val position = selectionTracker.selection.map{it.toInt()}
+        println("observerCallback: $position")    }
+
 
     fun toDefaultMode(){
         selectionTracker.clearSelection()
