@@ -35,15 +35,15 @@ class FileListRecyclerAdapter(
         holder.run {
             itemView.run{
                 setOnClickListener {
-                    if(isSelectionEnabled()){
+                    if(isSelectionEnabled){
                         updateToSelection(position)
                     }else{
                         onFileClick(file)       // default
                     }
                 }
                 setOnLongClickListener {
-                    if(!isSelectionEnabled()) {
-                        toggleSelection(true)
+                    if(!isSelectionEnabled) {
+                        isSelectionEnabled = true
                     }
                     true
                 }
@@ -57,8 +57,7 @@ class FileListRecyclerAdapter(
         println("observerCallback: $position")
     }
 
-    fun disableSelection(){
-        toggleSelection(false)
+    override fun onSelectionChanged(holder: BaseRecyclerViewHolder<File>, isSelected: Boolean) {
+        TODO("Not yet implemented")
     }
-
 }

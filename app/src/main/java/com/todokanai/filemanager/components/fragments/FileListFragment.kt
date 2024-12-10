@@ -36,7 +36,7 @@ class FileListFragment : Fragment() {
     ): View? {
         onBackPressedOverride(
             onBackPressed = { viewModel.onBackPressed() },
-            disableSelection = {fileListAdapter.disableSelection()}
+            disableSelection = {fileListAdapter.isSelectionEnabled = false}
         )
 
         fileListAdapter = FileListRecyclerAdapter(
@@ -85,7 +85,7 @@ class FileListFragment : Fragment() {
     private fun onBackPressedOverride(onBackPressed:()->Unit, disableSelection:()->Unit){
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(fileListAdapter.isSelectionEnabled()){
+                if(fileListAdapter.isSelectionEnabled){
                    // modeManager.onDefaultMode_new()
                     disableSelection()
                 }else {
@@ -256,7 +256,7 @@ class FileListFragment : Fragment() {
             }
 
             cancelBtn.setOnClickListener {
-                fileListAdapter.disableSelection()
+                fileListAdapter.isSelectionEnabled = false
             }
             deleteBtn.setOnClickListener {
                 onConfirmDelete(fileListAdapter.fetchSelectedItems())

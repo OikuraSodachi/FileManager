@@ -18,31 +18,19 @@ import kotlinx.coroutines.flow.Flow
 abstract class MultiSelectRecyclerAdapter<E:Any>(
     itemFlow: Flow<List<E>>
 ): BaseRecyclerAdapter<E>(itemFlow) {
+    lateinit var selectionTracker: SelectionTracker<Long>
+    abstract val selectionId:String
 
     /** selection 기능 활성화 여부 **/
-    private var isSelectionEnabled :Boolean = false
-    abstract val selectionId:String
-    lateinit var selectionTracker: SelectionTracker<Long>
-
-    fun isSelectionEnabled() = isSelectionEnabled
-
-    open fun toggleSelection(enabled:Boolean){
-        if(!enabled){
-            selectionTracker.clearSelection()
+    private var selectionEnabledInstance = false
+    var isSelectionEnabled : Boolean
+        get() = selectionEnabledInstance
+        set(enabled) {
+            if(!enabled){
+                selectionTracker.clearSelection()
+            }
+            selectionEnabledInstance = enabled
         }
-        isSelectionEnabled = enabled
-    }
-
-    /** select / deSelect Item **/
-    fun updateToSelection(position: Int){
-        val itemId = getItemId(position)
-        if (selectionTracker.selection.contains(itemId)) {
-            selectionTracker.deselect(itemId)
-
-        } else {
-            selectionTracker.select(itemId)
-        }
-    }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -72,7 +60,7 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
 
     override fun onBindViewHolder(holder: BaseRecyclerViewHolder<E>, position: Int) {
         super.onBindViewHolder(holder, position)
-        holder.onSelectionChanged(isSelected(position))
+        onSelectionChanged(holder,isSelected(position))   //holder의 selected 여부 변경시 처리
     }
 
     /** whether item( itemList[position] ) is selected **/
@@ -80,11 +68,12 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
         return selectionTracker.selection.contains(position.toLong())
     }
 
-    /** SelectionObserver callback
-     *
-     * also, setter for selectedItems
-     * **/
-    abstract fun observerCallback()
+    /** SelectionObserver callback **/
+    open fun observerCallback(){
+
+    }
+
+    abstract fun onSelectionChanged(holder:BaseRecyclerViewHolder<E>, isSelected:Boolean)
 
     /** returns the [Set] of selected Items **/
     fun selectedItems(): Set<E>{
@@ -94,9 +83,21 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
         return out
     }
 
+    /** select / deSelect Item **/
+    fun updateToSelection(position: Int){
+        if(isSelectionEnabled) {
+            val itemId = getItemId(position)
+            if (selectionTracker.selection.contains(itemId)) {
+                selectionTracker.deselect(itemId)
+            } else {
+                selectionTracker.select(itemId)
+            }
+        }
+    }
+
     /** workaround fix for selection being cleared on touching outside
      *
-     * [issue tracker](https://issuetracker.google.com/issues/177046288#comment7) **/
+     * [issueTracker link](https://issuetracker.google.com/issues/177046288#comment7) **/
     private fun selectionBugFix(recyclerView: RecyclerView){
         recyclerView.addOnItemTouchListener(object : RecyclerView.OnItemTouchListener {
             override fun onInterceptTouchEvent(rv: RecyclerView, event: MotionEvent): Boolean {
