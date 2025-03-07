@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.tools.TestClass
 import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.DeleteAction
 import com.todokanai.filemanager.tools.actions.MoveAction
@@ -12,16 +13,20 @@ import com.todokanai.filemanager.tools.actions.ZipAction
 import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 /** modeManager를 viewModel에서 완전히 제거해야 함 **/
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val module:FileModule):ViewModel(){
+    val temp = TestClass()
+
 
     val notAccessible =  module.notAccessible
     val directoryList = module.dirTree
@@ -80,7 +85,16 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         ZipAction(selected, targetDirectory).start()
     }
 
-    fun test(selected: Array<File>){
-        println("${selected.toList().map{it.name}}")
+    fun uploadToNas(selected: File){
+        CoroutineScope(Dispatchers.IO).launch{
+            temp.uploadFileToFtp(
+                server = "", // server ip
+                port = 21,      // port (default = 21)
+                username = "",
+                password = "",
+                localFilePath = selected.absolutePath, // 로컬 파일 경로
+                remoteFilePath = "" // nas 파일 저장 경로
+            )
+        }
     }
 }
