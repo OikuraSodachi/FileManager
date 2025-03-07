@@ -79,4 +79,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun zipWork(selected:Array<File>,targetDirectory: File){
         ZipAction(selected, targetDirectory).start()
     }
+
+    fun test(selected: Array<File>){
+        println("${selected.toList().map{it.name}}")
+    }
 }

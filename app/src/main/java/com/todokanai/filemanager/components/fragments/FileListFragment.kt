@@ -276,6 +276,9 @@ class FileListFragment : Fragment() {
 
     fun menuList():List<Pair<String,()->Unit>>{
         val out = mutableListOf<Pair<String,()->Unit>>()
+        val selected = fileListAdapter.fetchSelectedItems()
+
+        out.add(Pair("test",{viewModel.test(selected)}))
         return out
     }
 }

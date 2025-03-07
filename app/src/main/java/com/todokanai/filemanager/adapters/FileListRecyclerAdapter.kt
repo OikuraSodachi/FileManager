@@ -58,6 +58,6 @@ class FileListRecyclerAdapter(
     }
 
     override fun onSelectionChanged(holder: BaseRecyclerViewHolder<File>, isSelected: Boolean) {
-        TODO("Not yet implemented")
+        holder.onSelectionChanged(isSelected)
     }
 }
