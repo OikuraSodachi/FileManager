@@ -88,12 +88,11 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     fun uploadToNas(selected: File){
         CoroutineScope(Dispatchers.IO).launch{
             temp.uploadFileToFtp(
-                server = "", // server ip
-                port = 21,      // port (default = 21)
+                server = "",
                 username = "",
                 password = "",
-                localFilePath = selected.absolutePath, // 로컬 파일 경로
-                remoteFilePath = "" // nas 파일 저장 경로
+                localFilePath = selected.absolutePath,
+                remoteFilePath = ""
             )
         }
     }
