@@ -324,7 +324,7 @@ fun deleteRecursively_td(
     }
 }
 
-fun uploadFileToFtp(
+fun uploadFileToFtp_td(
     server: String, // server ip
     username: String,
     password: String,
@@ -365,7 +365,7 @@ fun uploadFileToFtp(
 }
 
 /** 아직 미검증 상태 **/
-fun downloadFileFromFtp(
+fun downloadFileFromFtp_td(
     server: String,
     username: String,
     password: String,

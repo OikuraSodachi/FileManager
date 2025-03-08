@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.TestClass
 import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.DeleteAction
 import com.todokanai.filemanager.tools.actions.MoveAction
@@ -12,6 +11,7 @@ import com.todokanai.filemanager.tools.actions.UnzipAction
 import com.todokanai.filemanager.tools.actions.ZipAction
 import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
+import com.todokanai.filemanager.tools.independent.uploadFileToFtp_td
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -25,8 +25,6 @@ import javax.inject.Inject
 /** modeManager를 viewModel에서 완전히 제거해야 함 **/
 @HiltViewModel
 class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val module:FileModule):ViewModel(){
-    val temp = TestClass()
-
 
     val notAccessible =  module.notAccessible
     val directoryList = module.dirTree
@@ -87,7 +85,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     fun uploadToNas(selected: File){
         CoroutineScope(Dispatchers.IO).launch{
-            temp.uploadFileToFtp(
+            uploadFileToFtp_td(
                 server = "",
                 username = "",
                 password = "",
