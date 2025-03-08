@@ -29,6 +29,7 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
             if(!enabled){
                 selectionTracker.clearSelection()
             }
+            onSelectionStateChanged(enabled)
             selectionEnabledInstance = enabled
         }
 
@@ -68,10 +69,16 @@ abstract class MultiSelectRecyclerAdapter<E:Any>(
         return selectionTracker.selection.contains(position.toLong())
     }
 
-    /** SelectionObserver callback **/
+    /** SelectionObserver callback (optional) **/
     open fun observerCallback(){
 
     }
+
+    /** on Selection mode enabled/disabled **/
+    open fun onSelectionStateChanged(enabled: Boolean){
+
+    }
+
 
     abstract fun onSelectionChanged(holder:BaseRecyclerViewHolder<E>, isSelected:Boolean)
 

@@ -13,18 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
-import com.todokanai.filemanager.myobjects.Objects
-import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment : Fragment() {
 
     private val viewModel : FileListViewModel by viewModels()
     private val binding by lazy{FragmentFileListBinding.inflate(layoutInflater)}
-    private val modeManager = Objects.modeManager
 
     private lateinit var fileListAdapter : FileListRecyclerAdapter
 
@@ -51,42 +47,28 @@ class FileListFragment : Fragment() {
         directoryAdapter = DirectoryRecyclerAdapter(
             {viewModel.onDirectoryClick(it)},
             viewModel.directoryList,
-            isNotMultiSelectMode = {modeManager.isNotMultiSelectMode()}
+            isNotMultiSelectMode = {fileListAdapter.isSelectionEnabled}
         )
 
         initDirectoryView(directoryAdapter)
         initFileListView(fileListAdapter)
        // initSwipe()
         prepareView(binding)
+        fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner){ enabled->
+            if(enabled) {
+                binding.bottomMenuLayout.visibility = View.VISIBLE
+            }else{
+                binding.bottomMenuLayout.visibility = View.GONE
+            }
+        }
 
         return binding.root
     }
-
-    private fun onConfirmDelete(selected:Array<File>){
-        viewModel.deleteWork(selected)
-        modeManager.onDefaultMode_new()
-    }
-
-    private fun onConfirmZip(selected: Array<File>, targetDirectory:String){
-        val current = viewModel.currentDirectory().absolutePath
-        val targetFile = File("$current/$targetDirectory.zip")
-
-        viewModel.zipWork(selected, targetFile)
-       // modeManager.onDefaultMode_new()
-    }
-
-    private fun onConfirmUnzip(selectedZipFile:File,targetDirectory: String){
-        val target = viewModel.currentDirectory().resolve(targetDirectory)
-        viewModel.unzipWork(selectedZipFile,target)
-     //   modeManager.onDefaultMode_new()
-    }
-
 
     private fun onBackPressedOverride(onBackPressed:()->Unit, disableSelection:()->Unit){
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if(fileListAdapter.isSelectionEnabled){
-                   // modeManager.onDefaultMode_new()
                     disableSelection()
                 }else {
                     onBackPressed()
@@ -111,7 +93,6 @@ class FileListFragment : Fragment() {
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
     }
-
     /*
     private fun initSwipe(){
         val swipe =binding.swipe
@@ -148,83 +129,6 @@ class FileListFragment : Fragment() {
 
     private fun prepareView(binding:FragmentFileListBinding){
         binding.run {
-            /*
-            composeBottomMenuList.apply {
-                setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                setContent {
-                    MaterialTheme {
-                        val modifier = Modifier
-                            .fillMaxSize()
-                        val isDefaultMode = modeManager.isDefaultMode.collectAsStateWithLifecycle(
-                            true,
-                            viewLifecycleOwner
-                        )
-                        val isMultiSelectMode =
-                            modeManager.isMultiSelectMode.collectAsStateWithLifecycle(
-                                false,
-                                viewLifecycleOwner
-                            )
-                        if (isDefaultMode.value) {
-                            this.visibility = View.GONE
-                        } else {
-                            this.visibility = View.VISIBLE
-                        }
-
-                        if (isMultiSelectMode.value) {
-                            BottomMultiSelectMenu(
-                                modifier = modifier,
-                                move = { modeManager.onConfirmMoveMode_new() },
-                                copy = { modeManager.onConfirmCopyMode_new() },
-                                delete = { onConfirmDelete(fileListAdapter.fetchSelectedItems()) },
-                                zip = {
-                                    onConfirmZip(
-                                        selected = fileListAdapter.fetchSelectedItems(),
-                                        targetDirectory = it
-                                    )
-                                },
-                                unzip = {
-                                    onConfirmUnzip(
-                                        selectedZipFile = fileListAdapter.fetchSelectedItems()
-                                            .first(), targetDirectory = it
-                                    )
-                                },
-                                selected = fileListAdapter.fetchSelectedItems()
-
-                            )
-                        } else {
-                            BottomConfirmMenu(
-                                modifier = modifier,
-                                onCancel = { modeManager.onDefaultMode_new() },
-                                onConfirm = {
-                                    val selected = fileListAdapter.fetchSelectedItems()
-                                    fun getDirectory() =
-                                        viewModel.currentDirectory()       // targetDirectory를 invoke 시점에 get
-                                    when (modeManager.selectMode()) {
-                                        CONFIRM_MODE_COPY -> {
-                                            viewModel.copyWork(selected, getDirectory())
-                                        }
-
-                                        CONFIRM_MODE_MOVE -> {
-                                            viewModel.moveWork(selected, getDirectory())
-                                        }
-
-                                        CONFIRM_MODE_UNZIP -> {
-
-                                        }
-
-                                        CONFIRM_MODE_UNZIP_HERE -> {
-
-                                        }
-                                    }
-                                    modeManager.onDefaultMode_new()
-                                }
-                            )
-                        }
-                    }
-                }
-            }
-
-             */
 
             emptyDirectoryText.visibility.apply {
                 viewModel.fileHolderList.asLiveData().observe(viewLifecycleOwner) {
@@ -245,40 +149,6 @@ class FileListFragment : Fragment() {
                     }
                 }
             }
-            bottomMenuLayout.visibility.apply {
-                fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner){
-                    if (it) {
-                        View.VISIBLE
-                    } else {
-                        View.GONE
-                    }
-                }
-            }
-
-            cancelBtn.setOnClickListener {
-                fileListAdapter.isSelectionEnabled = false
-            }
-            deleteBtn.setOnClickListener {
-                onConfirmDelete(fileListAdapter.fetchSelectedItems())
-            }
-            confirmBtn.setOnClickListener {
-
-            }
-            moreBtn.setOnClickListener {
-                popupMenu_td(
-                    requireContext(),
-                    it,
-                    menuList()
-                )
-            }
         }
-    }
-
-    fun menuList():List<Pair<String,()->Unit>>{
-        val out = mutableListOf<Pair<String,()->Unit>>()
-        val selected = fileListAdapter.fetchSelectedItems().first()
-
-        out.add(Pair("test",{viewModel.uploadToNas(selected)}))
-        return out
     }
 }

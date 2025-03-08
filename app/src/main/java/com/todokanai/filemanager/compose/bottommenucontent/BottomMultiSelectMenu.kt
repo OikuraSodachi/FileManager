@@ -18,13 +18,13 @@ import java.io.File
 
 @Composable
 fun BottomMultiSelectMenu(
-    modifier: Modifier = Modifier,
     move:()->Unit,
     copy:()->Unit,
     delete:()->Unit,
     zip:(String)->Unit,
     unzip:(String)->Unit,
-    selected:Array<File>
+    selected:Array<File>,
+    modifier: Modifier = Modifier
 ){
     val expandedState = remember { mutableStateOf(false) }
     val deleteDialog = remember{mutableStateOf(false)}

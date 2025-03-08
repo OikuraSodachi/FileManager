@@ -60,4 +60,9 @@ class FileListRecyclerAdapter(
     override fun onSelectionChanged(holder: BaseRecyclerViewHolder<File>, isSelected: Boolean) {
         holder.onSelectionChanged(isSelected)
     }
+
+    override fun onSelectionStateChanged(enabled: Boolean) {
+        super.onSelectionStateChanged(enabled)
+        _bottomMenuEnabled.value = enabled
+    }
 }
