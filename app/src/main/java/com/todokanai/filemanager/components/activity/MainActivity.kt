@@ -10,6 +10,7 @@ import androidx.lifecycle.asLiveData
 import com.todokanai.filemanager.abstracts.BaseActivity
 import com.todokanai.filemanager.adapters.ViewpagerAdapter
 import com.todokanai.filemanager.components.fragments.FileListFragment
+import com.todokanai.filemanager.components.fragments.NetFragment
 import com.todokanai.filemanager.components.fragments.StorageFragment
 import com.todokanai.filemanager.compose.MenuBtn
 import com.todokanai.filemanager.compose.dialog.SortDialog
@@ -28,7 +29,7 @@ class MainActivity() : BaseActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val fragmentList = listOf(StorageFragment(), FileListFragment())
+    private val fragmentList = listOf(StorageFragment(), FileListFragment(),NetFragment())
     private val viewpagerAdapter by lazy { ViewpagerAdapter(this) }
 
     val shouldShowDialog = mutableStateOf(false)
@@ -37,6 +38,13 @@ class MainActivity() : BaseActivity() {
     companion object {
         /** Todo: 임시조치로 companion object에 배치함. 나중에 옮길 것 **/
         val isStorageFragment = MutableStateFlow<Boolean>(false)
+        /** 1: StorageFragment
+         *
+         * 2: FileListFragment
+         *
+         * 3: NetFragment
+         * **/
+        val fragmentCode = MutableStateFlow<Int>(2)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,11 +92,14 @@ class MainActivity() : BaseActivity() {
                 }
             }
             btn2.setOnClickListener { menuBtnExpanded.value = true }
+            netBtn.setOnClickListener{
+                fragmentCode.value = 3
+            }
             exitBtn.setOnClickListener {
                 viewModel.exit(this@MainActivity)
             }
             storageBtn.setOnClickListener {
-                isStorageFragment.value = true
+                fragmentCode.value = 1
             }
 
             mainViewPager.run {
@@ -97,11 +108,13 @@ class MainActivity() : BaseActivity() {
             }
         }
 
-        isStorageFragment.asLiveData().observe(this) {
-            if (it == true) {
+        fragmentCode.asLiveData().observe(this) {
+            if (it == 1) {
                 binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
-            } else {
+            } else if(it== 2) {
                 binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
+            } else{
+                binding.mainViewPager.setCurrentItem(2,false)   // toNetFrag
             }
         }
     }
