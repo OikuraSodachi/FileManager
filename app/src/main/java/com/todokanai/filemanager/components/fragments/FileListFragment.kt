@@ -61,7 +61,6 @@ class FileListFragment : Fragment() {
                 binding.bottomMenuLayout.visibility = View.GONE
             }
         }
-
         return binding.root
     }
 
