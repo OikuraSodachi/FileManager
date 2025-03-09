@@ -6,6 +6,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import org.apache.commons.net.ftp.FTPClient
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -16,5 +17,11 @@ class Etc {
     @Provides
     fun provideFileModule(): FileModule {
         return FileModule(Environment.getExternalStorageDirectory())
+    }
+
+    @Singleton
+    @Provides
+    fun provideFTPClient():FTPClient{
+        return FTPClient()
     }
 }

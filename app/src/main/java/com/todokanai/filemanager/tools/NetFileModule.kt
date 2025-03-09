@@ -13,7 +13,8 @@ class NetFileModule(
     val serverIp:String,
     val userId:String,
     val userPassword:String,
-    val defaultDirectory:String
+    val defaultDirectory:String,
+    val ftpClient: FTPClient
 ):BaseNetFileModule(defaultDirectory) {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
@@ -40,7 +41,7 @@ class NetFileModule(
         remoteDirectory: String,
         port: Int = 21
     ): Array<FTPFile> {
-        val ftpClient = FTPClient()
+       // val ftpClient = FTPClient()
         var result = emptyArray<FTPFile>()
         try {
             // FTP 서버 연결

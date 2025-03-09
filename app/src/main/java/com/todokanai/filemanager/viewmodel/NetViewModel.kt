@@ -8,15 +8,17 @@ import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.tools.NetFileModule
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.combine
+import org.apache.commons.net.ftp.FTPClient
 import javax.inject.Inject
 
 @HiltViewModel
-class NetViewModel @Inject constructor() :ViewModel(){
+class NetViewModel @Inject constructor(ftpClient: FTPClient) :ViewModel(){
     private val module = NetFileModule(
         serverIp = Variables.netIp,
         userId = Variables.netId,
         userPassword = Variables.netPassword,
-        defaultDirectory = Variables.defaultDirectory
+        defaultDirectory = Variables.defaultDirectory,
+        ftpClient = ftpClient
     )
 
     private val testUri: Uri = Uri.EMPTY
