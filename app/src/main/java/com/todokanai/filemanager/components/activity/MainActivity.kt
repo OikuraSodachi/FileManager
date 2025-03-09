@@ -36,8 +36,6 @@ class MainActivity() : BaseActivity() {
     val menuBtnExpanded = mutableStateOf(false)
 
     companion object {
-        /** Todo: 임시조치로 companion object에 배치함. 나중에 옮길 것 **/
-        val isStorageFragment = MutableStateFlow<Boolean>(false)
         /** 1: StorageFragment
          *
          * 2: FileListFragment

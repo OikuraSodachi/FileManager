@@ -29,7 +29,7 @@ class FileListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         onBackPressedOverride(
             onBackPressed = { viewModel.onBackPressed() },
             disableSelection = {fileListAdapter.isSelectionEnabled = false}
@@ -45,9 +45,12 @@ class FileListFragment : Fragment() {
         }
 
         directoryAdapter = DirectoryRecyclerAdapter(
-            {viewModel.onDirectoryClick(it)},
-            viewModel.directoryList,
-            isNotMultiSelectMode = {fileListAdapter.isSelectionEnabled}
+            {
+                if (!fileListAdapter.isSelectionEnabled) {
+                    viewModel.onDirectoryClick(it)
+                }
+            },
+            viewModel.directoryList
         )
 
         initDirectoryView(directoryAdapter)

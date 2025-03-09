@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.StorageRecyclerAdapter
-import com.todokanai.filemanager.components.activity.MainActivity.Companion.isStorageFragment
+import com.todokanai.filemanager.components.activity.MainActivity.Companion.fragmentCode
 import com.todokanai.filemanager.databinding.FragmentStorageBinding
 import com.todokanai.filemanager.viewmodel.StorageViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +28,7 @@ class StorageFragment : Fragment() {
         storageAdapter = StorageRecyclerAdapter(
             onItemClick = {
                 viewModel.onItemClick(it)
-                isStorageFragment.value = false
+                fragmentCode.value = 2
             },
             itemFlow = viewModel.storageHolderList
         )
