@@ -17,4 +17,8 @@ abstract class BaseNetFileModule(
 ) {
     val currentDirectory = MutableStateFlow<File>(File(defaultDirectory))
     abstract val itemList: StateFlow<List<File>>
+
+    /** [directory] 내부의 파일 목록 가져오기 **/
+    abstract suspend fun requestListFilesFromNet(directory:File):Array<File>
+
 }
