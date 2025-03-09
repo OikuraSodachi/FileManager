@@ -36,5 +36,4 @@ data class FileHolderItem(
 
     /** File.name **/
     fun name() = """[^/\\]+$""".toRegex().find(absolutePath)?.value
-
 }
