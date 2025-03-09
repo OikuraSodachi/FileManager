@@ -46,7 +46,8 @@ data class FileHolderItem(
         }
     }
 
-    /** TODO() number of files inside the directory (if it is Directory) **/
+    /** TODO() number of files inside the directory (if it is Directory)
+     * File 이 Local 에 있는 경우에만 사용해야 할 듯 **/
     fun contentNumber():Int{
         return 0
     }
