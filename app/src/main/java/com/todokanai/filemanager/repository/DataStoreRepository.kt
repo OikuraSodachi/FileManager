@@ -13,52 +13,22 @@ class DataStoreRepository @Inject constructor(appContext: Context): MyDataStore(
     companion object{
         val DATASTORE_SORT_BY = stringPreferencesKey("datastore_sort_by")
         val DATASTORE_COPY_OVERWRITE = booleanPreferencesKey("datastore_copy_overwrite")
+        val DATASTORE_USER_ID = stringPreferencesKey("datastore_user_id")
+        val DATASTORE_USER_PASSWORD = stringPreferencesKey("datastore_user_password")
     }
+
+    private val defaultPassword : String = ""
+    private val defaultId : String = ""
 
     suspend fun saveSortBy(value:String) = DATASTORE_SORT_BY.save(value)
-
     suspend fun sortBy() = DATASTORE_SORT_BY.value()
-
     val sortBy = DATASTORE_SORT_BY.flow()
 
-    /*
-    val sortBy_asString = dataStore.sortBy.map {
-        when(it){
-            1 -> {
-                "BY_DEFAULT"
-            }
-            2->{
-                "BY_NAME_ASCENDING"
-            }
-            3->{
-                "BY_NAME_DESCENDING"
-            }
-            4->{
-                "BY_SIZE_ASCENDING "
-            }
-            5->{
-                "BY_SIZE_DESCENDING"
-            }
-            6->{
-                "BY_TYPE_ASCENDING"
-            }
-            7->{
-                "BY_TYPE_DESCENDING"
-            }
-            8->{
-                "BY_DATE_ASCENDING"
-            }
-            9->{
-                "BY_DATE_DESCENDING"
-            }
-            else->{
-                "SortType value error"
-            }
-        }
-    }
-     */
+    suspend fun saveUserId(id:String) = DATASTORE_USER_ID.save(id)
+    suspend fun getUserId() = DATASTORE_USER_ID.notNullValue(defaultValue = defaultId)
+    val userIdFlow = DATASTORE_USER_ID.notNullFlow(defaultValue = defaultId)
 
-    suspend fun saveCopyOverwrite(value:Boolean) = DATASTORE_COPY_OVERWRITE.save(value)
-
-    suspend fun copyOverwrite() = DATASTORE_COPY_OVERWRITE.value()
+    suspend fun saveUserPassword(password:String) = DATASTORE_USER_PASSWORD.save(password)
+    suspend fun getUserPassword() = DATASTORE_USER_PASSWORD.notNullValue(defaultValue = defaultPassword)
+    val userPasswordFlow = DATASTORE_USER_PASSWORD.notNullFlow(defaultValue = defaultPassword)
 }
