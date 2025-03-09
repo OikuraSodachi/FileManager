@@ -31,5 +31,7 @@ class NetViewModel @Inject constructor() :ViewModel(){
             )
         }
     }
-    fun onItemClick(context: Context,item: FileHolderItem){}
+    fun onItemClick(context: Context,item: FileHolderItem){
+        module.setCurrentDirectory(item.absolutePath)
+    }
 }

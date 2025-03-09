@@ -11,6 +11,6 @@ class Variables {
         var netId:String = ""
         var netPassword:String = ""
         var netIp:String = ""
-        var defaultDirectory:String = "HDD1"
+        var defaultDirectory:String = ""
     }
 }

@@ -16,6 +16,11 @@ class NetFileModule(
         return listFilesInFtpDirectory(serverIp,userId,userPassword,directory)
     }
 
+    override fun isFileValid(absolutePath: String): Boolean {
+        return true
+    }
+
+
     /** 아직 미검증 상태 **/
     private fun listFilesInFtpDirectory(
         server: String,
