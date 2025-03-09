@@ -2,6 +2,7 @@ package com.todokanai.filemanager.tools
 
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
+import org.apache.commons.net.ftp.FTPFile
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -87,5 +88,44 @@ class TestClass {
                 ex.printStackTrace()
             }
         }
+    }
+
+    /** 아직 미검증 상태 **/
+    fun listFilesInFtpDirectory(
+        server: String,
+        username: String,
+        password: String,
+        remoteDirectory: String,
+        port: Int = 21
+    ): Array<String> {
+        val ftpClient = FTPClient()
+        val fileList = mutableListOf<String>()
+
+        try {
+            // FTP 서버 연결
+            ftpClient.connect(server, port)
+            ftpClient.login(username, password)
+            ftpClient.enterLocalPassiveMode() // Passive Mode 사용
+
+            // 특정 디렉토리 내 파일 목록 가져오기
+            val files: Array<FTPFile> = ftpClient.listFiles(remoteDirectory)
+            for (file in files) {
+                fileList.add(file.name)
+            }
+
+            println("파일 목록 불러오기 성공: $fileList")
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            println("파일 목록을 가져오는 중 오류 발생: ${ex.message}")
+        } finally {
+            try {
+                ftpClient.logout()
+                ftpClient.disconnect()
+            } catch (ex: IOException) {
+                ex.printStackTrace()
+            }
+        }
+
+        return fileList.toTypedArray()
     }
 }
