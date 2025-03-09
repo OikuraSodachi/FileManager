@@ -54,13 +54,9 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         started = SharingStarted.Eagerly // SharingStarted.Eagerly / Lazily to make the flow hot
     )
 
-    fun currentDirectory() : File {
-        return module.currentPath.value
-    }
-
     fun refreshFileList() = module.refreshListFiles()
 
-    fun onDirectoryClick(directory:File) = module.updateCurrentPath(directory)
+    fun onDirectoryClick(file:File) = module.updateCurrentPath(file.absolutePath)
 
     //fun onFileClick(context: Context, file: File) = module.onFileClick(context,file)
     fun onFileClick(context: Context, item:FileHolderItem) = module.onFileClick(context,item)

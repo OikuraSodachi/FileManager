@@ -40,14 +40,14 @@ data class FileHolderItem(
 
     fun sizeText():String{
         if(isDirectory()){
-            "${contentNumber()} files"
+            return "${contentNumber()} files"
         }else{
-            DateFormat.getDateTimeInstance().format(lastModified)
+            return DateFormat.getDateTimeInstance().format(lastModified)
         }
     }
 
-    /** number of files inside the directory (if it is Directory)**/
+    /** TODO() number of files inside the directory (if it is Directory) **/
     fun contentNumber():Int{
-        TODO()
+        return 0
     }
 }

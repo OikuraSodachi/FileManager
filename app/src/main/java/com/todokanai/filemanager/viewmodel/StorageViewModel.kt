@@ -13,5 +13,5 @@ class StorageViewModel @Inject constructor(val module:FileModule) : ViewModel(){
 
     val storageHolderList = Variables.storages.map{ it.toList() }
 
-    fun onItemClick(file:File) = module.updateCurrentPath(file)
+    fun onItemClick(file:File) = module.updateCurrentPath(file.absolutePath)
 }
