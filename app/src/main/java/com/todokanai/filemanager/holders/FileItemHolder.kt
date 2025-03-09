@@ -11,13 +11,14 @@ import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.getTotalSize_td
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import java.io.File
 import java.text.DateFormat
 
-class FileItemHolder(itemView:View): BaseRecyclerViewHolder<File>(itemView) {
+class FileItemHolder(itemView:View): BaseRecyclerViewHolder<FileHolderItem>(itemView) {
 
     private val thumbnail = itemView.findViewById<ImageView>(R.id.thumbnail)
     private val fileName = itemView.findViewById<TextView>(R.id.fileName)
@@ -36,11 +37,11 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<File>(itemView) {
     }
 
     /** file의 extension에 따른 기본 thumbnail 값 */
-    private fun File.thumbnail(context: Context) : Drawable? {
-        return if (this.isDirectory) {
+    private fun FileHolderItem.thumbnail(context: Context) : Drawable? {
+        return if (this.isDirectory()) {
             getDrawable(context, R.drawable.ic_baseline_folder_24)
         } else {
-            when (this.extension) {
+            when (this.extension()) {
                 "pdf" -> {
                     getDrawable(context, R.drawable.ic_pdf)
                 }
@@ -54,9 +55,9 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<File>(itemView) {
         }
     }
 
-    override fun onInit(item: File) {
+    override fun onInit(item: FileHolderItem) {
         val size =
-            if(item.isDirectory) {
+            if(item.isDirectory()) {
                 val subFiles = item.listFiles()
                 if(subFiles == null){
                     "null"
@@ -70,20 +71,19 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<File>(itemView) {
         fileName.text = item.name
         fileName.isSelected = true
         fileSize.text = size
-        lastModified.text = DateFormat.getDateTimeInstance().format(item.lastModified())
+        lastModified.text = DateFormat.getDateTimeInstance().format(item.lastModified)
     }
 
-    private fun ImageView.setThumbnail(file: File){
+    private fun ImageView.setThumbnail(file: FileHolderItem){
         if(file.isImage()){
             Glide.with(itemView)
-                .load(file.toUri())
+                .load(file.uri)
                 .into(this)
         } else{
             this.setImageDrawable(file.thumbnail(itemView.context))
         }
     }
 
-    /*
     fun multiSelectMode(isSelected: Boolean){
         multiSelectView.visibility = View.VISIBLE
         if(isSelected){
@@ -95,7 +95,7 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<File>(itemView) {
     fun onDefaultMode(){
         multiSelectView.visibility = View.VISIBLE
     }
-     */
+
 
     override fun onSelectionChanged(isSelected: Boolean) {
         super.onSelectionChanged(isSelected)
