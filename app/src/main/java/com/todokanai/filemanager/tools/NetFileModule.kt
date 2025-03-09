@@ -1,6 +1,10 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.BaseNetFileModule
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
@@ -19,6 +23,13 @@ class NetFileModule(
     override fun isFileValid(absolutePath: String): Boolean {
         return true
     }
+
+    override val itemList: Flow<Array<FTPFile>>
+        get() = currentDirectory.map {
+            requestListFilesFromNet(it)
+        }.flowOn(
+            Dispatchers.Default
+        )
 
 
     /** 아직 미검증 상태 **/

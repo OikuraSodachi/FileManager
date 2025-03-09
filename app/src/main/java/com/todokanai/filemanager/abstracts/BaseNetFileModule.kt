@@ -1,11 +1,8 @@
 package com.todokanai.filemanager.abstracts
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import org.apache.commons.net.ftp.FTPFile
 
 abstract class BaseNetFileModule(defaultPath:String) {
@@ -13,15 +10,11 @@ abstract class BaseNetFileModule(defaultPath:String) {
     val currentDirectory: StateFlow<String>
         get() = _currentDirectory
 
-    val itemList: Flow<Array<FTPFile>>
-        get() = currentDirectory.map {
-            requestListFilesFromNet(it)
-        }.flowOn(
-            Dispatchers.Default
-        )
+    abstract val itemList:Flow<Array<FTPFile>>
 
     fun setCurrentDirectory(absolutePath:String){
         if(isFileValid(absolutePath)) {
+            println("netDir: ${absolutePath}")
             _currentDirectory.value = absolutePath
         }
     }

@@ -7,7 +7,7 @@ import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.tools.NetFileModule
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,17 +21,25 @@ class NetViewModel @Inject constructor() :ViewModel(){
 
     private val testUri: Uri = Uri.EMPTY
 
-    val itemFlow = module.itemList.map {
-        it.map { ftpFile ->
+    val itemFlow = combine(
+        module.itemList,
+        module.currentDirectory
+    ) {
+        items,directory ->
+        items.map {
             FileHolderItem(
-                absolutePath = ftpFile.name,
-                size = ftpFile.size,
-                lastModified = ftpFile.timestamp.timeInMillis,
+                absolutePath = "${directory}/${it.name}",
+                size = it.size,
+                lastModified = it.timestamp.timeInMillis,
                 uri = testUri
             )
         }
     }
     fun onItemClick(context: Context,item: FileHolderItem){
-        module.setCurrentDirectory(item.absolutePath)
+        if(item.isDirectory()) {
+            module.setCurrentDirectory(item.absolutePath)
+        }else{
+            println("this is a File")
+        }
     }
 }
