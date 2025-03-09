@@ -7,15 +7,10 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
-import androidx.core.net.toUri
 import com.bumptech.glide.Glide
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
-import com.todokanai.filemanager.tools.independent.getMimeType_td
-import com.todokanai.filemanager.tools.independent.getTotalSize_td
-import com.todokanai.filemanager.tools.independent.readableFileSize_td
-import java.io.File
 import java.text.DateFormat
 
 class FileItemHolder(itemView:View): BaseRecyclerViewHolder<FileHolderItem>(itemView) {
@@ -25,16 +20,6 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<FileHolderItem>(item
     private val fileSize = itemView.findViewById<TextView>(R.id.fileSize)
     private val lastModified = itemView.findViewById<TextView>(R.id.lastModified)
     private val multiSelectView = itemView.findViewById<ImageView>(R.id.multiSelectView)
-
-    /** asyncImage 여부 결정 **/
-    private fun File.isImage():Boolean{
-        var result = false
-        val temp = getMimeType_td(this.name)
-        if(temp=="video/*" || temp == "image/*" ){
-            result = true
-        }
-        return result
-    }
 
     /** file의 extension에 따른 기본 thumbnail 값 */
     private fun FileHolderItem.thumbnail(context: Context) : Drawable? {
@@ -56,21 +41,10 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<FileHolderItem>(item
     }
 
     override fun onInit(item: FileHolderItem) {
-        val size =
-            if(item.isDirectory()) {
-                val subFiles = item.listFiles()
-                if(subFiles == null){
-                    "null"
-                }else {
-                    "${subFiles.size} 개"
-                }
-            } else {
-                arrayOf(item).getTotalSize_td().readableFileSize_td()
-            }
         thumbnail.setThumbnail(item)
-        fileName.text = item.name
+        fileName.text = item.name()
         fileName.isSelected = true
-        fileSize.text = size
+        fileSize.text = item.sizeText()
         lastModified.text = DateFormat.getDateTimeInstance().format(item.lastModified)
     }
 

@@ -2,6 +2,7 @@ package com.todokanai.filemanager.data.dataclass
 
 import android.net.Uri
 import com.todokanai.filemanager.tools.independent.getMimeType_td
+import java.text.DateFormat
 
 /** @param uri File.toUri() **/
 data class FileHolderItem(
@@ -36,4 +37,17 @@ data class FileHolderItem(
 
     /** File.name **/
     fun name() = """[^/\\]+$""".toRegex().find(absolutePath)?.value
+
+    fun sizeText():String{
+        if(isDirectory()){
+            "${contentNumber()} files"
+        }else{
+            DateFormat.getDateTimeInstance().format(lastModified)
+        }
+    }
+
+    /** number of files inside the directory (if it is Directory)**/
+    fun contentNumber():Int{
+        TODO()
+    }
 }
