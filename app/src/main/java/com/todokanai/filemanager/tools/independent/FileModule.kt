@@ -1,14 +1,12 @@
 package com.todokanai.filemanager.tools.independent
 
 import android.content.Context
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import android.net.Uri
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
@@ -56,12 +54,23 @@ class FileModule(defaultPath:File) {
      *
      *  false일 경우, Intent.ACTION_VIEW (파일 열기) 실행
      * **/
+    /*
     fun onFileClick(context: Context, file: File){
         if(file.isDirectory){
             updateCurrentPath(file)
         } else {
             val mimeType = getMimeType_td(file.name)
             openFile_td(context, file, mimeType)
+        }
+    }
+     */
+
+    fun onFileClick(context: Context, item:FileHolderItem){
+        if(item.isDirectory()){
+            updateCurrentPath(file)
+        } else {
+            val mimeType = getMimeType_td(item.absolutePath)
+            openFileFromUri_td(context, item.uri, mimeType)
         }
     }
 

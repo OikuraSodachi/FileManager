@@ -7,14 +7,14 @@ import androidx.lifecycle.MutableLiveData
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
 import com.todokanai.filemanager.abstracts.multiselectrecyclerview.MultiSelectRecyclerAdapter
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.holders.FileItemHolder
 import kotlinx.coroutines.flow.Flow
-import java.io.File
 
 class FileListRecyclerAdapter(
-    private val onFileClick:(File)->Unit,
-    itemList: Flow<List<File>>
-): MultiSelectRecyclerAdapter<File>(itemList) {
+    private val onFileClick:(FileHolderItem)->Unit,
+    itemList: Flow<List<FileHolderItem>>
+): MultiSelectRecyclerAdapter<FileHolderItem>(itemList) {
 
     private val _bottomMenuEnabled = MutableLiveData<Boolean>(false)
     val bottomMenuEnabled : LiveData<Boolean>
@@ -28,7 +28,7 @@ class FileListRecyclerAdapter(
         return FileItemHolder(view)
     }
 
-    override fun onBindViewHolder(holder: BaseRecyclerViewHolder<File>, position: Int) {
+    override fun onBindViewHolder(holder: BaseRecyclerViewHolder<FileHolderItem>, position: Int) {
         super.onBindViewHolder(holder, position)
         val file = itemList[position]
 
@@ -57,7 +57,7 @@ class FileListRecyclerAdapter(
         println("observerCallback: $position")
     }
 
-    override fun onSelectionChanged(holder: BaseRecyclerViewHolder<File>, isSelected: Boolean) {
+    override fun onSelectionChanged(holder: BaseRecyclerViewHolder<FileHolderItem>, isSelected: Boolean) {
         holder.onSelectionChanged(isSelected)
     }
 

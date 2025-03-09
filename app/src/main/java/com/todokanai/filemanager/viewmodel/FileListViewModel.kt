@@ -1,8 +1,10 @@
 package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.actions.DeleteAction
@@ -34,7 +36,9 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         dsRepo.sortBy
     ){
         listFiles,mode ->
-        sortedFileList_td(listFiles,mode)
+        sortedFileList_td(listFiles,mode).map{
+            it.toFileHolderItem()
+        }
     }
 
     /** "Hot Flow" of [fileHolderList] **/
@@ -58,7 +62,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
     fun onDirectoryClick(directory:File) = module.updateCurrentPath(directory)
 
-    fun onFileClick(context: Context, file: File) = module.onFileClick(context,file)
+    //fun onFileClick(context: Context, file: File) = module.onFileClick(context,file)
+    fun onFileClick(context: Context, item:FileHolderItem) = module.onFileClick(context,item)
 
     fun onBackPressed() = module.onBackPressedCallback()
 
@@ -93,5 +98,14 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
                 remoteFilePath = ""
             )
         }
+    }
+
+    private fun File.toFileHolderItem():FileHolderItem{
+        return FileHolderItem(
+            absolutePath = this.absolutePath,
+            size = this.length(),
+            lastModified = this.lastModified(),
+            uri = this.toUri()
+        )
     }
 }

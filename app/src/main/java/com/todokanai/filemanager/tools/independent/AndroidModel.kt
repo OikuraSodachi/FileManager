@@ -194,6 +194,36 @@ fun openFile_td(
 
 /** Todokanai
  *
+ *  @param uri uri of the file
+ *
+ *  open the file with a compatible application
+ *
+ *  onFailure: no application available to open the file, etc...
+ *
+ *  mimeType: Mime type of the given file **/
+fun openFileFromUri_td(
+    context: Context,
+    uri: Uri,
+    mimeType:String,
+    onFailure:()->Unit = {}
+){
+    val intent = Intent()
+    intent.action = Intent.ACTION_VIEW
+    intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+    intent.setDataAndType(uri, mimeType)
+    // println("mimeType: $mimeType")
+    try {
+        ActivityCompat.startActivity(context, intent, null)
+    } catch (t:Throwable){
+        println(t)
+        onFailure()
+    }
+}
+
+
+
+/** Todokanai
+ *
  *  itemList: List of Pair<( ItemTitle ),( Callback ) >
  *
  * **/
