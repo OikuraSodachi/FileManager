@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
@@ -31,7 +32,23 @@ class NetFileModule(
             Dispatchers.Default
         )
 
-    /** 아직 미검증 상태 **/
+
+    fun connectToFTP_td(
+        server: String,
+        username: String,
+        password: String,
+        port:Int = 21
+    ){
+        val ftpClient = FTPClient()
+        // FTP 서버 연결
+        ftpClient.run{
+            connect(server, port)
+            login(username, password)
+            enterLocalPassiveMode() // Passive Mode 사용
+            setFileType(FTP.BINARY_FILE_TYPE) // 바이너리 파일 전송
+        }
+    }
+
     private fun listFilesInFtpDirectory(
         server: String,
         username: String,
