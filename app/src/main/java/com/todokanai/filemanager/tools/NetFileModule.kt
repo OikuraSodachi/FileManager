@@ -13,8 +13,7 @@ class NetFileModule(
     val serverIp:String,
     val userId:String,
     val userPassword:String,
-    val defaultDirectory:String,
-    val ftpClient: FTPClient
+    val defaultDirectory:String
 ):BaseNetFileModule(defaultDirectory) {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
@@ -32,7 +31,6 @@ class NetFileModule(
             Dispatchers.Default
         )
 
-
     /** 아직 미검증 상태 **/
     private fun listFilesInFtpDirectory(
         server: String,
@@ -41,7 +39,7 @@ class NetFileModule(
         remoteDirectory: String,
         port: Int = 21
     ): Array<FTPFile> {
-       // val ftpClient = FTPClient()
+        val ftpClient = FTPClient()
         var result = emptyArray<FTPFile>()
         try {
             // FTP 서버 연결
@@ -53,7 +51,6 @@ class NetFileModule(
 
             // 특정 디렉토리 내 파일 목록 가져오기
             result = ftpClient.listFiles(remoteDirectory)
-
 
             println("파일 목록 불러오기 성공: $result")
         } catch (ex: IOException) {
@@ -67,7 +64,6 @@ class NetFileModule(
                 ex.printStackTrace()
             }
         }
-
         return result
     }
 }
