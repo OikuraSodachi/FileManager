@@ -11,14 +11,15 @@ import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
 
 class NetFileModule(
-    val serverIp:String,
-    val userId:String,
-    val userPassword:String,
+    val serverIp:()->String,
+    val userId:()->String,
+    val userPassword:()->String,
     val defaultDirectory:String
 ):BaseNetFileModule(defaultDirectory) {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
-        return listFilesInFtpDirectory(serverIp,userId,userPassword,directory)
+        println("ip: $serverIp, id: $userId, password: $userPassword")
+        return listFilesInFtpDirectory(serverIp(),userId(),userPassword(),directory)
     }
 
     override fun isFileValid(absolutePath: String): Boolean {

@@ -13,7 +13,6 @@ import com.todokanai.filemanager.components.fragments.FileListFragment
 import com.todokanai.filemanager.components.fragments.NetFragment
 import com.todokanai.filemanager.components.fragments.StorageFragment
 import com.todokanai.filemanager.compose.MenuBtn
-import com.todokanai.filemanager.compose.dialog.SortDialog
 import com.todokanai.filemanager.databinding.ActivityMainBinding
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Objects
@@ -51,7 +50,6 @@ class MainActivity() : BaseActivity() {
         viewModel.run {
             prepareObjects(applicationContext, this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
-            temp()
         }
 
         onBackPressedDispatcher.addCallback {
@@ -65,6 +63,7 @@ class MainActivity() : BaseActivity() {
         viewpagerAdapter.fragmentList = fragmentList
 
         binding.run {
+            /*
             composeDialogView.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
@@ -77,6 +76,8 @@ class MainActivity() : BaseActivity() {
                     }
                 }
             }
+
+             */
             composePopupmenuView.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                 setContent {
@@ -84,7 +85,8 @@ class MainActivity() : BaseActivity() {
                         if (menuBtnExpanded.value) {
                             MenuBtn(
                                 expanded = menuBtnExpanded,
-                                exit = { viewModel.exit(this@MainActivity) }
+                                exit = { viewModel.exit(this@MainActivity) },
+                                nasSetter = { ip,id,password -> viewModel.nasSetter(ip, id, password)}
                             )
                         }
                     }

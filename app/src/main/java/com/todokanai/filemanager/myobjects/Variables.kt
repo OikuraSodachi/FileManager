@@ -8,9 +8,6 @@ class Variables {
     companion object{
         val storages = MutableStateFlow<Array<File>>(emptyArray())
 
-        var netId:String = ""
-        var netPassword:String = ""
-        var netIp:String = ""
         var defaultDirectory:String = "HDD1"
     }
 }

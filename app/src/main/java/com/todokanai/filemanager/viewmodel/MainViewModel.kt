@@ -48,13 +48,7 @@ class MainViewModel @Inject constructor(val dsRepo:DataStoreRepository):ViewMode
     }
 
     fun exit(activity: Activity) = exit_td(activity)
-    fun temp(){
-        CoroutineScope(Dispatchers.IO).launch {
-            Variables.netId = dsRepo.getUserId()
-            Variables.netPassword = dsRepo.getUserPassword()
-            Variables.netIp = dsRepo.getServerIp()
-        }
-    }
+
     /*
     fun exitTest(activity: Activity) = workerTest()
 
@@ -97,4 +91,15 @@ class MainViewModel @Inject constructor(val dsRepo:DataStoreRepository):ViewMode
     }
 
      */
+
+    fun nasSetter(ip:String,id:String,password:String){
+        CoroutineScope(Dispatchers.IO).launch {
+            dsRepo.run{
+                saveServerIp(ip)
+                saveUserId(id)
+                saveUserPassword(password)
+            }
+        }
+    }
+
 }
