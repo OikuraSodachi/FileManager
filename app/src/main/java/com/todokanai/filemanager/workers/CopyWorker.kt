@@ -23,7 +23,7 @@ class CopyWorker(context: Context, params: WorkerParameters): CoroutineWorker(co
     private val selectedFiles = stringArray.map{ File(it) }.toTypedArray()
     private val targetDirectory = File(targetDirectoryName)
 
-    val fileQuantity = selectedFiles.getFileAndFoldersNumber_td()
+    val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO){
         try{

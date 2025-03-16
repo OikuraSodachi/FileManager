@@ -3,7 +3,6 @@ package com.todokanai.filemanager.holders
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
@@ -34,8 +33,8 @@ class StorageHolder(itemView: View): BaseRecyclerViewHolder<File>(itemView) {
 
     private fun storageSize(file:File):String{
         val used = file.totalSpace - file.freeSpace
-        val usedSpace = used.readableFileSize_td()
-        val total = file.totalSpace.readableFileSize_td()
+        val usedSpace = readableFileSize_td(used)
+        val total = readableFileSize_td(file.totalSpace)
         return "$usedSpace/$total"
     }
 }

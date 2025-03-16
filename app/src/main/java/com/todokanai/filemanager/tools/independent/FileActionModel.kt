@@ -9,11 +9,7 @@ import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.IOException
-import java.nio.file.CopyOption
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 import java.text.DecimalFormat
-import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
@@ -35,43 +31,28 @@ fun getFilenameForPath_td(path: String): String =
         path.length // parameter is used exclusively. Substring produced till n - 1 characters are reached.
     ).toString()
 
-
-/** Todokanai
- *
- * File.length() 에만 사용할 것 **/
-fun Long.readableFileSize_td():String{
-    if (this <= 0) return "0"
+/** Todokanai */
+fun readableFileSize_td(size: Long): String {
+    if (size <= 0) return "0"
     val units = arrayOf("B", "kB", "MB", "GB", "TB")
-    val digitGroups = (log10(this.toDouble()) / log10(1024.0)).toInt()
+    val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
     return DecimalFormat("#,##0.#").format(
-        this / 1024.0.pow(digitGroups.toDouble())
+        size / 1024.0.pow(digitGroups.toDouble())
     ) + " " + units[digitGroups]
 }
 
-/** Todokanai **/
-fun durationText_td(duration:Int?):String{
-    if(duration == null){
-        return "null"
-    } else if(duration < 3600000){
-        return SimpleDateFormat("mm:ss").format(duration)
-    }else {
-        return SimpleDateFormat("hh:mm:ss").format(duration)
-    }
-}
-
 
 /** Todokanai
  *
- *  Array< File > 과 하위 경로의 파일의 크기 합
- *
- *  directory가 아닐 경우는 file 자체의 크기 반환
+ * get the total size of [files]:Array<[File]> and its subdirectories
+ * @param files Array of [File]
+ * @return the total size
  * */
-fun Array<File>.getTotalSize_td():Long{
+fun getTotalSize_td(files: Array<File>): Long {
     var totalSize: Long = 0
-    for (file in this) {
+    for (file in files) {
         if (file.isDirectory) {
-            totalSize += file.listFiles()?.getTotalSize_td() ?: 0
-
+            totalSize += getTotalSize_td(file.listFiles() ?: emptyArray())
         } else {
             totalSize += file.length()
         }
@@ -142,7 +123,8 @@ fun sortedFileList_td(
 
 /** Todokanai
  *
- * Directory의 갯수는 포함이 되지 않음 */
+ * @return the number of [File] on [files] and its subdirectories. Does NOT Include directories
+ * **/
 fun getFileNumber_td(files:Array<File>):Int{
     var total = 0
     for (file in files) {
@@ -155,11 +137,13 @@ fun getFileNumber_td(files:Array<File>):Int{
     return total
 }
 /** Todokanai
- *
+ * get the total number of files on [files] and its subdirectories
+ * @param files Array of [File]
+ * @return the total number
  * Directory와 File의 총 갯수*/
-fun Array<File>.getFileAndFoldersNumber_td():Int{
+fun getFileAndFoldersNumber_td(files:Array<File>):Int{
     var total = 0
-    for (file in this) {
+    for (file in files) {
         if (file.isFile) {
             total ++
         } else if (file.isDirectory) {
@@ -171,33 +155,14 @@ fun Array<File>.getFileAndFoldersNumber_td():Int{
 }
 
 /** Todokanai
- *
- *  file의 하위 파일/폴더들을 반환
- *
- *  권한 문제 / IOException 발생시에는 로그찍고나서 emptyArray 반환
- */
-fun getFileArray_td(file:File):Array<File>{
-    val listFiles = file.listFiles()
-    if(listFiles==null){
-        println("${file.name}.listFiles() returned null")
-        return emptyArray()
-    }else{
-        return listFiles
-    }
-}
-
-/** Todokanai
- *
- *  경로의 Tree를 반환
- *
- *   File.walkTopDown() / File.walkBottomUp으로 대체 가능할지도?
+ * @return a fileTree from [currentPath]
  * */
 fun dirTree_td(currentPath:File): List<File> {
     val result = mutableListOf<File>()
     var now = currentPath
-    while (now.parent != null) {
+    while (now.parentFile != null) {
         result.add(now)
-        now = now.parentFile
+        now = now.parentFile!!
     }
     return result.reversed()
 }
@@ -250,8 +215,8 @@ fun compressFilesRecursivelyToZip_td(files: Array<File>, zipFile: File) {
  *
  * 경로가 접근 가능할 경우 true 반환
  * **/
-fun File.isAccessible_td():Boolean{
-    return this.listFiles() != null
+fun isAccessible_td(file: File): Boolean {
+    return file.listFiles() != null
 }
 
 /**
@@ -284,46 +249,20 @@ else
         else -> "*/*"
     }
 
-fun copyFiles_Recursive_td(
-    selected:Array<File>,
-    targetDirectory:File,
-    onProgress:(File)->Unit,
-    copyOption:CopyOption = StandardCopyOption.REPLACE_EXISTING
-){
-    for (file in selected) {
-        val target = targetDirectory.resolve(file.name)
-        if (file.isDirectory) {
-            // Create the target directory
-            target.mkdirs()
-            onProgress(file)
-            // Copy the contents of the directory recursively
-            copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target,onProgress, copyOption)
-        } else {
-            // Copy the file
-            Files.copy(file.toPath(), target.toPath(),)
-            onProgress(file)
-        }
-    }
+/** @param filePath absolutePath string of file
+ * @return absolutePath of parent file. null if unable to.
+ * **/
+fun getParentAbsolutePath_td(filePath: String): String? {
+    val regex = Regex("^(.*)[/\\\\][^/\\\\]+$") // 파일 경로에서 마지막 디렉터리 이전 부분을 추출
+    val matchResult = regex.find(filePath)
+    return matchResult?.groupValues?.get(1) // 첫 번째 그룹이 부모 디렉터리 경로
 }
 
-fun deleteRecursively_td(
-    file: File,
-    onDeleteFile:(File)->Unit
-){
-    try {
-        if (file.isDirectory) {
-            val files = file.listFiles()
-            if (files != null) {
-                for (child in files) {
-                    deleteRecursively_td(child, onDeleteFile) // 재귀 호출
-                }
-            }
-        }
-        file.delete()
-    }catch (e:Exception){
-        e.printStackTrace()
-    }
-}
+/** file 을 확장자 없이 생성했을 경우, regex 필터가 걸러내지 못할 수 있음에 주의
+ * @param filePath absolutePath of file
+ * @return true if the file is a directory, else false
+ * **/
+fun isDirectoryByRegex_td(filePath: String) : Boolean = Regex(".+[\\\\/]$").matches(filePath)    // // 경로가 '/' 또는 '\'로 끝나면 directory 로 판단
 
 /** @param server server ip
  *  @param username login id

@@ -1,6 +1,8 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.BaseNetFileModule
+import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -11,15 +13,12 @@ import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
 
 class NetFileModule(
-    val serverIp:()->String,
-    val userId:()->String,
-    val userPassword:()->String,
+    val dsRepo:DataStoreRepository,
     val defaultDirectory:String
 ):BaseNetFileModule(defaultDirectory) {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
-        println("ip: $serverIp, id: $userId, password: $userPassword")
-        return listFilesInFtpDirectory(serverIp(),userId(),userPassword(),directory)
+        return listFilesInFtpDirectory(dsRepo.getServerIp(),dsRepo.getUserId(),dsRepo.getUserPassword(),directory)
     }
 
     override fun isFileValid(absolutePath: String): Boolean {
@@ -32,6 +31,10 @@ class NetFileModule(
         }.flowOn(
             Dispatchers.Default
         )
+
+    fun toParent(current:String = currentDirectory.value){
+        getParentAbsolutePath_td(current)?.let { setCurrentDirectory(it) }
+    }
 
 
     fun connectToFTP_td(

@@ -27,7 +27,7 @@ class ZipWorker(context: Context, params: WorkerParameters): CoroutineWorker(con
     private val selectedFiles = stringArray.map{ File(it) }.toTypedArray()
     private val targetDirectory = File(targetDirectoryName)
 
-    val totalSize = selectedFiles.getTotalSize_td()
+    val totalSize = getTotalSize_td(selectedFiles)
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO){
         try{

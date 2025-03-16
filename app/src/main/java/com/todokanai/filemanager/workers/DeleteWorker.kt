@@ -16,7 +16,7 @@ class DeleteWorker(context: Context, params: WorkerParameters): CoroutineWorker(
 
     private val stringArray = inputData.getStringArray(Constants.WORKER_KEY_SELECTED_FILES)!!
     private val selectedFiles = stringArray.map{ File(it) }.toTypedArray()
-    val fileQuantity = selectedFiles.getFileAndFoldersNumber_td()
+    val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
 
 
     override suspend fun doWork(): Result = withContext(Dispatchers.IO){

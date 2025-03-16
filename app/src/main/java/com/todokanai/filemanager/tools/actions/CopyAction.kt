@@ -12,7 +12,7 @@ class CopyAction(
     val targetDirectory: File
 ) : FileAction {
     var progress : Int = 0
-    private val fileQuantity = selectedFiles.getFileAndFoldersNumber_td()
+    private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
     private lateinit var currentFileInProcess : File
 
     override fun main() {

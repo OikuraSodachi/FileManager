@@ -16,7 +16,7 @@ class ZipAction(
 
     var bytesDone : Long = 0L
     var prevProgress: Int = 0
-    val totalSize = selectedFiles.getTotalSize_td()
+    val totalSize = getTotalSize_td(selectedFiles)
 
     override fun main() {
         ZipOutputStream(FileOutputStream(targetZipFile)).use { zipOut ->

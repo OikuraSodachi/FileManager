@@ -50,7 +50,7 @@ class FileModule(defaultPath:File) {
 
     /** setter for currentPath **/
     fun updateCurrentPath(directory: String) {
-        if (File(directory).isAccessible_td()) {        // 접근 가능여부 체크
+        if (isAccessible_td(File(directory))) {        // 접근 가능여부 체크
             _currentPath.value = directory
         }
     }

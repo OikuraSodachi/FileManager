@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -33,7 +34,14 @@ class NetFragment : Fragment() {
             layoutManager = verticalManager
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
+        onBackPressedOverride { viewModel.toParent() }
 
         return binding.root
+    }
+
+    private fun onBackPressedOverride(onBackPressed:()->Unit){
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() { onBackPressed() }
+        })
     }
 }
