@@ -31,7 +31,6 @@ class MainActivity() : BaseActivity() {
     private val fragmentList = listOf(StorageFragment(), FileListFragment(),NetFragment())
     private val viewpagerAdapter by lazy { ViewpagerAdapter(this) }
 
-    val shouldShowDialog = mutableStateOf(false)
     val menuBtnExpanded = mutableStateOf(false)
 
     companion object {
