@@ -51,7 +51,6 @@ class MainActivity() : BaseActivity() {
         viewModel.run {
             prepareObjects(applicationContext, this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
-            temp()
         }
 
         onBackPressedDispatcher.addCallback {

@@ -1,5 +1,6 @@
 package com.todokanai.filemanager.abstracts
 
+import androidx.annotation.CallSuper
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,9 +13,9 @@ abstract class BaseNetFileModule(defaultPath:String) {
 
     abstract val itemList:Flow<Array<FTPFile>>
 
-    fun setCurrentDirectory(absolutePath:String){
+    @CallSuper
+    open fun setCurrentDirectory(absolutePath:String){
         if(isFileValid(absolutePath)) {
-            println("netDir: ${absolutePath}")
             _currentDirectory.value = absolutePath
         }
     }
@@ -22,10 +23,6 @@ abstract class BaseNetFileModule(defaultPath:String) {
     /** returns true if the file is valid **/
     abstract fun isFileValid(absolutePath:String):Boolean
 
-
     /** [directory] 내부의 파일 목록 가져오기 **/
     abstract suspend fun requestListFilesFromNet(directory:String):Array<FTPFile>
-
-
-
 }

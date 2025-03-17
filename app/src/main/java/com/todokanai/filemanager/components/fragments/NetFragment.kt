@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -24,7 +25,7 @@ class NetFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         listAdapter = NetRecyclerAdapter(
-            onItemClick = {viewModel.onItemClick(requireActivity(),it)},
+            onItemClick = {viewModel.onItemClick(it)},
             itemFlow = viewModel.itemFlow
         )
         val verticalManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
@@ -34,6 +35,12 @@ class NetFragment : Fragment() {
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                viewModel.toParent()
+            }
+        })
         return binding.root
     }
+
 }

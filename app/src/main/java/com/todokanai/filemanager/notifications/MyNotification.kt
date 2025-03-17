@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.myobjects.Constants
 
+/** Todo: 추상화 적용할 것 **/
 class MyNotification(context: Context) {
 
     private val context by lazy{context}

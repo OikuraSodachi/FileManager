@@ -5,34 +5,26 @@ import android.content.Context
 import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.todokanai.filemanager.myobjects.ContextObjects
-import com.todokanai.filemanager.myobjects.Objects.contextObjects
 import com.todokanai.filemanager.myobjects.Objects.myNoti
-import com.todokanai.filemanager.myobjects.Objects.packageName
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.notifications.MyNotification
-import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(val dsRepo:DataStoreRepository):ViewModel() {
+class MainViewModel @Inject constructor():ViewModel() {
 
     companion object{
         val myWorkerValue: Int = 1
     }
 
     fun prepareObjects(appContext: Context,activity: Activity){
-        packageName = appContext.packageName
-        contextObjects = ContextObjects(appContext)
         myNoti = MyNotification(appContext)
     }
 
@@ -48,13 +40,7 @@ class MainViewModel @Inject constructor(val dsRepo:DataStoreRepository):ViewMode
     }
 
     fun exit(activity: Activity) = exit_td(activity)
-    fun temp(){
-        CoroutineScope(Dispatchers.IO).launch {
-            Variables.netId = dsRepo.getUserId()
-            Variables.netPassword = dsRepo.getUserPassword()
-            Variables.netIp = dsRepo.getServerIp()
-        }
-    }
+
     /*
     fun exitTest(activity: Activity) = workerTest()
 

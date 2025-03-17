@@ -1,24 +1,23 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.BaseNetFileModule
+import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
 
 class NetFileModule(
-    val serverIp:String,
-    val userId:String,
-    val userPassword:String,
-    val defaultDirectory:String
+    private val dsRepo:DataStoreRepository,
+    defaultDirectory:String
 ):BaseNetFileModule(defaultDirectory) {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
-        return listFilesInFtpDirectory(serverIp,userId,userPassword,directory)
+        return listFilesInFtpDirectory(dsRepo.getServerIp(),dsRepo.getUserId(),dsRepo.getUserPassword(),directory)
     }
 
     override fun isFileValid(absolutePath: String): Boolean {
@@ -32,21 +31,8 @@ class NetFileModule(
             Dispatchers.Default
         )
 
-
-    fun connectToFTP_td(
-        server: String,
-        username: String,
-        password: String,
-        port:Int = 21
-    ){
-        val ftpClient = FTPClient()
-        // FTP 서버 연결
-        ftpClient.run{
-            connect(server, port)
-            login(username, password)
-            enterLocalPassiveMode() // Passive Mode 사용
-            setFileType(FTP.BINARY_FILE_TYPE) // 바이너리 파일 전송
-        }
+    fun toParentDirectory(current:String = currentDirectory.value){
+        getParentAbsolutePath_td(current)?.let { setCurrentDirectory(it) }
     }
 
     private fun listFilesInFtpDirectory(
