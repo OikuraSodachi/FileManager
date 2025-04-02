@@ -2,7 +2,6 @@ package com.todokanai.filemanager.abstracts.multiselectrecyclerview
 
 import androidx.recyclerview.selection.ItemKeyProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
 
 /** Base class of [ItemKeyProvider] for [MultiSelectRecyclerAdapter] **/
 class BaseItemKeyProvider(private val recyclerView: RecyclerView): ItemKeyProvider<Long>(SCOPE_MAPPED) {
@@ -12,7 +11,7 @@ class BaseItemKeyProvider(private val recyclerView: RecyclerView): ItemKeyProvid
 
     override fun getPosition(key: Long): Int {
         val holder = recyclerView.findViewHolderForItemId(key)
-        return if (holder is BaseRecyclerViewHolder<*>) {
+        return if (holder is RecyclerView.ViewHolder) {
             holder.adapterPosition
         } else {
             RecyclerView.NO_POSITION

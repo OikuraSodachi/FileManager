@@ -30,7 +30,7 @@ class StorageFragment : Fragment() {
                 viewModel.onItemClick(it)
                 fragmentCode.value = 2
             },
-            itemFlow = viewModel.storageHolderList
+            //itemFlow = viewModel.storageHolderList
         )
         binding.storageRecyclerView.run{
             adapter = storageAdapter

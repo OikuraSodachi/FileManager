@@ -7,13 +7,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.todokanai.filemanager.R
-import com.todokanai.filemanager.abstracts.BaseRecyclerViewHolder
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import java.text.DateFormat
 
-class FileItemHolder(itemView:View): BaseRecyclerViewHolder<FileHolderItem>(itemView) {
+class FileItemHolder(itemView:View,private val onClick:(FileHolderItem)->Unit): RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail = itemView.findViewById<ImageView>(R.id.thumbnail)
     private val fileName = itemView.findViewById<TextView>(R.id.fileName)
@@ -40,12 +40,13 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<FileHolderItem>(item
         }
     }
 
-    override fun onInit(item: FileHolderItem) {
+    fun onInit(item: FileHolderItem) {
         thumbnail.setThumbnail(item)
         fileName.text = item.name()
         fileName.isSelected = true
         fileSize.text = item.sizeText()
         lastModified.text = DateFormat.getDateTimeInstance().format(item.lastModified)
+        itemView.setOnClickListener { onClick(item) }
     }
 
     private fun ImageView.setThumbnail(file: FileHolderItem){
@@ -71,8 +72,7 @@ class FileItemHolder(itemView:View): BaseRecyclerViewHolder<FileHolderItem>(item
     }
 
 
-    override fun onSelectionChanged(isSelected: Boolean) {
-        super.onSelectionChanged(isSelected)
+    fun onSelectionChanged(isSelected: Boolean) {
         if(isSelected){
             multiSelectView.visibility = View.VISIBLE
             multiSelectView.setImageDrawable(getDrawable(itemView.context,R.drawable.baseline_check_24))
