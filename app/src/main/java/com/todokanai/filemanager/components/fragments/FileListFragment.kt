@@ -39,7 +39,6 @@ class FileListFragment : Fragment() {
             onFileClick = {
                 viewModel.onFileClick(requireActivity(),it)
             },
-           // itemList = viewModel.fileHolderList
         ).apply {
             setHasStableIds(true)
         }
@@ -50,7 +49,6 @@ class FileListFragment : Fragment() {
                     viewModel.onDirectoryClick(it)
                 }
             },
-           // viewModel.directoryList
         )
 
         initDirectoryView(directoryAdapter)
@@ -72,6 +70,11 @@ class FileListFragment : Fragment() {
             directoryList.asLiveData().observe(viewLifecycleOwner){
                 directoryAdapter.updateDataSet(it)
             }
+//            _uiState.asLiveData().observe(viewLifecycleOwner){
+//                fileListAdapter.updateDataSet(it.listFiles)
+//
+//                directoryAdapter.updateDataSet(it.dirTree)
+//            }
         }
         return binding.root
     }

@@ -3,7 +3,6 @@ package com.todokanai.filemanager.viewmodel
 import android.content.Context
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.actions.CopyAction
@@ -18,9 +17,7 @@ import com.todokanai.filemanager.tools.independent.uploadFileToFtp_td
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
@@ -42,18 +39,15 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-    /** "Hot Flow" of [fileHolderList] **/
-    val fileHolderListTest = combine(
-        module.listFiles,
-        dsRepo.sortBy
-    ){ listFiles,mode ->
-       // println("listFiles: ${listFiles.map { it.name }}")
-        //println("mode: $mode")
-        sortedFileList_td(listFiles,mode)
-    }.shareIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly // SharingStarted.Eagerly / Lazily to make the flow hot
-    )
+//    val _uiState = MutableStateFlow(FileListUiState())
+//
+//    fun updateUiStateTest(){
+//        viewModelScope.launch {
+//            _uiState.update {
+//                it.copy()
+//            }
+//        }
+//    }
 
     fun refreshFileList() = module.refreshListFiles()
 
@@ -114,3 +108,8 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     }
 
 }
+
+data class FileListUiState(
+    val listFiles:List<FileHolderItem>,
+    val dirTree:List<File>
+)
