@@ -64,6 +64,15 @@ class FileListFragment : Fragment() {
                 binding.bottomMenuLayout.visibility = View.GONE
             }
         }
+
+        viewModel.run{
+            fileHolderList.asLiveData().observe(viewLifecycleOwner){
+                fileListAdapter.updateDataSet(it)
+            }
+            directoryList.asLiveData().observe(viewLifecycleOwner){
+                directoryAdapter.updateDataSet(it)
+            }
+        }
         return binding.root
     }
 

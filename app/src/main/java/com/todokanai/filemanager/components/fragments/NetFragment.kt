@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.NetRecyclerAdapter
@@ -40,6 +41,9 @@ class NetFragment : Fragment() {
                 viewModel.toParent()
             }
         })
+        viewModel.itemFlow.asLiveData().observe(viewLifecycleOwner){
+            listAdapter.updateDataSet(it)
+        }
         return binding.root
     }
 

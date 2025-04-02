@@ -17,13 +17,11 @@ class StorageRecyclerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorageHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.storage_recycler,parent,false)
-        return StorageHolder(view)
+        return StorageHolder(view,onItemClick)
     }
 
     override fun onBindViewHolder(holder: StorageHolder, position: Int) {
         val item = itemList()[position]
-        holder.run{
-            itemView.setOnClickListener { onItemClick(item) }
-        }
+        holder.onInit(item)
     }
 }

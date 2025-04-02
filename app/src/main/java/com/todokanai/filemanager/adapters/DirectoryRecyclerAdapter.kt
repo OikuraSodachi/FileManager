@@ -16,13 +16,11 @@ class DirectoryRecyclerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.directory_recycler,parent,false)
-        return DirectoryHolder(view)
+        return DirectoryHolder(view,onClick)
     }
 
     override fun onBindViewHolder(holder: DirectoryHolder, position: Int) {
         val directory = itemList()[position]
-        holder.itemView.setOnClickListener {
-            onClick(directory)
-        }
+        holder.onInit(directory)
     }
 }

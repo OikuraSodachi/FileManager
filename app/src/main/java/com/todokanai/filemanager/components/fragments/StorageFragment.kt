@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.StorageRecyclerAdapter
 import com.todokanai.filemanager.components.activity.MainActivity.Companion.fragmentCode
@@ -24,7 +25,7 @@ class StorageFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): View? {
+    ): View {
         storageAdapter = StorageRecyclerAdapter(
             onItemClick = {
                 viewModel.onItemClick(it)
@@ -36,6 +37,11 @@ class StorageFragment : Fragment() {
             adapter = storageAdapter
             layoutManager = linearManager
         }
+
+        viewModel.storageHolderList.asLiveData().observe(viewLifecycleOwner){
+            storageAdapter.updateDataSet(it)
+        }
+
         return binding.root
     }
 }

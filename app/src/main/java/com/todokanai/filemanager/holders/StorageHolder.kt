@@ -8,7 +8,7 @@ import com.todokanai.filemanager.R
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import java.io.File
 
-class StorageHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class StorageHolder(itemView: View,private val onClick:(File)->Unit): RecyclerView.ViewHolder(itemView) {
 
     private val storage = itemView.findViewById<TextView>(R.id.storageHolder_storageText)
     private val size = itemView.findViewById<TextView>(R.id.storageHolder_sizeText)
@@ -18,6 +18,7 @@ class StorageHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         this.storage.text = item.absolutePath
         this.size.text = storageSize(item)
         this.progress.progress = progress(item)
+        itemView.setOnClickListener { onClick(item) }
     }
 
     fun setDataNew(file: File){
