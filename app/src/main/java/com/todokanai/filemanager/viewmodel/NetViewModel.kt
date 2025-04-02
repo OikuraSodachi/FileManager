@@ -3,6 +3,7 @@ package com.todokanai.filemanager.viewmodel
 import android.net.Uri
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.tools.NetFileModule
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.viewmodel.basemodel.BaseNetViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import org.apache.commons.net.ftp.FTPFile
@@ -16,7 +17,7 @@ class NetViewModel @Inject constructor(val module:NetFileModule) : BaseNetViewMo
     override fun toFileHolderItem(ftpFile: FTPFile, currentDirectory: String): FileHolderItem {
         return FileHolderItem(
             absolutePath = "${currentDirectory}/${ftpFile.name}",
-            size = ftpFile.size,
+            size = readableFileSize_td(ftpFile.size),
             lastModified = ftpFile.timestamp.timeInMillis,
             uri = testUri
         )

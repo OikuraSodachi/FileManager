@@ -44,7 +44,7 @@ class FileItemHolder(itemView:View,private val onClick:(FileHolderItem)->Unit): 
         thumbnail.setThumbnail(item)
         fileName.text = item.name()
         fileName.isSelected = true
-        fileSize.text = item.sizeText()
+        fileSize.text = item.size
         lastModified.text = DateFormat.getDateTimeInstance().format(item.lastModified)
         itemView.setOnClickListener { onClick(item) }
     }

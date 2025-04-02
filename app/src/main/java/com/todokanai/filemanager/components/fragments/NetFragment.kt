@@ -26,9 +26,9 @@ class NetFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         listAdapter = NetRecyclerAdapter(
-            onItemClick = {viewModel.onItemClick(it)},
-           // itemFlow = viewModel.itemFlow
+            onItemClick = {viewModel.onItemClick(it)}
         )
+
         val verticalManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
         binding.netRecyclerView.run{
             adapter = listAdapter

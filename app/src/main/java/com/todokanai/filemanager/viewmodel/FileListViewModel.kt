@@ -12,6 +12,7 @@ import com.todokanai.filemanager.tools.actions.MoveAction
 import com.todokanai.filemanager.tools.actions.UnzipAction
 import com.todokanai.filemanager.tools.actions.ZipAction
 import com.todokanai.filemanager.tools.independent.FileModule
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.tools.independent.uploadFileToFtp_td
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -97,11 +98,19 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
     }
 
     private fun File.toFileHolderItem():FileHolderItem{
+        val sizeText: String =
+            if(this.isDirectory){
+                "${this.listFiles()?.size} 개"
+            }else{
+                readableFileSize_td(this.length())
+            }
+
         return FileHolderItem(
             absolutePath = this.absolutePath,
-            size = this.length(),
+            size = sizeText,
             lastModified = this.lastModified(),
             uri = this.toUri()
         )
     }
+
 }
