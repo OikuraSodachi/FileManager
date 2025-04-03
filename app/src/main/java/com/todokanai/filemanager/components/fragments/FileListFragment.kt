@@ -68,7 +68,7 @@ class FileListFragment : Fragment() {
                 fileListAdapter.updateDataSet(it)
             }
             directoryList.asLiveData().observe(viewLifecycleOwner){
-                directoryAdapter.updateDataSet(it)
+                directoryAdapter.submitList(it)
             }
 //            _uiState.asLiveData().observe(viewLifecycleOwner){
 //                fileListAdapter.updateDataSet(it.listFiles)

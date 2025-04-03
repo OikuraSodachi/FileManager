@@ -110,6 +110,6 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 }
 
 data class FileListUiState(
-    val listFiles:List<FileHolderItem>,
-    val dirTree:List<File>
+    val listFiles:List<FileHolderItem> = emptyList(),
+    val dirTree:List<File> = emptyList()
 )
