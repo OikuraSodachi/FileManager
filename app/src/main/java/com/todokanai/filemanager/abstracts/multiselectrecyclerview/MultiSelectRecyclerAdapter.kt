@@ -21,6 +21,13 @@ abstract class MultiSelectRecyclerAdapter<E:Any,VH:RecyclerView.ViewHolder>(
     lateinit var selectionTracker: SelectionTracker<Long>
     abstract val selectionId:String
 
+    /** @return set of selected items **/
+    fun selectedItems():Set<E>{
+        return selectionTracker.selection.map {
+            currentList[it.toInt()]
+        }.toSet()
+    }
+
     /** called when a change occurs in the selection
      *
      * view 의 갱신 처리 등 작업은 여기서 하는 게 맞는 듯? **/
