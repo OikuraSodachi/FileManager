@@ -8,7 +8,8 @@ data class FileHolderItem(
     val absolutePath:String,
     val size:String,
     val lastModified:Long,
-    val uri:Uri
+    val uri:Uri,
+    var isSelected:Boolean = false
 ){
 
     private fun mimeType() = getMimeType_td(absolutePath)

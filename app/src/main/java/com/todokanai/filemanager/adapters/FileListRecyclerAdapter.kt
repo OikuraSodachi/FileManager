@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.DiffUtil
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.multiselectrecyclerview.MultiSelectRecyclerAdapter
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
@@ -11,17 +12,22 @@ import com.todokanai.filemanager.holders.FileItemHolder
 
 class FileListRecyclerAdapter(
     private val onFileClick:(FileHolderItem)->Unit
-): MultiSelectRecyclerAdapter<FileHolderItem,FileItemHolder>() {
+): MultiSelectRecyclerAdapter<FileHolderItem,FileItemHolder>(
+    object : DiffUtil.ItemCallback<FileHolderItem>(){
+        override fun areItemsTheSame(oldItem: FileHolderItem, newItem: FileHolderItem): Boolean {
+            return oldItem.absolutePath == newItem.absolutePath
+        }
 
-    override fun areItemsSame(oldItem: FileHolderItem, newItem: FileHolderItem): Boolean {
-        return oldItem.absolutePath == newItem.absolutePath
+        override fun areContentsTheSame(oldItem: FileHolderItem, newItem: FileHolderItem): Boolean {
+            return oldItem == newItem
+        }
     }
+) {
 
     private val _bottomMenuEnabled = MutableLiveData<Boolean>(false)
     val bottomMenuEnabled : LiveData<Boolean>
         get() = _bottomMenuEnabled
 
-    fun fetchSelectedItems() = selectedItems().toTypedArray()
     override val selectionId = "selectionId"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
@@ -30,17 +36,22 @@ class FileListRecyclerAdapter(
     }
 
     override fun onBindViewHolder(holder: FileItemHolder, position: Int) {
-        val item = itemList()[position]
-
+        val item = getItem(position)
         holder.run {
             onInit(item)
         }
     }
 
-    override fun observerCallback() {
-        /** position of item (starts from 0 ) **/
-        val position = selectionTracker.selection.map{it.toInt()}
-        println("observerCallback: $position")
+    override fun onSelectionChanged(index: Int, item: FileHolderItem) {
+        /** **/
+
+        if(selectionTracker.selection.contains(index.toLong())){
+            item.isSelected = true
+        } else{
+            item.isSelected = false
+        }
+
+        _bottomMenuEnabled.value = selectionTracker.hasSelection()
     }
 
 }

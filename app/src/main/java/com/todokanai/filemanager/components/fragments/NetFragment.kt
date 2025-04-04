@@ -18,20 +18,20 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class NetFragment : Fragment() {
 
-    lateinit var listAdapter : NetRecyclerAdapter
+    private lateinit var netAdapter : NetRecyclerAdapter
     private val viewModel:NetViewModel by viewModels()
     private val binding by lazy{FragmentNetBinding.inflate(layoutInflater)}
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        listAdapter = NetRecyclerAdapter(
+        netAdapter = NetRecyclerAdapter(
             onItemClick = {viewModel.onItemClick(it)}
         )
 
         val verticalManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
         binding.netRecyclerView.run{
-            adapter = listAdapter
+            adapter = netAdapter
             layoutManager = verticalManager
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
@@ -42,7 +42,7 @@ class NetFragment : Fragment() {
             }
         })
         viewModel.itemFlow.asLiveData().observe(viewLifecycleOwner){
-            listAdapter.updateDataSet(it)
+            netAdapter.submitList(it)
         }
         return binding.root
     }

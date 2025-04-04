@@ -32,7 +32,7 @@ class FileListFragment : Fragment() {
     ): View {
         onBackPressedOverride(
             onBackPressed = { viewModel.onBackPressed() },
-            disableSelection = {fileListAdapter.setSelectionState(false)}
+            disableSelection = {fileListAdapter.selectionTracker.clearSelection()}
         )
 
         fileListAdapter = FileListRecyclerAdapter(
@@ -45,7 +45,7 @@ class FileListFragment : Fragment() {
 
         directoryAdapter = DirectoryRecyclerAdapter(
             {
-                if (!fileListAdapter.isSelectionEnabled()) {
+                if (!fileListAdapter.selectionTracker.hasSelection()) {
                     viewModel.onDirectoryClick(it)
                 }
             },
@@ -65,7 +65,7 @@ class FileListFragment : Fragment() {
 
         viewModel.run{
             fileHolderList.asLiveData().observe(viewLifecycleOwner){
-                fileListAdapter.updateDataSet(it)
+                fileListAdapter.submitList(it)
             }
             directoryList.asLiveData().observe(viewLifecycleOwner){
                 directoryAdapter.submitList(it)
@@ -82,7 +82,7 @@ class FileListFragment : Fragment() {
     private fun onBackPressedOverride(onBackPressed:()->Unit, disableSelection:()->Unit){
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(fileListAdapter.isSelectionEnabled()){
+                if(fileListAdapter.selectionTracker.hasSelection()){
                     disableSelection()
                 }else {
                     onBackPressed()

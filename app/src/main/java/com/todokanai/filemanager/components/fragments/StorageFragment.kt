@@ -39,7 +39,7 @@ class StorageFragment : Fragment() {
         }
 
         viewModel.storageHolderList.asLiveData().observe(viewLifecycleOwner){
-            storageAdapter.updateDataSet(it)
+            storageAdapter.submitList(it)
         }
 
         return binding.root
