@@ -3,11 +3,11 @@ package com.todokanai.filemanager.components.activity
 import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.asLiveData
-import com.todokanai.filemanager.abstracts.BaseActivity
 import com.todokanai.filemanager.adapters.ViewpagerAdapter
 import com.todokanai.filemanager.components.fragments.FileListFragment
 import com.todokanai.filemanager.components.fragments.NetFragment
@@ -22,10 +22,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @AndroidEntryPoint
-class MainActivity() : BaseActivity() {
+class MainActivity() : AppCompatActivity() {
 
-    override val permissions = Objects.permissions
-    override val requestCode = Constants.PERMISSION_REQUEST_CODE
+    private val permissions = Objects.permissions
+    private val requestCode = Constants.PERMISSION_REQUEST_CODE
 
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
@@ -47,6 +47,9 @@ class MainActivity() : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(permissions.isNotEmpty()){
+            requestPermissions(permissions,requestCode)
+        }
         prepareView(viewModel)
         viewModel.run {
             prepareObjects(applicationContext, this@MainActivity)
