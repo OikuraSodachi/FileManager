@@ -1,5 +1,6 @@
 package com.todokanai.filemanager.components.fragments
 
+import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,10 +10,12 @@ import kotlinx.coroutines.launch
 
 class NetFragment : NetFragmentLogic() {
 
-    override fun prepareView() {
-        netAdapter = NetRecyclerAdapter(
+    override val netAdapter: NetRecyclerAdapter
+        get() = NetRecyclerAdapter(
             onItemClick = {viewModel.onItemClick(it)}
         )
+
+    override fun prepareView() {
 
         val verticalManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
         binding.netRecyclerView.run{
@@ -30,7 +33,11 @@ class NetFragment : NetFragmentLogic() {
         }
     }
 
-    override fun backButtonCallback() {
-        viewModel.toParent()
+    override fun overrideBackButton() {
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                viewModel.toParent()
+            }
+        })
     }
 }
