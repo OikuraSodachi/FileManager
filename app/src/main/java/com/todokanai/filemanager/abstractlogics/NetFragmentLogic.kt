@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.todokanai.filemanager.adapters.NetRecyclerAdapter
@@ -14,9 +15,9 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 abstract class NetFragmentLogic: Fragment() {
 
-    val binding by lazy { FragmentNetBinding.inflate(layoutInflater) }
-    val viewModel: NetViewModel by viewModels()
-    abstract val netAdapter : NetRecyclerAdapter
+    protected val binding by lazy { FragmentNetBinding.inflate(layoutInflater) }
+    protected val viewModel: NetViewModel by viewModels()
+    lateinit var netAdapter : NetRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,12 +26,16 @@ abstract class NetFragmentLogic: Fragment() {
     ): View? {
         prepareView()
         collectUiState()
-        overrideBackButton()
-
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
+            override fun handleOnBackPressed() {
+                backButtonCallback()
+            }
+        })
         return binding.root
     }
 
     abstract fun prepareView()
     abstract fun collectUiState()
-    abstract fun overrideBackButton()
+    abstract fun backButtonCallback()
+
 }
