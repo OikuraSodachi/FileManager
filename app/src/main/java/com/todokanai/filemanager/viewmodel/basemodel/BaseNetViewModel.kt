@@ -14,7 +14,7 @@ abstract class BaseNetViewModel(private val module:NetFileModule) : ViewModel() 
 
     abstract fun toFileHolderItem(ftpFile:FTPFile, currentDirectory:String):FileHolderItem
 
-    val itemFlow
+    val uiState
         get() = combine(
             module.itemList,
             module.currentDirectory

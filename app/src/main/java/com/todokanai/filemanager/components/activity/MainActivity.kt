@@ -40,8 +40,7 @@ class MainActivity() : AppCompatActivity() {
          *
          * 2: FileListFragment
          *
-         * 3: NetFragment
-         * **/
+         * 3: NetFragment **/
         val fragmentCode = MutableStateFlow<Int>(2)
     }
 
