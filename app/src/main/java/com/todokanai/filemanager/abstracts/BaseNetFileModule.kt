@@ -1,6 +1,7 @@
 package com.todokanai.filemanager.abstracts
 
 import androidx.annotation.CallSuper
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,4 +26,8 @@ abstract class BaseNetFileModule(defaultPath:String) {
 
     /** [directory] 내부의 파일 목록 가져오기 **/
     abstract suspend fun requestListFilesFromNet(directory:String):Array<FTPFile>
+
+    abstract fun toParentDirectory(current:String = currentDirectory.value)
+
+    abstract val temp:Flow<List<FileHolderItem>>
 }

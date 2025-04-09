@@ -27,8 +27,13 @@ abstract class NetFragmentLogic: Fragment() {
         return binding.root
     }
 
+    /** view 준비 **/
     abstract fun prepareView()
+
+    /** update view**/
     abstract fun collectUiState()
+
+    /** back button 설정 **/
     abstract fun overrideBackButton()
 
 }

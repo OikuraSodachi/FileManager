@@ -1,10 +1,14 @@
 package com.todokanai.filemanager.tools
 
+import android.net.Uri
 import com.todokanai.filemanager.abstracts.BaseNetFileModule
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import org.apache.commons.net.ftp.FTPClient
@@ -31,7 +35,7 @@ class NetFileModule(
             Dispatchers.Default
         )
 
-    fun toParentDirectory(current:String = currentDirectory.value){
+    override fun toParentDirectory(current:String){
         getParentAbsolutePath_td(current)?.let { setCurrentDirectory(it) }
     }
 
@@ -68,5 +72,28 @@ class NetFileModule(
             }
         }
         return result
+    }
+
+    override val temp
+        get() = combine(
+            itemList,
+            currentDirectory
+        ) { items, directory ->
+            items.map {
+                toFileHolderItem(
+                    it,
+                    directory
+                )
+            }
+        }
+    private val testUri: Uri = Uri.EMPTY
+
+    fun toFileHolderItem(ftpFile: FTPFile, currentDirectory: String): FileHolderItem {
+        return FileHolderItem(
+            absolutePath = "${currentDirectory}/${ftpFile.name}",
+            size = readableFileSize_td(ftpFile.size),
+            lastModified = ftpFile.timestamp.timeInMillis,
+            uri = testUri
+        )
     }
 }

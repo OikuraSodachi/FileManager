@@ -1,33 +1,55 @@
 package com.todokanai.filemanager.viewmodel
 
-import android.net.Uri
+import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.tools.NetFileModule
-import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.viewmodel.basemodel.BaseNetViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import org.apache.commons.net.ftp.FTPFile
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NetViewModel @Inject constructor(val module:NetFileModule) : BaseNetViewModel(module){
+class NetViewModel @Inject constructor(val module:NetFileModule) : BaseNetViewModel(){
 
-    private val testUri: Uri = Uri.EMPTY
 
-    override fun toFileHolderItem(ftpFile: FTPFile, currentDirectory: String): FileHolderItem {
-        return FileHolderItem(
-            absolutePath = "${currentDirectory}/${ftpFile.name}",
-            size = readableFileSize_td(ftpFile.size),
-            lastModified = ftpFile.timestamp.timeInMillis,
-            uri = testUri
-        )
+    private val _uiStateNew = MutableStateFlow(NetUiState())
+    val uiState: StateFlow<NetUiState>
+        get() = _uiStateNew
+
+    init {
+        viewModelScope.launch {
+            module.temp.collect {
+                _uiStateNew.update { currentState ->
+                    currentState.copy(
+                        itemList = it
+                    )
+                }
+            }
+        }
     }
 
     override fun onItemClick(item: FileHolderItem){
         if(item.isDirectory()) {
-            module.setCurrentDirectory(item.absolutePath)
+            setCurrentDirectory(item.absolutePath)
         }else{
             println("this is a File")
         }
     }
+
+    override fun setCurrentDirectory(absolutePath: String) {
+        module.setCurrentDirectory(absolutePath)
+    }
+
+    override fun toParent() {
+        module.toParentDirectory()
+    }
+
 }
+
+
+data class NetUiState(
+    val itemList: List<FileHolderItem> = emptyList()
+)

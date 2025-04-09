@@ -27,8 +27,8 @@ class NetFragment : NetFragmentLogic() {
 
     override fun collectUiState(){
         lifecycleScope.launch {
-            viewModel.uiState.collect {
-                netAdapter.submitList(it)
+            viewModel.uiState.collect { uiState ->
+                netAdapter.submitList(uiState.itemList)
             }
         }
     }
