@@ -74,7 +74,7 @@ class NetFileModule(
         return result
     }
 
-    override val temp
+    override val netItemList
         get() = combine(
             itemList,
             currentDirectory
@@ -88,7 +88,7 @@ class NetFileModule(
         }
     private val testUri: Uri = Uri.EMPTY
 
-    fun toFileHolderItem(ftpFile: FTPFile, currentDirectory: String): FileHolderItem {
+    private fun toFileHolderItem(ftpFile: FTPFile, currentDirectory: String): FileHolderItem {
         return FileHolderItem(
             absolutePath = "${currentDirectory}/${ftpFile.name}",
             size = readableFileSize_td(ftpFile.size),

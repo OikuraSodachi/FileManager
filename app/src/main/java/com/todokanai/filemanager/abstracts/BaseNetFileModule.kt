@@ -29,5 +29,5 @@ abstract class BaseNetFileModule(defaultPath:String) {
 
     abstract fun toParentDirectory(current:String = currentDirectory.value)
 
-    abstract val temp:Flow<List<FileHolderItem>>
+    abstract val netItemList:Flow<List<FileHolderItem>>
 }
