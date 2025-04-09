@@ -1,11 +1,13 @@
 package com.todokanai.filemanager.viewmodel.logics
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import kotlinx.coroutines.launch
+import java.io.File
 
-abstract class NetViewModelLogics() : ViewModel() {
+abstract class FileListViewModelLogics: ViewModel() {
 
     init{
         viewModelScope.launch {
@@ -15,10 +17,8 @@ abstract class NetViewModelLogics() : ViewModel() {
 
     abstract suspend fun updateUI()
 
-    abstract fun onItemClick(item: FileHolderItem)
+    abstract fun onDirectoryClick(file: File)
 
-    abstract fun setCurrentDirectory(absolutePath:String)
-
-    abstract fun toParent()
+    abstract fun onFileClick(context: Context, item: FileHolderItem)
 
 }

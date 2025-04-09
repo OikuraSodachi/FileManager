@@ -24,6 +24,7 @@ class FileListRecyclerAdapter(
     }
 ) {
 
+    /** 이거 viewModel 로 내려가야 할 듯? **/
     private val _bottomMenuEnabled = MutableLiveData<Boolean>(false)
     val bottomMenuEnabled : LiveData<Boolean>
         get() = _bottomMenuEnabled

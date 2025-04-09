@@ -2,34 +2,32 @@ package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModel
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.actions.CopyAction
-import com.todokanai.filemanager.tools.actions.DeleteAction
-import com.todokanai.filemanager.tools.actions.MoveAction
-import com.todokanai.filemanager.tools.actions.UnzipAction
-import com.todokanai.filemanager.tools.actions.ZipAction
 import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.tools.independent.uploadFileToFtp_td
+import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
-/** modeManager를 viewModel에서 완전히 제거해야 함 **/
 @HiltViewModel
-class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val module:FileModule):ViewModel(){
+class FileListViewModel @Inject constructor(dsRepo:DataStoreRepository,val module:FileModule): FileListViewModelLogics(){
 
-    val notAccessible =  module.notAccessible
-    val directoryList = module.dirTree
+    private val _uiState = MutableStateFlow(FileListUiState())
+    val uiState: StateFlow<FileListUiState>
+        get() = _uiState
 
-    val fileHolderList = combine(
+    private val fileHolderList = combine(
         module.listFiles,
         dsRepo.sortBy
     ){
@@ -39,45 +37,34 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         }
     }
 
-//    val _uiState = MutableStateFlow(FileListUiState())
-//
-//    fun updateUiStateTest(){
-//        viewModelScope.launch {
-//            _uiState.update {
-//                it.copy()
-//            }
-//        }
-//    }
+    override suspend fun updateUI() {
+        fileHolderList.collect{
+            _uiState.update { currentState ->
+                currentState.copy(listFiles = it, emptyDirectoryText = it.isEmpty())
+            }
+        }
+        module.dirTree.collect{
+            _uiState.update { currentState ->
+                currentState.copy(dirTree = it)
+            }
+        }
+        module.notAccessible.collect{
+            _uiState.update { currentState ->
+                currentState.copy(accessFailText = it)
+            }
+        }
 
-    fun refreshFileList() = module.refreshListFiles()
+    }
 
-    fun onDirectoryClick(file:File) = module.updateCurrentPath(file.absolutePath)
+    override fun onDirectoryClick(file:File){
+        module.updateCurrentPath(file.absolutePath)
+    }
 
-    //fun onFileClick(context: Context, file: File) = module.onFileClick(context,file)
-    fun onFileClick(context: Context, item:FileHolderItem) = module.onFileClick(context,item)
+    override fun onFileClick(context: Context, item:FileHolderItem) {
+        module.onFileClick(context, item)
+    }
 
     fun onBackPressed() = module.onBackPressedCallback()
-
-    fun copyWork(selected: Array<File>,targetDirectory: File){
-        val action = CopyAction(selected,targetDirectory)
-        action.start()
-    }
-
-    fun moveWork(selected: Array<File>,targetDirectory: File){
-        MoveAction(selected,targetDirectory).start()
-    }
-
-    fun deleteWork(selected: Array<File>){
-        DeleteAction(selected).start()
-    }
-
-    fun unzipWork(selected: File,targetDirectory: File){
-        UnzipAction(selected,targetDirectory).start()
-    }
-
-    fun zipWork(selected:Array<File>,targetDirectory: File){
-        ZipAction(selected, targetDirectory).start()
-    }
 
     fun uploadToNas(selected: File){
         CoroutineScope(Dispatchers.IO).launch{
@@ -111,5 +98,7 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
 
 data class FileListUiState(
     val listFiles:List<FileHolderItem> = emptyList(),
-    val dirTree:List<File> = emptyList()
+    val dirTree:List<File> = emptyList(),
+    val emptyDirectoryText:Boolean = false,
+    val accessFailText:Boolean = false
 )

@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
@@ -15,6 +15,7 @@ import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FileListFragment : Fragment() {
@@ -54,7 +55,9 @@ class FileListFragment : Fragment() {
         initDirectoryView(directoryAdapter)
         initFileListView(fileListAdapter)
        // initSwipe()
-        prepareView(binding)
+        //prepareView(binding)
+        collectUIState()
+
         fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner){ enabled->
             if(enabled) {
                 binding.bottomMenuLayout.visibility = View.VISIBLE
@@ -63,19 +66,6 @@ class FileListFragment : Fragment() {
             }
         }
 
-        viewModel.run{
-            fileHolderList.asLiveData().observe(viewLifecycleOwner){
-                fileListAdapter.submitList(it)
-            }
-            directoryList.asLiveData().observe(viewLifecycleOwner){
-                directoryAdapter.submitList(it)
-            }
-//            _uiState.asLiveData().observe(viewLifecycleOwner){
-//                fileListAdapter.updateDataSet(it.listFiles)
-//
-//                directoryAdapter.updateDataSet(it.dirTree)
-//            }
-        }
         return binding.root
     }
 
@@ -141,27 +131,24 @@ class FileListFragment : Fragment() {
 
      */
 
-    private fun prepareView(binding:FragmentFileListBinding){
-        binding.run {
-
-            emptyDirectoryText.visibility.apply {
-                viewModel.fileHolderList.asLiveData().observe(viewLifecycleOwner) {
-                    if (it.isEmpty()) {
+    private fun collectUIState(){
+        lifecycleScope.launch {
+            viewModel.uiState.collect {
+                fileListAdapter.submitList(it.listFiles)
+                directoryAdapter.submitList(it.dirTree)
+                binding.emptyDirectoryText.visibility =
+                    if(it.emptyDirectoryText==true){
                         View.VISIBLE
-                    } else {
+                    }else{
                         View.GONE
                     }
-                }
-            }
-
-            accessFailText.visibility.apply {
-                viewModel.notAccessible.asLiveData().observe(viewLifecycleOwner) {
-                    if (it) {
+                binding.accessFailText.visibility =
+                    if(it.accessFailText == true){
                         View.VISIBLE
-                    } else {
+                    }else{
                         View.GONE
                     }
-                }
+
             }
         }
     }

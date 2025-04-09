@@ -22,7 +22,7 @@ abstract class NetFragmentLogic: Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         prepareView()
-        collectUiState()
+        collectUIState()
         overrideBackButton()
         return binding.root
     }
@@ -31,7 +31,7 @@ abstract class NetFragmentLogic: Fragment() {
     abstract fun prepareView()
 
     /** update view**/
-    abstract fun collectUiState()
+    abstract fun collectUIState()
 
     /** back button 설정 **/
     abstract fun overrideBackButton()
