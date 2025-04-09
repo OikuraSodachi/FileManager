@@ -5,27 +5,26 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.todokanai.filemanager.adapters.NetRecyclerAdapter
-import com.todokanai.filemanager.databinding.FragmentNetBinding
-import com.todokanai.filemanager.viewmodel.NetViewModel
+import androidx.viewbinding.ViewBinding
 
-abstract class NetFragmentLogic: Fragment() {
+abstract class FileListFragmentLogics : Fragment() {
 
-    protected val binding by lazy { FragmentNetBinding.inflate(layoutInflater) }
-    protected val viewModel: NetViewModel by viewModels()
-    lateinit var netAdapter : NetRecyclerAdapter
+    abstract val binding: ViewBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        prepareLateInit()
         prepareView()
         collectUIState()
         overrideBackButton()
         return binding.root
     }
+
+    /** lateInit property initialization **/
+    abstract fun prepareLateInit()
 
     /** view 준비 **/
     abstract fun prepareView()
@@ -35,5 +34,4 @@ abstract class NetFragmentLogic: Fragment() {
 
     /** back button 설정 **/
     abstract fun overrideBackButton()
-
 }

@@ -24,7 +24,7 @@ class FileListRecyclerAdapter(
     }
 ) {
 
-    /** 이거 viewModel 로 내려가야 할 듯? **/
+    /** Todo: 이거 LiveData 형태로 여기에 두는게 적절한지 의문... **/
     private val _bottomMenuEnabled = MutableLiveData<Boolean>(false)
     val bottomMenuEnabled : LiveData<Boolean>
         get() = _bottomMenuEnabled
