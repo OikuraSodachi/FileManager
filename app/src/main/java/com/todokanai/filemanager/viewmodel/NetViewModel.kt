@@ -1,9 +1,9 @@
 package com.todokanai.filemanager.viewmodel
 
-import com.todokanai.filemanager.abstracts.BaseNetFileModule
+import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
-import com.todokanai.filemanager.viewmodel.basemodel.BaseNetViewModel
 import com.todokanai.filemanager.viewmodel.basemodel.NetUiState
+import com.todokanai.filemanager.viewmodel.basemodel.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 @HiltViewModel
-class NetViewModel @Inject constructor(val module: BaseNetFileModule) : BaseNetViewModel(){
+class NetViewModel @Inject constructor(val module: NetFileModuleLogics) : NetViewModelLogics(){
 
     private val _uiState = MutableStateFlow(NetUiState())
     val uiState: StateFlow<NetUiState>

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import kotlinx.coroutines.launch
 
-abstract class BaseNetViewModel() : ViewModel() {
+abstract class NetViewModelLogics() : ViewModel() {
 
     init{
         onInit()

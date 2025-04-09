@@ -1,7 +1,7 @@
 package com.todokanai.filemanager.tools
 
 import android.net.Uri
-import com.todokanai.filemanager.abstracts.BaseNetFileModule
+import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
@@ -18,7 +18,7 @@ import java.io.IOException
 class NetFileModule(
     private val dsRepo:DataStoreRepository,
     defaultDirectory:String
-):BaseNetFileModule(defaultDirectory) {
+):NetFileModuleLogics(defaultDirectory) {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
         return listFilesInFtpDirectory(dsRepo.getServerIp(),dsRepo.getUserId(),dsRepo.getUserPassword(),directory)

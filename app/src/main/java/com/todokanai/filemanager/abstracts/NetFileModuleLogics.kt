@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import org.apache.commons.net.ftp.FTPFile
 
-abstract class BaseNetFileModule(defaultPath:String) {
+abstract class NetFileModuleLogics(defaultPath:String) {
     private val _currentDirectory = MutableStateFlow<String>(defaultPath)
     val currentDirectory: StateFlow<String>
         get() = _currentDirectory

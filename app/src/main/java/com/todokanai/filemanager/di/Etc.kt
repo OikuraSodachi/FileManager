@@ -1,7 +1,7 @@
 package com.todokanai.filemanager.di
 
 import android.os.Environment
-import com.todokanai.filemanager.abstracts.BaseNetFileModule
+import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.NetFileModule
@@ -24,7 +24,7 @@ class Etc {
 
     @Singleton
     @Provides
-    fun provideNetFileModule(dataStoreRepository: DataStoreRepository): BaseNetFileModule {
+    fun provideNetFileModule(dataStoreRepository: DataStoreRepository): NetFileModuleLogics {
         return NetFileModule(dataStoreRepository,Variables.defaultDirectory)
     }
 }
