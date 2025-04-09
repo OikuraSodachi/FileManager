@@ -1,4 +1,4 @@
-package com.todokanai.filemanager.viewmodel.basemodel
+package com.todokanai.filemanager.viewmodel.logics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
