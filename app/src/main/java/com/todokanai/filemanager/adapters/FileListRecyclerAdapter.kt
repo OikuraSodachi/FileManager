@@ -44,8 +44,6 @@ class FileListRecyclerAdapter(
     }
 
     override fun onSelectionChanged(index: Int, item: FileHolderItem) {
-        /** **/
-
         if(selectionTracker.selection.contains(index.toLong())){
             item.isSelected = true
         } else{
