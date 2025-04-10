@@ -2,6 +2,7 @@ package com.todokanai.filemanager.components.fragments
 
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.core.net.toUri
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -9,10 +10,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstractlogics.FileListFragmentLogics
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment : FileListFragmentLogics() {
@@ -59,7 +63,7 @@ class FileListFragment : FileListFragmentLogics() {
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
             onFileClick = {
-                viewModel.onFileClick(requireActivity(),it)
+                viewModel.onFileClick(requireActivity(),it.file())
             },
         ).apply {
             setHasStableIds(true)
@@ -92,7 +96,11 @@ class FileListFragment : FileListFragmentLogics() {
     override fun collectUIState(){
         lifecycleScope.launch {
             viewModel.uiState.collect {
-                fileListAdapter.submitList(it.listFiles)
+                fileListAdapter.submitList(
+                    it.listFiles.map{ file ->
+                        file.toFileHolderItem()
+                    }
+                )
                 directoryAdapter.submitList(it.dirTree)
                 binding.emptyDirectoryText.visibility =
                     if(it.emptyDirectoryText==true){
@@ -106,6 +114,7 @@ class FileListFragment : FileListFragmentLogics() {
                     }else{
                         View.GONE
                     }
+
 
             }
         }
@@ -128,5 +137,21 @@ class FileListFragment : FileListFragmentLogics() {
                 }
             }
         })
+    }
+
+    private fun File.toFileHolderItem(): FileHolderItem {
+        val sizeText: String =
+            if(this.isDirectory){
+                "${this.listFiles()?.size} 개"
+            }else{
+                readableFileSize_td(this.length())
+            }
+
+        return FileHolderItem(
+            absolutePath = this.absolutePath,
+            size = sizeText,
+            lastModified = this.lastModified(),
+            uri = this.toUri()
+        )
     }
 }

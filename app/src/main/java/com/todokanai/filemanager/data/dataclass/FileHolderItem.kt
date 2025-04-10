@@ -2,8 +2,11 @@ package com.todokanai.filemanager.data.dataclass
 
 import android.net.Uri
 import com.todokanai.filemanager.tools.independent.getMimeType_td
+import java.io.File
 
-/** @param uri File.toUri() **/
+/** 주의: view layer 에서만 이 class 를 사용할 것
+ *
+ * @param uri File.toUri() **/
 data class FileHolderItem(
     val absolutePath:String,
     val size:String,
@@ -24,8 +27,8 @@ data class FileHolderItem(
     }
 
     fun isImage():Boolean{
-        val temp = mimeType()
-        if(temp=="video/*" || temp == "image/*" ){
+        val type = mimeType()
+        if(type=="video/*" || type == "image/*" ){
             return true
         }else{
             return false
@@ -37,4 +40,7 @@ data class FileHolderItem(
 
     /** File.name **/
     fun name() = """[^/\\]+$""".toRegex().find(absolutePath)?.value
+
+    /** @return the original file **/
+    fun file() : File = File(absolutePath)
 }
