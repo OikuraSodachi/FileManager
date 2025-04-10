@@ -17,18 +17,18 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideMyDatabase(@ApplicationContext context:Context):MyDatabase{
+    fun provideMyDatabase(@ApplicationContext context: Context): MyDatabase {
         return MyDatabase.getInstance(context)
     }
 
     @Singleton
     @Provides
-    fun provideDataStoreRepository(@ApplicationContext context: Context):DataStoreRepository{
+    fun provideDataStoreRepository(@ApplicationContext context: Context): DataStoreRepository {
         return DataStoreRepository(context)
     }
 
     @Provides
-    fun providesWorkManager(@ApplicationContext context: Context): WorkManager{
+    fun providesWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
     }
 

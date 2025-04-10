@@ -4,7 +4,8 @@ import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.holders.FileItemHolder
 
-class MySelectionPredicate(private val recyclerView: RecyclerView) : SelectionTracker.SelectionPredicate<Long>() {
+class MySelectionPredicate(private val recyclerView: RecyclerView) :
+    SelectionTracker.SelectionPredicate<Long>() {
     override fun canSetStateForKey(key: Long, nextState: Boolean): Boolean {
         val holder = recyclerView.findViewHolderForItemId(key)
         return if (holder is FileItemHolder) {

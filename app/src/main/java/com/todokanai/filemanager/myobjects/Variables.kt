@@ -5,8 +5,8 @@ import java.io.File
 
 class Variables {
 
-    companion object{
+    companion object {
         val storages = MutableStateFlow<Array<File>>(emptyArray())
-        var defaultDirectory:String = "HDD1"
+        var defaultDirectory: String = "HDD1"
     }
 }

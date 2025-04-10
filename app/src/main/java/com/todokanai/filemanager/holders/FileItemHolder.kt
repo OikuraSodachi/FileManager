@@ -13,7 +13,8 @@ import com.todokanai.filemanager.R
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import java.text.DateFormat
 
-class FileItemHolder(itemView:View,private val onClick:(FileHolderItem)->Unit): RecyclerView.ViewHolder(itemView) {
+class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Unit) :
+    RecyclerView.ViewHolder(itemView) {
 
     private val thumbnail = itemView.findViewById<ImageView>(R.id.thumbnail)
     private val fileName = itemView.findViewById<TextView>(R.id.fileName)
@@ -22,7 +23,7 @@ class FileItemHolder(itemView:View,private val onClick:(FileHolderItem)->Unit): 
     private val multiSelectView = itemView.findViewById<ImageView>(R.id.multiSelectView)
 
     /** file의 extension에 따른 기본 thumbnail 값 */
-    private fun FileHolderItem.thumbnail(context: Context) : Drawable? {
+    private fun FileHolderItem.thumbnail(context: Context): Drawable? {
         return if (this.isDirectory()) {
             getDrawable(context, R.drawable.ic_baseline_folder_24)
         } else {
@@ -30,6 +31,7 @@ class FileItemHolder(itemView:View,private val onClick:(FileHolderItem)->Unit): 
                 "pdf" -> {
                     getDrawable(context, R.drawable.ic_pdf)
                 }
+
                 else -> {
                     getDrawable(
                         context,
@@ -50,35 +52,46 @@ class FileItemHolder(itemView:View,private val onClick:(FileHolderItem)->Unit): 
         onSelectionChanged(item.isSelected)
     }
 
-    private fun ImageView.setThumbnail(file: FileHolderItem){
-        if(file.isImage()){
+    private fun ImageView.setThumbnail(file: FileHolderItem) {
+        if (file.isImage()) {
             Glide.with(itemView)
                 .load(file.uri)
                 .into(this)
-        } else{
+        } else {
             this.setImageDrawable(file.thumbnail(itemView.context))
         }
     }
 
-    fun multiSelectMode(isSelected: Boolean){
+    fun multiSelectMode(isSelected: Boolean) {
         multiSelectView.visibility = View.VISIBLE
-        if(isSelected){
-            multiSelectView.setImageDrawable(getDrawable(itemView.context,R.drawable.baseline_check_24))
-        } else{
+        if (isSelected) {
+            multiSelectView.setImageDrawable(
+                getDrawable(
+                    itemView.context,
+                    R.drawable.baseline_check_24
+                )
+            )
+        } else {
             multiSelectView.setImageDrawable(null)
         }
     }
-    fun onDefaultMode(){
+
+    fun onDefaultMode() {
         multiSelectView.visibility = View.VISIBLE
     }
 
 
     fun onSelectionChanged(isSelected: Boolean) {
-        if(isSelected){
+        if (isSelected) {
             multiSelectView.visibility = View.VISIBLE
-            multiSelectView.setImageDrawable(getDrawable(itemView.context,R.drawable.baseline_check_24))
+            multiSelectView.setImageDrawable(
+                getDrawable(
+                    itemView.context,
+                    R.drawable.baseline_check_24
+                )
+            )
             itemView.setBackgroundColor(Color.GRAY)
-        } else{
+        } else {
             multiSelectView.visibility = View.GONE
             itemView.setBackgroundColor(0)
             multiSelectView.setImageDrawable(null)

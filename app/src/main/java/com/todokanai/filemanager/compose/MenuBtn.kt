@@ -17,22 +17,22 @@ import com.todokanai.filemanager.compose.presets.dropdownmenu.MyDropdownMenu
 fun MenuBtn(
     modifier: Modifier = Modifier,
     expanded: MutableState<Boolean>,
-    exit:()->Unit
-){
-    val shouldShowDialog = remember{mutableStateOf(false)}
-    val newFolderDialog = remember{ mutableStateOf(false) }
+    exit: () -> Unit
+) {
+    val shouldShowDialog = remember { mutableStateOf(false) }
+    val newFolderDialog = remember { mutableStateOf(false) }
 
-    val contents : List<Pair<String,()->Unit>> = listOf(
-        Pair(stringResource(id = R.string.menu_new_folder),{newFolderDialog.value = true}),
-        Pair(stringResource(id = R.string.menu_sort),{shouldShowDialog.value = true}),
-        Pair(stringResource(id = R.string.menu_exit),{exit()}),
+    val contents: List<Pair<String, () -> Unit>> = listOf(
+        Pair(stringResource(id = R.string.menu_new_folder), { newFolderDialog.value = true }),
+        Pair(stringResource(id = R.string.menu_sort), { shouldShowDialog.value = true }),
+        Pair(stringResource(id = R.string.menu_exit), { exit() }),
     )
 
     MyDropdownMenu(
         modifier = modifier,
         contents = contents,
         expanded = expanded.value,
-        onDismissRequest = {expanded.value = false}
+        onDismissRequest = { expanded.value = false }
     )
 
     if (shouldShowDialog.value) {
@@ -41,7 +41,7 @@ fun MenuBtn(
             onDismissRequest = { shouldShowDialog.value = false })
     }
 
-    if(newFolderDialog.value){
+    if (newFolderDialog.value) {
         NewFolderDialog(
             onCancel = { newFolderDialog.value = false },
             onConfirm = {}
@@ -52,7 +52,7 @@ fun MenuBtn(
 @SuppressLint("UnrememberedMutableState")
 @Preview
 @Composable
-private fun MenuBtnPreview(){
+private fun MenuBtnPreview() {
     MenuBtn(
         expanded = mutableStateOf(true),
         exit = {}

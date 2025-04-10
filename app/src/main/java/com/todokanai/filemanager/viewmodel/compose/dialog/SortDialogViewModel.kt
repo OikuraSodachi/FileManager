@@ -14,9 +14,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SortDialogViewModel @Inject constructor(private val dsRepo:DataStoreRepository) : ViewModel() {
+class SortDialogViewModel @Inject constructor(private val dsRepo: DataStoreRepository) :
+    ViewModel() {
 
-    val selectedItem : StateFlow<String?> = dsRepo.sortBy.stateIn(
+    val selectedItem: StateFlow<String?> = dsRepo.sortBy.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5),
         initialValue = null
@@ -32,7 +33,7 @@ class SortDialogViewModel @Inject constructor(private val dsRepo:DataStoreReposi
     fun saveByDateAscending() = saveSortBy(Constants.BY_DATE_ASCENDING)
     fun saveByDateDescending() = saveSortBy(Constants.BY_DATE_DESCENDING)
 
-    private fun saveSortBy(value:String) {
+    private fun saveSortBy(value: String) {
         CoroutineScope(Dispatchers.IO).launch {
             dsRepo.saveSortBy(value)
         }

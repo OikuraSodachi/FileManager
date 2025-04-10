@@ -11,21 +11,21 @@ import kotlinx.coroutines.flow.Flow
 interface UserDao {
 
     @Query("select * from room_user")
-    fun getAll() : Flow<List<User>>
+    fun getAll(): Flow<List<User>>
 
     @Query("select * from room_user")
-    suspend fun getAllNonFlow() : List<User>
+    suspend fun getAllNonFlow(): List<User>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(user : User)
+    suspend fun insert(user: User)
 
     @Delete
-    suspend fun delete(user : User)
+    suspend fun delete(user: User)
 
     @Query("delete from room_user")
     suspend fun deleteAll()
 
     @Query("select * from room_user where `no`=:no")
-    fun getUserByIndex(no:Long) : Flow<User>
+    fun getUserByIndex(no: Long): Flow<User>
 
 }

@@ -9,20 +9,21 @@ import com.todokanai.filemanager.myobjects.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class MoveWorker(context:Context,params:WorkerParameters):CoroutineWorker(context,params) {
+class MoveWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO){
-        try{
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        try {
 
 
             Result.success()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             Result.failure()
         }
     }
+
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        val out = ForegroundInfo(Constants.NOTIFICATION_CHANNEL_ID_WORK,notification())
+        val out = ForegroundInfo(Constants.NOTIFICATION_CHANNEL_ID_WORK, notification())
         return out
     }
 

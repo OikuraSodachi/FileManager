@@ -6,20 +6,20 @@ import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
 import java.io.File
 
 class MoveAction(
-    val selectedFiles:Array<File>,
-    val targetDirectory:File
-):FileAction {
-    var progress : Int = 0
+    val selectedFiles: Array<File>,
+    val targetDirectory: File
+) : FileAction {
+    var progress: Int = 0
     private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
-    private lateinit var currentFileInProcess : File
+    private lateinit var currentFileInProcess: File
 
     override fun main() {
         moveFiles_Recursive_td(
             selected = selectedFiles,
             targetDirectory = targetDirectory,
-            onProgress = {progressCallback()},
+            onProgress = { progressCallback() },
             onAlreadyExist = {},
-            onDifferentStorage ={}
+            onDifferentStorage = {}
         )
     }
 
@@ -29,29 +29,35 @@ class MoveAction(
 
     override fun progressCallback() {
         progress++
-        myNoti.sendSilentNotification(currentFileInProcess.name,"$progress/$fileQuantity")
+        myNoti.sendSilentNotification(currentFileInProcess.name, "$progress/$fileQuantity")
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("moved $fileQuantity files","move complete")
+        myNoti.sendCompletedNotification("moved $fileQuantity files", "move complete")
     }
 
     /** independent **/
     fun moveFiles_Recursive_td(
-        selected:Array<File>,
+        selected: Array<File>,
         targetDirectory: File,
-        onProgress:(File)->Unit,
-        onAlreadyExist:()->Unit,    // skip if left empty
-        onDifferentStorage:()->Unit
-    ):Unit{
+        onProgress: (File) -> Unit,
+        onAlreadyExist: () -> Unit,    // skip if left empty
+        onDifferentStorage: () -> Unit
+    ): Unit {
         selected.forEach { file ->
             currentFileInProcess = file
             val target = targetDirectory.resolve(file.name)
             if (file.isDirectory) {
-                moveFiles_Recursive_td(file.listFiles() ?: arrayOf(), target, onProgress, onAlreadyExist,onDifferentStorage)
-                if(file.getRootDirectory() == target.getRootDirectory()) {
+                moveFiles_Recursive_td(
+                    file.listFiles() ?: arrayOf(),
+                    target,
+                    onProgress,
+                    onAlreadyExist,
+                    onDifferentStorage
+                )
+                if (file.getRootDirectory() == target.getRootDirectory()) {
                     file.renameTo(target)
-                } else{
+                } else {
                     file.copyTo(target)
                     file.delete()
                 }
@@ -60,9 +66,9 @@ class MoveAction(
         }
     }
 
-    private fun File.getRootDirectory():File{
+    private fun File.getRootDirectory(): File {
         var result = this
-        while(result.parentFile!=null){
+        while (result.parentFile != null) {
             result = result.parentFile
         }
         return result

@@ -10,8 +10,8 @@ import com.todokanai.filemanager.compose.presets.dialog.BooleanDialog
 fun DeleteDialog(
     modifier: Modifier = Modifier,
     onCancel: () -> Unit,
-    delete:()->Unit
-){
+    delete: () -> Unit
+) {
     BooleanDialog(
         modifier = modifier,
         onConfirm = { delete() },

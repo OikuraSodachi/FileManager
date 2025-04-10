@@ -9,15 +9,15 @@ import com.todokanai.filemanager.compose.presets.dialog.EditTextDialog
 @Composable
 fun RenameDialog(
     modifier: Modifier = Modifier,
-    onCancel:()->Unit,
+    onCancel: () -> Unit,
     //viewModel:RenameDialogViewModel = hiltViewModel()
-    onConfirm:(String)->Unit
-){
+    onConfirm: (String) -> Unit
+) {
     EditTextDialog(
         modifier = modifier,
         title = stringResource(id = R.string.rename_dialog_title),
         defaultText = stringResource(id = R.string.rename_dialog_default_text),
-        onConfirm = {onConfirm(it)},
-        onCancel = {onCancel()}
+        onConfirm = { onConfirm(it) },
+        onCancel = { onCancel() }
     )
 }

@@ -10,40 +10,44 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class DeleteWorker(context: Context, params: WorkerParameters): CoroutineWorker(context,params) {
+class DeleteWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
-    var progress : Int = 0
+    var progress: Int = 0
 
     private val stringArray = inputData.getStringArray(Constants.WORKER_KEY_SELECTED_FILES)!!
-    private val selectedFiles = stringArray.map{ File(it) }.toTypedArray()
+    private val selectedFiles = stringArray.map { File(it) }.toTypedArray()
     val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
 
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO){
-        try{
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        try {
             //println("Worker_stringArray: ${stringArray.toList()}")
             selectedFiles.forEach { file ->
                 deleteRecursively_td(
                     file = file,
                     onProgress = {
                         progress++
-                        myNoti.sendSilentNotification("titleText","deleted: $progress/$fileQuantity")
+                        myNoti.sendSilentNotification(
+                            "titleText",
+                            "deleted: $progress/$fileQuantity"
+                        )
                     }
                 )
             }
 
 
             Result.success()
-        }catch(e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             Result.failure()
         }
     }
+
     /** independent **/
     suspend fun deleteRecursively_td(
         file: File,
-        onProgress:(File)->Unit
-    ):Unit = withContext(Dispatchers.IO){
+        onProgress: (File) -> Unit
+    ): Unit = withContext(Dispatchers.IO) {
         try {
             if (file.isDirectory) {
                 val files = file.listFiles()
@@ -54,7 +58,7 @@ class DeleteWorker(context: Context, params: WorkerParameters): CoroutineWorker(
                 }
             }
             file.delete()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
         }
     }

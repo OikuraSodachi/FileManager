@@ -18,23 +18,23 @@ import java.io.File
 
 @Composable
 fun BottomMultiSelectMenu(
-    move:()->Unit,
-    copy:()->Unit,
-    delete:()->Unit,
-    zip:(String)->Unit,
-    unzip:(String)->Unit,
-    selected:Array<File>,
+    move: () -> Unit,
+    copy: () -> Unit,
+    delete: () -> Unit,
+    zip: (String) -> Unit,
+    unzip: (String) -> Unit,
+    selected: Array<File>,
     modifier: Modifier = Modifier
-){
+) {
     val expandedState = remember { mutableStateOf(false) }
-    val deleteDialog = remember{mutableStateOf(false)}
+    val deleteDialog = remember { mutableStateOf(false) }
     val zipDialog = remember { mutableStateOf(false) }
     val unzipDialog = remember { mutableStateOf(false) }
 
-    Row (
+    Row(
         modifier = modifier
             .wrapContentSize()
-    ){
+    ) {
         TextButton(
             modifier = Modifier
                 .weight(1f),
@@ -62,7 +62,7 @@ fun BottomMultiSelectMenu(
             modifier = Modifier
                 .weight(1f),
             onClick = {
-                if(expandedState.value == false) {
+                if (expandedState.value == false) {
                     expandedState.value = true
                 }
             }
@@ -70,8 +70,8 @@ fun BottomMultiSelectMenu(
             Text(stringResource(id = R.string.bottom_multi_select_menu_more))
             BottomPopupMenu(
                 expanded = expandedState,
-                zip = {zipDialog.value = true},
-                unzip ={unzipDialog.value = true},
+                zip = { zipDialog.value = true },
+                unzip = { unzipDialog.value = true },
                 selectAll = {},
                 unselectAll = {},
                 selected = selected
@@ -79,31 +79,31 @@ fun BottomMultiSelectMenu(
         }
     }
 
-    if(deleteDialog.value){
+    if (deleteDialog.value) {
         DeleteDialog(
-            onCancel = {deleteDialog.value = false},
-            delete = {delete()}
+            onCancel = { deleteDialog.value = false },
+            delete = { delete() }
         )
     }
 
-    if(zipDialog.value){
+    if (zipDialog.value) {
         ZipDialog(
-            onCancel = {zipDialog.value = false},
-            onConfirm = {zip(it)}
+            onCancel = { zipDialog.value = false },
+            onConfirm = { zip(it) }
         )
     }
 
-    if(unzipDialog.value){
+    if (unzipDialog.value) {
         UnzipDialog(
             onCancel = { unzipDialog.value = false },
-            onConfirm = {unzip(it)}
+            onConfirm = { unzip(it) }
         )
     }
 }
 
 @Preview
 @Composable
-private fun BottomMultiSelectMenuPreview(){
+private fun BottomMultiSelectMenuPreview() {
     BottomMultiSelectMenu(
         copy = {},
         move = {},

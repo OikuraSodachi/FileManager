@@ -6,27 +6,27 @@ import java.io.File
 import java.util.zip.ZipFile
 
 class UnzipAction(
-    val selectedZipFile:File,
-    val targetDirectory:File
-):FileAction {
+    val selectedZipFile: File,
+    val targetDirectory: File
+) : FileAction {
 
-    var progress : Int = 0
-    private lateinit var currentFileInProcess : File
+    var progress: Int = 0
+    private lateinit var currentFileInProcess: File
 
     override fun main() {
-        unzip(ZipFile(selectedZipFile),targetDirectory)
+        unzip(ZipFile(selectedZipFile), targetDirectory)
     }
 
     override fun abort() {
 
-     }
+    }
 
     override fun progressCallback() {
 
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("unzip completed",targetDirectory.absolutePath)
+        myNoti.sendCompletedNotification("unzip completed", targetDirectory.absolutePath)
     }
 
     fun unzip(zipFile: ZipFile, targetDirectory: File) {

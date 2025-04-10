@@ -8,12 +8,12 @@ import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
 class CopyAction(
-    val selectedFiles:Array<File>,
+    val selectedFiles: Array<File>,
     val targetDirectory: File
 ) : FileAction {
-    var progress : Int = 0
+    var progress: Int = 0
     private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
-    private lateinit var currentFileInProcess : File
+    private lateinit var currentFileInProcess: File
 
     override fun main() {
         copyFiles_Recursive_td(
@@ -36,16 +36,20 @@ class CopyAction(
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("copied $progress files","copy complete")
+        myNoti.sendCompletedNotification("copied $progress files", "copy complete")
     }
 
-    fun copyFiles_Recursive_td(selected: Array<File>, targetDirectory: File,onProgress: (File) -> Unit) {
-        selected.forEach{ file ->
+    fun copyFiles_Recursive_td(
+        selected: Array<File>,
+        targetDirectory: File,
+        onProgress: (File) -> Unit
+    ) {
+        selected.forEach { file ->
             val target = targetDirectory.resolve(file.name)
             currentFileInProcess = target
             if (file.isDirectory) {
                 target.mkdirs()
-                copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target,onProgress)
+                copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target, onProgress)
             } else {
                 Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING)
             }

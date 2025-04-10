@@ -12,12 +12,12 @@ import coil.request.ImageRequest
 @Composable
 fun ImageHolder(
     modifier: Modifier,
-    isAsyncImage:Boolean,
+    isAsyncImage: Boolean,
     icon: ImageBitmap,
     data: Any?
-){
+) {
     val context = LocalContext.current
-    if(isAsyncImage) {
+    if (isAsyncImage) {
         AsyncImage(
             model = ImageRequest.Builder(context)
                 .data(data)

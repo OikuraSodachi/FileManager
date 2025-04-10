@@ -10,11 +10,11 @@ import java.util.zip.ZipEntry
 import java.util.zip.ZipOutputStream
 
 class ZipAction(
-    val selectedFiles:Array<File>,
-    val targetZipFile:File,
-):FileAction {
+    val selectedFiles: Array<File>,
+    val targetZipFile: File,
+) : FileAction {
 
-    var bytesDone : Long = 0L
+    var bytesDone: Long = 0L
     var prevProgress: Int = 0
     val totalSize = getTotalSize_td(selectedFiles)
 
@@ -25,7 +25,7 @@ class ZipAction(
                     zipOut = zipOut,
                     fileToZip = file,
                     fileName = file.name,
-                    progressCallback ={
+                    progressCallback = {
                         bytesDone += it
                         progressCallback()
                     }
@@ -41,16 +41,21 @@ class ZipAction(
     override fun progressCallback() {
         val progress = (bytesDone * 100 / totalSize).toInt()
         if (prevProgress != progress) {
-            myNoti.sendProgressNotification("titleText","${progress}%",progress)
+            myNoti.sendProgressNotification("titleText", "${progress}%", progress)
             prevProgress = progress
         }
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("Zip Complete",targetZipFile.name)
+        myNoti.sendCompletedNotification("Zip Complete", targetZipFile.name)
     }
 
-    fun addFileToZip(zipOut: ZipOutputStream, fileToZip: File, fileName: String, progressCallback: (Long) -> Unit) {
+    fun addFileToZip(
+        zipOut: ZipOutputStream,
+        fileToZip: File,
+        fileName: String,
+        progressCallback: (Long) -> Unit
+    ) {
         if (fileToZip.isDirectory) {
             val children = fileToZip.listFiles() ?: return
             for (childFile in children) {
@@ -70,7 +75,7 @@ class ZipAction(
             while (fis.read(bytes).also { length = it } >= 0) {
                 zipOut.write(bytes, 0, length)
                 fileProcessedSize += length
-                if(fileProcessedSize%(bytes.size) == 0L) {
+                if (fileProcessedSize % (bytes.size) == 0L) {
                     progressCallback(length.toLong())
                 }
             }

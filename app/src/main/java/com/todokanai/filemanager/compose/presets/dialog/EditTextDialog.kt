@@ -17,9 +17,9 @@ import androidx.compose.ui.tooling.preview.Preview
 fun EditTextDialog(
     modifier: Modifier,
     title: String,
-    defaultText:String,
-    cancelText:String = "Cancel",
-    confirmText:String = "Confirm",
+    defaultText: String,
+    cancelText: String = "Cancel",
+    confirmText: String = "Confirm",
     onConfirm: (String) -> Unit,
     onCancel: () -> Unit
 ) {
@@ -61,7 +61,7 @@ fun EditTextDialog(
 
 @Preview
 @Composable
-private fun EditTextDialogPreview(){
+private fun EditTextDialogPreview() {
     EditTextDialog(
         modifier = Modifier,
         title = "title",

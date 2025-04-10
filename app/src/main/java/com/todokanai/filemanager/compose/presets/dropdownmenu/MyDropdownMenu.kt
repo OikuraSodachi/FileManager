@@ -10,9 +10,9 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MyDropdownMenu(
-    modifier:Modifier = Modifier,
-    contents:List<Pair<String,()->Unit>>,
-    expanded : Boolean,
+    modifier: Modifier = Modifier,
+    contents: List<Pair<String, () -> Unit>>,
+    expanded: Boolean,
     onDismissRequest: () -> Unit
 ) {
 
@@ -33,9 +33,9 @@ fun MyDropdownMenu(
 
 @Preview
 @Composable
-private fun DropdownMenuPreview(){
+private fun DropdownMenuPreview() {
     MyDropdownMenu(
-        contents = listOf(Pair("1", {}), Pair("2", {}),Pair("3",{})),
+        contents = listOf(Pair("1", {}), Pair("2", {}), Pair("3", {})),
         expanded = true,
         onDismissRequest = {}
     )

@@ -8,8 +8,6 @@
     tools:context=".components.fragments.NetFragment">
 
 
-
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

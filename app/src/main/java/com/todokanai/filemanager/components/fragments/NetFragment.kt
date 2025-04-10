@@ -15,26 +15,26 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class NetFragment : NetFragmentLogics() {
 
-    lateinit var netAdapter : NetRecyclerAdapter
-    override val binding by lazy{ FragmentNetBinding.inflate(layoutInflater) }
+    lateinit var netAdapter: NetRecyclerAdapter
+    override val binding by lazy { FragmentNetBinding.inflate(layoutInflater) }
     private val viewModel: NetViewModel by viewModels()
 
     override fun prepareLateInit() {
         netAdapter = NetRecyclerAdapter(
-            onItemClick = {viewModel.onItemClick(it)}
+            onItemClick = { viewModel.onItemClick(it) }
         )
     }
 
     override fun prepareView() {
-        val verticalManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL,false)
-        binding.netRecyclerView.run{
+        val verticalManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        binding.netRecyclerView.run {
             adapter = netAdapter
             layoutManager = verticalManager
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
     }
 
-    override fun collectUIState(){
+    override fun collectUIState() {
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
                 netAdapter.submitList(uiState.itemList)
@@ -43,10 +43,12 @@ class NetFragment : NetFragmentLogics() {
     }
 
     override fun overrideBackButton() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                viewModel.toParent()
-            }
-        })
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewModel.toParent()
+                }
+            })
     }
 }

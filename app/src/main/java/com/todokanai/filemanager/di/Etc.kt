@@ -25,6 +25,6 @@ class Etc {
     @Singleton
     @Provides
     fun provideNetFileModule(dataStoreRepository: DataStoreRepository): NetFileModuleLogics {
-        return NetFileModule(dataStoreRepository,Variables.defaultDirectory)
+        return NetFileModule(dataStoreRepository, Variables.defaultDirectory)
     }
 }

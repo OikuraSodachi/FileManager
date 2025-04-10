@@ -18,21 +18,21 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun SelectDialog(
-    modifier : Modifier,
-    title:String ?= null,
-    items: List<Pair<String,()->Unit>>,
-    selectedItem:String?,
-    onDismissRequest:()->Unit,
-    confirmText:String ?=null,
-    dismissText:String ?=null,
-    onConfirm:(()->Unit)? =null,
-    onCancel:(()->Unit)? =null
-){
+    modifier: Modifier,
+    title: String? = null,
+    items: List<Pair<String, () -> Unit>>,
+    selectedItem: String?,
+    onDismissRequest: () -> Unit,
+    confirmText: String? = null,
+    dismissText: String? = null,
+    onConfirm: (() -> Unit)? = null,
+    onCancel: (() -> Unit)? = null
+) {
     AlertDialog(
         modifier = modifier,
         onDismissRequest = onDismissRequest,
         title = {
-            title?.let{
+            title?.let {
                 Text(title)
             }
         },
@@ -62,22 +62,22 @@ fun SelectDialog(
             }
         },
         confirmButton = {
-            onConfirm?.let{
+            onConfirm?.let {
                 Button(
                     onClick = { onConfirm() }
                 ) {
-                    confirmText?.let{
+                    confirmText?.let {
                         Text(confirmText)
                     }
                 }
             }
         },
         dismissButton = {
-            onCancel?.let{
+            onCancel?.let {
                 Button(
                     onClick = { onCancel() }
                 ) {
-                    dismissText?.let{
+                    dismissText?.let {
                         Text(dismissText)
                     }
                 }
@@ -88,11 +88,11 @@ fun SelectDialog(
 
 @Preview
 @Composable
-private fun SelectDialogPreview(){
+private fun SelectDialogPreview() {
     SelectDialog(
         modifier = Modifier,
         title = null,
-        items = listOf(Pair("Item1",{}),Pair("Item2",{})),
+        items = listOf(Pair("Item1", {}), Pair("Item2", {})),
         selectedItem = "Item2",
         onDismissRequest = {},
         dismissText = "test",

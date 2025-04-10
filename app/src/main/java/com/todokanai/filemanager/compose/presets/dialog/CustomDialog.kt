@@ -19,9 +19,9 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomDialog(
-    onDismissRequest:()->Unit,
-    content:@Composable ()->Unit
-){
+    onDismissRequest: () -> Unit,
+    content: @Composable () -> Unit
+) {
     AlertDialog(
         onDismissRequest = {
             // Dismiss the dialog when the user clicks outside the dialog or on the back
@@ -44,7 +44,7 @@ fun CustomDialog(
 
 @Preview
 @Composable
-private fun CustomDialogPreview(){
+private fun CustomDialogPreview() {
     CustomDialog(
         onDismissRequest = {}
 

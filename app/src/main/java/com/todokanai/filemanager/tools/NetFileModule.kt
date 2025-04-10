@@ -1,11 +1,8 @@
 package com.todokanai.filemanager.tools
 
-import android.net.Uri
 import com.todokanai.filemanager.abstracts.NetFileModuleLogics
-import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
-import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -16,12 +13,17 @@ import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
 
 class NetFileModule(
-    private val dsRepo:DataStoreRepository,
-    defaultDirectory:String
-):NetFileModuleLogics(defaultDirectory) {
+    private val dsRepo: DataStoreRepository,
+    defaultDirectory: String
+) : NetFileModuleLogics(defaultDirectory) {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
-        return listFilesInFtpDirectory(dsRepo.getServerIp(),dsRepo.getUserId(),dsRepo.getUserPassword(),directory)
+        return listFilesInFtpDirectory(
+            dsRepo.getServerIp(),
+            dsRepo.getUserId(),
+            dsRepo.getUserPassword(),
+            directory
+        )
     }
 
     override fun isFileValid(absolutePath: String): Boolean {
@@ -35,7 +37,7 @@ class NetFileModule(
             Dispatchers.Default
         )
 
-    override fun toParentDirectory(current:String){
+    override fun toParentDirectory(current: String) {
         getParentAbsolutePath_td(current)?.let { setCurrentDirectory(it) }
     }
 
@@ -50,7 +52,7 @@ class NetFileModule(
         var result = emptyArray<FTPFile>()
         try {
             // FTP 서버 연결
-            ftpClient.run{
+            ftpClient.run {
                 connect(server, port)
                 login(username, password)
                 enterLocalPassiveMode() // Passive Mode 사용
@@ -79,21 +81,7 @@ class NetFileModule(
             itemList,
             currentDirectory
         ) { items, directory ->
-            items.map {
-                toFileHolderItem(
-                    it,
-                    directory
-                )
-            }
+            items
         }
-    private val testUri: Uri = Uri.EMPTY
 
-    private fun toFileHolderItem(ftpFile: FTPFile, currentDirectory: String): FileHolderItem {
-        return FileHolderItem(
-            absolutePath = "${currentDirectory}/${ftpFile.name}",
-            size = readableFileSize_td(ftpFile.size),
-            lastModified = ftpFile.timestamp.timeInMillis,
-            uri = testUri
-        )
-    }
 }

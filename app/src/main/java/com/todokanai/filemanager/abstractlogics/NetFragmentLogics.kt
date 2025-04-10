@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
-abstract class NetFragmentLogics: Fragment() {
+abstract class NetFragmentLogics : Fragment() {
 
-    abstract val binding : ViewBinding
+    abstract val binding: ViewBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,

@@ -16,44 +16,44 @@ import java.io.File
 fun BottomPopupMenu(
     modifier: Modifier = Modifier,
     expanded: MutableState<Boolean>,
-    zip:()->Unit,
-    unzip:()->Unit,
-    selectAll:()->Unit,
-    unselectAll:()->Unit,
-    selected:Array<File>
-){
+    zip: () -> Unit,
+    unzip: () -> Unit,
+    selectAll: () -> Unit,
+    unselectAll: () -> Unit,
+    selected: Array<File>
+) {
     val context = LocalContext.current
-    val infoDialog = remember{ mutableStateOf(false) }
+    val infoDialog = remember { mutableStateOf(false) }
 
     /** more 버튼 내용물 **/
-    fun contents(context: Context, items:Array<File>):List<Pair<String,()->Unit>>{
+    fun contents(context: Context, items: Array<File>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf(
-            Pair(context.getString(R.string.bottom_popup_info),{infoDialog.value = true}),
-            Pair(context.getString(R.string.bottom_popup_menu_zip),{zip()}),
-            Pair(context.getString(R.string.bottom_popup_menu_unzip),{unzip()}),
-            Pair(context.getString(R.string.select_all),{selectAll()}),
-            Pair(context.getString(R.string.unselect_all),{unselectAll()})
+            Pair(context.getString(R.string.bottom_popup_info), { infoDialog.value = true }),
+            Pair(context.getString(R.string.bottom_popup_menu_zip), { zip() }),
+            Pair(context.getString(R.string.bottom_popup_menu_unzip), { unzip() }),
+            Pair(context.getString(R.string.select_all), { selectAll() }),
+            Pair(context.getString(R.string.unselect_all), { unselectAll() })
 
         )
         //-------------
 
-        if(items.size == 1){        // --> single item
+        if (items.size == 1) {        // --> single item
             val item = items.first()
-            result.add(Pair(context.getString(R.string.bottom_popup_rename),{}))
+            result.add(Pair(context.getString(R.string.bottom_popup_rename), {}))
         }
         return result
     }
 
     MyDropdownMenu(
         modifier = modifier,
-        contents = contents(context,selected),
+        contents = contents(context, selected),
         expanded = expanded.value,
-        onDismissRequest = {expanded.value = false}
+        onDismissRequest = { expanded.value = false }
     )
 
-    if(infoDialog.value){
+    if (infoDialog.value) {
         InfoDialog(
-            onDismiss = {infoDialog.value = false},
+            onDismiss = { infoDialog.value = false },
             numberText = "",
             sizeText = ""
         )

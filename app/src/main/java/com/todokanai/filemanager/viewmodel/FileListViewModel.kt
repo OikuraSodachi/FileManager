@@ -1,8 +1,11 @@
 package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
+import androidx.core.net.toUri
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.FileModule
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +18,10 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class FileListViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val module:FileModule): FileListViewModelLogics(){
+class FileListViewModel @Inject constructor(
+    private val dsRepo: DataStoreRepository,
+    val module: FileModule
+) : FileListViewModelLogics() {
 
     private val _uiState = MutableStateFlow(FileListUiState())
     val uiState: StateFlow<FileListUiState>
@@ -25,37 +31,38 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         get() = combine(
             module.listFiles,
             dsRepo.sortBy
-        ){
-         listFiles,mode ->
-            sortedFileList_td(listFiles,mode)
+        ) { listFiles, mode ->
+            sortedFileList_td(listFiles, mode).map {
+                it.toFileHolderItem()
+            }
         }
 
     override val dirTree
-        get() = module.currentPath.map{ File(it).dirTree() }
+        get() = module.currentPath.map { File(it).dirTree() }
 
     override suspend fun updateUI() {
-        fileHolderList.collect{
+        fileHolderList.collect {
             _uiState.update { currentState ->
                 currentState.copy(listFiles = it, emptyDirectoryText = it.isEmpty())
             }
         }
-        dirTree.collect{
+        dirTree.collect {
             _uiState.update { currentState ->
                 currentState.copy(dirTree = it)
             }
         }
-        module.notAccessible.collect{
+        module.notAccessible.collect {
             _uiState.update { currentState ->
                 currentState.copy(accessFailText = it)
             }
         }
     }
 
-    override fun onDirectoryClick(file:File){
+    override fun onDirectoryClick(file: File) {
         module.updateCurrentPath(file.absolutePath)
     }
 
-    override fun onFileClick(context: Context, item:File) {
+    override fun onFileClick(context: Context, item: File) {
         module.onFileClick(context, item)
     }
 
@@ -74,11 +81,27 @@ class FileListViewModel @Inject constructor(private val dsRepo:DataStoreReposito
         return result.reversed()
     }
 
+
+    private fun File.toFileHolderItem(): FileHolderItem {
+        val sizeText: String =
+            if (this.isDirectory) {
+                "${this.listFiles()?.size} 개"
+            } else {
+                readableFileSize_td(this.length())
+            }
+
+        return FileHolderItem(
+            absolutePath = this.absolutePath,
+            size = sizeText,
+            lastModified = this.lastModified(),
+            uri = this.toUri()
+        )
+    }
 }
 
 data class FileListUiState(
-    val listFiles:List<File> = emptyList(),
-    val dirTree:List<File> = emptyList(),
-    val emptyDirectoryText:Boolean = false,
-    val accessFailText:Boolean = false
+    val listFiles: List<FileHolderItem> = emptyList(),
+    val dirTree: List<File> = emptyList(),
+    val emptyDirectoryText: Boolean = false,
+    val accessFailText: Boolean = false
 )

@@ -16,20 +16,23 @@ fun SortDialog(
     modifier: Modifier = Modifier,
     onDismissRequest: () -> Unit,
     viewModel: SortDialogViewModel = hiltViewModel()
-){
+) {
     val context = LocalContext.current
-    val selectedItem : State<String?> = viewModel.selectedItem.collectAsStateWithLifecycle()
+    val selectedItem: State<String?> = viewModel.selectedItem.collectAsStateWithLifecycle()
 
     val sortItems = listOf(
-        Pair(stringResource(id = R.string.by_default),{viewModel.saveByDefault()}),
-        Pair(stringResource(id = R.string.by_name_ascending),{viewModel.saveByNameAscending()}),
-        Pair(stringResource(id = R.string.by_name_descending),{viewModel.saveByNameDescending()}),
-        Pair(stringResource(id = R.string.by_size_ascending),{viewModel.saveBySizeAscending()}),
-        Pair(stringResource(id = R.string.by_size_descending),{viewModel.saveBySizeDescending()}),
-        Pair(stringResource(id = R.string.by_type_ascending),{viewModel.saveByTypeAscending()}),
-        Pair(stringResource(id = R.string.by_type_descending),{viewModel.saveByTypeDescending()}),
-        Pair(stringResource(id = R.string.by_date_ascending),{viewModel.saveByDateAscending()}),
-        Pair(stringResource(id = R.string.by_date_descending),{viewModel.saveByDateDescending()})
+        Pair(stringResource(id = R.string.by_default), { viewModel.saveByDefault() }),
+        Pair(stringResource(id = R.string.by_name_ascending), { viewModel.saveByNameAscending() }),
+        Pair(stringResource(id = R.string.by_name_descending),
+            { viewModel.saveByNameDescending() }),
+        Pair(stringResource(id = R.string.by_size_ascending), { viewModel.saveBySizeAscending() }),
+        Pair(stringResource(id = R.string.by_size_descending),
+            { viewModel.saveBySizeDescending() }),
+        Pair(stringResource(id = R.string.by_type_ascending), { viewModel.saveByTypeAscending() }),
+        Pair(stringResource(id = R.string.by_type_descending),
+            { viewModel.saveByTypeDescending() }),
+        Pair(stringResource(id = R.string.by_date_ascending), { viewModel.saveByDateAscending() }),
+        Pair(stringResource(id = R.string.by_date_descending), { viewModel.saveByDateDescending() })
     )
 
     SelectDialog(

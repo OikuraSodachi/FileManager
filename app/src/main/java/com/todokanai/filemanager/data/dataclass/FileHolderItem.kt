@@ -4,33 +4,33 @@ import android.net.Uri
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import java.io.File
 
-/** 주의: view layer 에서만 이 class 를 사용할 것
+/** 주의: data layer 에서 이 class 를 사용하지 말 것
  *
  * @param uri File.toUri() **/
 data class FileHolderItem(
-    val absolutePath:String,
-    val size:String,
-    val lastModified:Long,
-    val uri:Uri,
-    var isSelected:Boolean = false
-){
+    val absolutePath: String,
+    val size: String,
+    val lastModified: Long,
+    val uri: Uri,
+    var isSelected: Boolean = false
+) {
 
     private fun mimeType() = getMimeType_td(absolutePath)
 
     /** File.isDirectory **/
-    fun isDirectory():Boolean{
-        if(getMimeType_td(absolutePath)== "resource/folder"){
+    fun isDirectory(): Boolean {
+        if (getMimeType_td(absolutePath) == "resource/folder") {
             return true
-        } else{
+        } else {
             return false
         }
     }
 
-    fun isImage():Boolean{
+    fun isImage(): Boolean {
         val type = mimeType()
-        if(type=="video/*" || type == "image/*" ){
+        if (type == "video/*" || type == "image/*") {
             return true
-        }else{
+        } else {
             return false
         }
     }
@@ -42,5 +42,5 @@ data class FileHolderItem(
     fun name() = """[^/\\]+$""".toRegex().find(absolutePath)?.value
 
     /** @return the original file **/
-    fun file() : File = File(absolutePath)
+    fun file(): File = File(absolutePath)
 }

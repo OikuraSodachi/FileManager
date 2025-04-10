@@ -22,14 +22,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
 
 @AndroidEntryPoint
-class MainActivity() : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private val permissions = Objects.permissions
     private val requestCode = Constants.PERMISSION_REQUEST_CODE
 
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val fragmentList = listOf(StorageFragment(), FileListFragment(),NetFragment())
+    private val fragmentList = listOf(StorageFragment(), FileListFragment(), NetFragment())
     private val viewpagerAdapter by lazy { ViewpagerAdapter(this) }
 
     val shouldShowDialog = mutableStateOf(false)
@@ -46,8 +46,8 @@ class MainActivity() : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(permissions.isNotEmpty()){
-            requestPermissions(permissions,requestCode)
+        if (permissions.isNotEmpty()) {
+            requestPermissions(permissions, requestCode)
         }
         prepareView(viewModel)
         viewModel.run {
@@ -62,7 +62,7 @@ class MainActivity() : AppCompatActivity() {
     }
 
     /** view 내용 setter 구분 편리성을 위해 묶어서 분리 **/
-    private fun prepareView(viewModel: MainViewModel){
+    private fun prepareView(viewModel: MainViewModel) {
         viewpagerAdapter.fragmentList = fragmentList
 
         binding.run {
@@ -92,7 +92,7 @@ class MainActivity() : AppCompatActivity() {
                 }
             }
             btn2.setOnClickListener { menuBtnExpanded.value = true }
-            netBtn.setOnClickListener{
+            netBtn.setOnClickListener {
                 fragmentCode.value = 3
             }
             exitBtn.setOnClickListener {
@@ -111,10 +111,10 @@ class MainActivity() : AppCompatActivity() {
         fragmentCode.asLiveData().observe(this) {
             if (it == 1) {
                 binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
-            } else if(it== 2) {
+            } else if (it == 2) {
                 binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
-            } else{
-                binding.mainViewPager.setCurrentItem(2,false)   // toNetFrag
+            } else {
+                binding.mainViewPager.setCurrentItem(2, false)   // toNetFrag
             }
         }
     }

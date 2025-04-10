@@ -9,9 +9,9 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class StorageViewModel @Inject constructor(val module:FileModule) : ViewModel(){
+class StorageViewModel @Inject constructor(val module: FileModule) : ViewModel() {
 
-    val storageHolderList = Variables.storages.map{ it.toList() }
+    val storageHolderList = Variables.storages.map { it.toList() }
 
-    fun onItemClick(file:File) = module.updateCurrentPath(file.absolutePath)
+    fun onItemClick(file: File) = module.updateCurrentPath(file.absolutePath)
 }

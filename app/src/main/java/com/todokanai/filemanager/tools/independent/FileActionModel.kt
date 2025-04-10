@@ -65,13 +65,13 @@ fun getTotalSize_td(files: Array<File>): Long {
  * sort 적용된 fileList를 반환
  * */
 fun sortedFileList_td(
-    files:Array<File>,
-    sortMode:String?
-):List<File>{
+    files: Array<File>,
+    sortMode: String?
+): List<File> {
     /** 하위 디렉토리 포함한 크기 */
     fun File.getTotalSize(): Long {
         var size: Long = 0
-        if(this.isDirectory) {
+        if (this.isDirectory) {
             val listFiles = this.listFiles()
             if (listFiles != null) {
                 for (file in listFiles) {
@@ -87,34 +87,44 @@ fun sortedFileList_td(
         }
         return size
     }
-    return when(sortMode){
-        "BY_DEFAULT" ->{
-            files.sortedWith (compareBy({it.isFile},{it.name}))
+    return when (sortMode) {
+        "BY_DEFAULT" -> {
+            files.sortedWith(compareBy({ it.isFile }, { it.name }))
         }
-        "BY_NAME_ASCENDING" ->{
-            files.sortedBy{it.name}
+
+        "BY_NAME_ASCENDING" -> {
+            files.sortedBy { it.name }
         }
-        "BY_NAME_DESCENDING" ->{
-            files.sortedByDescending{it.name}
+
+        "BY_NAME_DESCENDING" -> {
+            files.sortedByDescending { it.name }
         }
-        "BY_SIZE_ASCENDING" ->{
-            files.sortedBy{ it.getTotalSize() }
+
+        "BY_SIZE_ASCENDING" -> {
+            files.sortedBy { it.getTotalSize() }
         }
-        "BY_SIZE_DESCENDING" ->{
+
+        "BY_SIZE_DESCENDING" -> {
             files.sortedByDescending { it.getTotalSize() }
         }
-        "BY_TYPE_ASCENDING"->{
-            files.sortedBy{it.extension}
+
+        "BY_TYPE_ASCENDING" -> {
+            files.sortedBy { it.extension }
         }
-        "BY_TYPE_DESCENDING" ->{
+
+        "BY_TYPE_DESCENDING" -> {
             files.sortedByDescending { it.extension }
         }
-        "BY_DATE_ASCENDING" ->{
-            files.sortedBy{it.lastModified()}
+
+        "BY_DATE_ASCENDING" -> {
+            files.sortedBy { it.lastModified() }
         }
-        "BY_DATE_DESCENDING" ->{
+
+        "BY_DATE_DESCENDING" -> {
             files.sortedByDescending { it.lastModified() }
-        } else -> {
+        }
+
+        else -> {
             println("sortMode value error : $sortMode")
             files.toList()
         }
@@ -125,29 +135,30 @@ fun sortedFileList_td(
  *
  * @return the number of [File] on [files] and its subdirectories. Does NOT Include directories
  * **/
-fun getFileNumber_td(files:Array<File>):Int{
+fun getFileNumber_td(files: Array<File>): Int {
     var total = 0
     for (file in files) {
         if (file.isFile) {
-            total ++
+            total++
         } else if (file.isDirectory) {
             total += getFileNumber_td(file.listFiles() ?: emptyArray())
         }
     }
     return total
 }
+
 /** Todokanai
  * get the total number of files on [files] and its subdirectories
  * @param files Array of [File]
  * @return the total number
  * Directory와 File의 총 갯수*/
-fun getFileAndFoldersNumber_td(files:Array<File>):Int{
+fun getFileAndFoldersNumber_td(files: Array<File>): Int {
     var total = 0
     for (file in files) {
         if (file.isFile) {
-            total ++
+            total++
         } else if (file.isDirectory) {
-            total ++
+            total++
             total += getFileNumber_td(file.listFiles() ?: emptyArray())
         }
     }
@@ -157,7 +168,7 @@ fun getFileAndFoldersNumber_td(files:Array<File>):Int{
 /** Todokanai
  * @return a fileTree from [currentPath]
  * */
-fun dirTree_td(currentPath:File): List<File> {
+fun dirTree_td(currentPath: File): List<File> {
     val result = mutableListOf<File>()
     var now = currentPath
     while (now.parentFile != null) {
@@ -167,7 +178,7 @@ fun dirTree_td(currentPath:File): List<File> {
     return result.reversed()
 }
 
-fun zipFileEntrySize_td(file:java.util.zip.ZipFile):Long{
+fun zipFileEntrySize_td(file: java.util.zip.ZipFile): Long {
     var result = 0L
 
     val entries = file.entries()
@@ -262,7 +273,8 @@ fun getParentAbsolutePath_td(filePath: String): String? {
  * @param filePath absolutePath of file
  * @return true if the file is a directory, else false
  * **/
-fun isDirectoryByRegex_td(filePath: String) : Boolean = Regex(".+[\\\\/]$").matches(filePath)    // // 경로가 '/' 또는 '\'로 끝나면 directory 로 판단
+fun isDirectoryByRegex_td(filePath: String): Boolean =
+    Regex(".+[\\\\/]$").matches(filePath)    // // 경로가 '/' 또는 '\'로 끝나면 directory 로 판단
 
 /** @param server server ip
  *  @param username login id
@@ -280,7 +292,7 @@ fun uploadFileToFtp_td(
     val ftpClient = FTPClient()
     return try {
         // FTP 서버 연결
-        ftpClient.run{
+        ftpClient.run {
             connect(server, port)
             login(username, password)
             enterLocalPassiveMode() // Passive Mode 사용 (방화벽 문제 방지)
@@ -327,7 +339,7 @@ fun downloadFileFromFtp_td(
     val ftpClient = FTPClient()
     return try {
         // FTP 서버 연결
-        ftpClient.run{
+        ftpClient.run {
             connect(server, port)
             login(username, password)
             enterLocalPassiveMode() // Passive Mode 사용
@@ -374,7 +386,7 @@ fun listFilesInFtpDirectory_td(
     var result = emptyArray<FTPFile>()
     try {
         // FTP 서버 연결
-        ftpClient.run{
+        ftpClient.run {
             connect(server, port)
             login(username, password)
             enterLocalPassiveMode() // Passive Mode 사용

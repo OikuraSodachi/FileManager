@@ -5,7 +5,7 @@ import androidx.recyclerview.selection.ItemDetailsLookup
 import androidx.recyclerview.widget.RecyclerView
 
 /** Base class of [ItemDetailsLookup] for [MultiSelectRecyclerAdapter] **/
-class BaseItemLookup(private val recyclerView: RecyclerView): ItemDetailsLookup<Long>() {
+class BaseItemLookup(private val recyclerView: RecyclerView) : ItemDetailsLookup<Long>() {
     override fun getItemDetails(e: MotionEvent): ItemDetails<Long>? {
         val view = recyclerView.findChildViewUnder(e.x, e.y) ?: return null
         val holder = recyclerView.getChildViewHolder(view)

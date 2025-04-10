@@ -10,13 +10,13 @@ import com.todokanai.filemanager.compose.presets.dialog.EditTextDialog
 fun ZipDialog(
     modifier: Modifier = Modifier,
     onCancel: () -> Unit,
-    onConfirm:(String)->Unit
-){
+    onConfirm: (String) -> Unit
+) {
     EditTextDialog(
         modifier = modifier,
         title = stringResource(id = R.string.new_zip_file_title),
         defaultText = stringResource(id = R.string.new_zip_file_default_text),
-        onConfirm = {onConfirm(it)},
-        onCancel = {onCancel()}
+        onConfirm = { onConfirm(it) },
+        onCancel = { onCancel() }
     )
 }

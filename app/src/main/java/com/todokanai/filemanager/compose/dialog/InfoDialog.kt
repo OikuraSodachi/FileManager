@@ -14,10 +14,10 @@ import com.todokanai.filemanager.compose.presets.dialog.CustomDialog
 @Composable
 fun InfoDialog(
     modifier: Modifier = Modifier,
-    onDismiss:()->Unit,
-    numberText:String,
-    sizeText:String
-){
+    onDismiss: () -> Unit,
+    numberText: String,
+    sizeText: String
+) {
     CustomDialog(
         onDismissRequest = { onDismiss() }
     ) {
@@ -41,7 +41,7 @@ fun InfoDialog(
 
 @Preview
 @Composable
-private fun InfoDialogPreview(){
+private fun InfoDialogPreview() {
     InfoDialog(
         onDismiss = {},
         numberText = "numberText",

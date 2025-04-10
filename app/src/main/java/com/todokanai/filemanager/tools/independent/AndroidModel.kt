@@ -34,17 +34,19 @@ import kotlin.system.exitProcess
  *
  * Service가 실행중일 경우 서비스를 실행한 Intent도 입력할것
  */
-fun exit_td(activity: Activity, serviceIntent: Intent? = null){
+fun exit_td(activity: Activity, serviceIntent: Intent? = null) {
     ActivityCompat.finishAffinity(activity)
-    serviceIntent?.let{ activity.stopService(it) }     // 서비스 종료
+    serviceIntent?.let { activity.stopService(it) }     // 서비스 종료
     System.runFinalization()
     exitProcess(0)
 }
 
-suspend fun getThumbnail_td(file: File,width:Int = 100,height:Int = 100): Bitmap = withContext(Dispatchers.IO){
-    ThumbnailUtils.extractThumbnail(
-        BitmapFactory.decodeFile(file.absolutePath), width, height)
-}
+suspend fun getThumbnail_td(file: File, width: Int = 100, height: Int = 100): Bitmap =
+    withContext(Dispatchers.IO) {
+        ThumbnailUtils.extractThumbnail(
+            BitmapFactory.decodeFile(file.absolutePath), width, height
+        )
+    }
 
 
 /**
@@ -52,10 +54,10 @@ suspend fun getThumbnail_td(file: File,width:Int = 100,height:Int = 100): Bitmap
  *
  */
 fun callHandler_td(
-    handler:Handler,
-    callback:()->Unit
-){
-    handler.post({callback()})
+    handler: Handler,
+    callback: () -> Unit
+) {
+    handler.post({ callback() })
 }
 
 /*
@@ -74,7 +76,7 @@ fun setupTimber_td() {
 
  */
 
-fun setMediaPlaybackState_td(state:Int,mediaSession:MediaSessionCompat){
+fun setMediaPlaybackState_td(state: Int, mediaSession: MediaSessionCompat) {
     val playbackState = PlaybackStateCompat.Builder()
         .run {
             val actions = if (state == PlaybackStateCompat.STATE_PLAYING) {
@@ -88,8 +90,8 @@ fun setMediaPlaybackState_td(state:Int,mediaSession:MediaSessionCompat){
     mediaSession.setPlaybackState(playbackState.build())
 }
 
-fun isPermissionGranted_td(activity: Activity, permission: String):Boolean{
-    val result = ContextCompat.checkSelfPermission(activity,permission)
+fun isPermissionGranted_td(activity: Activity, permission: String): Boolean {
+    val result = ContextCompat.checkSelfPermission(activity, permission)
     return result == PackageManager.PERMISSION_GRANTED
 }
 
@@ -103,9 +105,9 @@ fun isPermissionGranted_td(activity: Activity, permission: String):Boolean{
 fun requestPermission_td(
     activity: Activity,
     permissions: Array<String>,
-    permissionNotice:()->Unit,
-    requestCode:Int = 111
-){
+    permissionNotice: () -> Unit,
+    requestCode: Int = 111
+) {
     if (ActivityCompat.shouldShowRequestPermissionRationale(
             activity,
             permissions.first()
@@ -124,14 +126,14 @@ fun requestPermission_td(
 /** Todokanai
  *
  * == Toast.makeText(appContext,text,Toast.LENGTH_SHORT).show() **/
-fun ToastShort_td(appContext: Context, text:String){
-    Toast.makeText(appContext,text,Toast.LENGTH_SHORT).show()
+fun ToastShort_td(appContext: Context, text: String) {
+    Toast.makeText(appContext, text, Toast.LENGTH_SHORT).show()
 }
 
 /** Todokanai
  *
  * 기기의 storage 목록 반환 **/
-fun getPhysicalStorages_td(context: Context):Array<File>{
+fun getPhysicalStorages_td(context: Context): Array<File> {
     val defaultStorage = Environment.getExternalStorageDirectory()
     val volumes = context.getSystemService(StorageManager::class.java)?.storageVolumes
     val storageList = mutableListOf<File>(defaultStorage)
@@ -149,7 +151,7 @@ fun getPhysicalStorages_td(context: Context):Array<File>{
 /** Todokanai
  *
  * 모든 파일 접근 권한 요청 **/
-fun requestStorageManageAccess_td(activity: Activity){
+fun requestStorageManageAccess_td(activity: Activity) {
     val intent = Intent()
     intent.action = Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
     val uri: Uri = Uri.fromParts("package", activity.packageName, null)
@@ -170,22 +172,23 @@ fun requestStorageManageAccess_td(activity: Activity){
 fun openFile_td(
     context: Context,
     file: File,
-    mimeType:String,
-    onFailure:()->Unit = {}
-){
+    mimeType: String,
+    onFailure: () -> Unit = {}
+) {
     val intent = Intent()
     intent.action = Intent.ACTION_VIEW
     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
     intent.setDataAndType(
-        FileProvider.getUriForFile(context,
+        FileProvider.getUriForFile(
+            context,
             "${context.packageName}.provider",
             file
         ), mimeType
     )
-   // println("mimeType: $mimeType")
+    // println("mimeType: $mimeType")
     try {
         ActivityCompat.startActivity(context, intent, null)
-    } catch (t:Throwable){
+    } catch (t: Throwable) {
         println(t)
         onFailure()
     }
@@ -204,9 +207,9 @@ fun openFile_td(
 fun openFileFromUri_td(
     context: Context,
     uri: Uri,
-    mimeType:String,
-    onFailure:()->Unit = {}
-){
+    mimeType: String,
+    onFailure: () -> Unit = {}
+) {
     val intent = Intent()
     intent.action = Intent.ACTION_VIEW
     intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
@@ -214,12 +217,11 @@ fun openFileFromUri_td(
     // println("mimeType: $mimeType")
     try {
         ActivityCompat.startActivity(context, intent, null)
-    } catch (t:Throwable){
+    } catch (t: Throwable) {
         println(t)
         onFailure()
     }
 }
-
 
 
 /** Todokanai
@@ -229,18 +231,18 @@ fun openFileFromUri_td(
  * **/
 fun popupMenu_td(
     context: Context,
-    anchor:View,
-    itemList:List<Pair<String,()->Unit>>,
-    gravity:Int = 0  // == Gravity.NO_GRAVITY
-){
-    val popupMenu = PopupMenu(context,anchor,gravity)
+    anchor: View,
+    itemList: List<Pair<String, () -> Unit>>,
+    gravity: Int = 0  // == Gravity.NO_GRAVITY
+) {
+    val popupMenu = PopupMenu(context, anchor, gravity)
     popupMenu.run {
-        itemList.forEach{
+        itemList.forEach {
             menu.add(it.first)
         }
         setOnMenuItemClickListener { item ->
-            itemList.forEach{
-                if(item.title == it.first){
+            itemList.forEach {
+                if (item.title == it.first) {
                     it.second()
                 }
             }

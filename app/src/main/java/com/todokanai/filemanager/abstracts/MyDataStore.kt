@@ -13,29 +13,29 @@ import kotlinx.coroutines.flow.map
 abstract class MyDataStore(private val appContext: Context) {
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mydatastore")
 
-    fun <Type:Any> Preferences.Key<Type>.flow():Flow<Type?>{
+    fun <Type : Any> Preferences.Key<Type>.flow(): Flow<Type?> {
         return appContext.dataStore.data.map {
             it[this]
         }
     }
 
-    suspend fun <Type:Any> Preferences.Key<Type>.save(value:Type){
+    suspend fun <Type : Any> Preferences.Key<Type>.save(value: Type) {
         appContext.dataStore.edit {
             it[this@save] = value
         }
     }
 
-    suspend fun <Type:Any> Preferences.Key<Type>.value():Type?{
+    suspend fun <Type : Any> Preferences.Key<Type>.value(): Type? {
         return appContext.dataStore.data.first()[this]
     }
 
-    fun <Type:Any> Preferences.Key<Type>.notNullFlow(defaultValue:Type): Flow<Type> {
+    fun <Type : Any> Preferences.Key<Type>.notNullFlow(defaultValue: Type): Flow<Type> {
         return appContext.dataStore.data.map {
-            it[this] ?:defaultValue
+            it[this] ?: defaultValue
         }
     }
 
-    suspend fun <Type:Any> Preferences.Key<Type>.notNullValue(defaultValue:Type):Type{
+    suspend fun <Type : Any> Preferences.Key<Type>.notNullValue(defaultValue: Type): Type {
         return appContext.dataStore.data.first()[this] ?: defaultValue
     }
 }

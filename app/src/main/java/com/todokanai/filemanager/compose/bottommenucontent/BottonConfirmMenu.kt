@@ -13,13 +13,13 @@ import com.todokanai.filemanager.R
 @Composable
 fun BottomConfirmMenu(
     modifier: Modifier,
-    onCancel:()->Unit,
-    onConfirm:()->Unit
-){
-    Row (
+    onCancel: () -> Unit,
+    onConfirm: () -> Unit
+) {
+    Row(
         modifier = modifier
             .wrapContentSize()
-    ){
+    ) {
         TextButton(
             modifier = Modifier
                 .weight(1f),
@@ -31,7 +31,7 @@ fun BottomConfirmMenu(
         TextButton(
             modifier = Modifier
                 .weight(1f),
-            onClick = {onConfirm()}
+            onClick = { onConfirm() }
         ) {
             Text(stringResource(id = R.string.bottom_confirm_menu_onConfirm))
         }
@@ -41,7 +41,7 @@ fun BottomConfirmMenu(
 
 @Preview
 @Composable
-private fun BottomConfirmMenuPreview(){
+private fun BottomConfirmMenuPreview() {
     BottomConfirmMenu(
         modifier = Modifier,
         onCancel = {},

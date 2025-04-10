@@ -8,17 +8,17 @@ import kotlinx.coroutines.flow.map
 import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
-class FileModule(defaultPath:File) {
+class FileModule(defaultPath: File) {
 
     /** 현재 보고있는 Directory
      *
      *  Primary Key(?) **/
     private val _currentPath = MutableStateFlow<String>(defaultPath.absolutePath)
-    val currentPath : StateFlow<String>
+    val currentPath: StateFlow<String>
         get() = _currentPath
 
     /** array of files to show **/
-    val listFiles = currentPath.map{ File(it).listFiles() ?: emptyArray() }
+    val listFiles = currentPath.map { File(it).listFiles() ?: emptyArray() }
 
     /** whether currentPath is Accessible **/
     val notAccessible = currentPath.map { File(it).listFiles() == null }
@@ -33,8 +33,8 @@ class FileModule(defaultPath:File) {
     /** file.isDirectory == true일 경우, currentPath 값을 update
      *
      *  false일 경우, Intent.ACTION_VIEW (파일 열기) 실행 **/
-    fun onFileClick(context: Context, file:File){
-        if(file.isDirectory){
+    fun onFileClick(context: Context, file: File) {
+        if (file.isDirectory) {
             updateCurrentPath(file.absolutePath)
         } else {
             val mimeType = getMimeType_td(file.name)
@@ -42,8 +42,8 @@ class FileModule(defaultPath:File) {
         }
     }
 
-    fun onBackPressedCallback(){
-        File(currentPath.value).parentFile?.let{
+    fun onBackPressedCallback() {
+        File(currentPath.value).parentFile?.let {
             updateCurrentPath(it.absolutePath)
         }
     }

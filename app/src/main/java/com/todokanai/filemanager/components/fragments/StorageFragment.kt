@@ -17,10 +17,16 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class StorageFragment : Fragment() {
 
-    private val viewModel : StorageViewModel by viewModels()
-    private val binding by lazy{FragmentStorageBinding.inflate(layoutInflater)}
-    private val linearManager by lazy{LinearLayoutManager(context,LinearLayoutManager.VERTICAL,false)}
-    private lateinit var storageAdapter:StorageRecyclerAdapter
+    private val viewModel: StorageViewModel by viewModels()
+    private val binding by lazy { FragmentStorageBinding.inflate(layoutInflater) }
+    private val linearManager by lazy {
+        LinearLayoutManager(
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
+        )
+    }
+    private lateinit var storageAdapter: StorageRecyclerAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +39,12 @@ class StorageFragment : Fragment() {
             },
             //itemFlow = viewModel.storageHolderList
         )
-        binding.storageRecyclerView.run{
+        binding.storageRecyclerView.run {
             adapter = storageAdapter
             layoutManager = linearManager
         }
 
-        viewModel.storageHolderList.asLiveData().observe(viewLifecycleOwner){
+        viewModel.storageHolderList.asLiveData().observe(viewLifecycleOwner) {
             storageAdapter.submitList(it)
         }
 

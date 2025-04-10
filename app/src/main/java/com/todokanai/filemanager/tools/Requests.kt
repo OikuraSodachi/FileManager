@@ -60,11 +60,11 @@ class Requests {
 
      */
 
-    fun unzipRequest(selected: Array<File>,targetDirectory: File):OneTimeWorkRequest{
+    fun unzipRequest(selected: Array<File>, targetDirectory: File): OneTimeWorkRequest {
         val fileNames = selected.map { it.absolutePath }.toTypedArray()
         val inputData = Data.Builder()
             .putStringArray(Constants.WORKER_KEY_SELECTED_FILES, fileNames)
-            .putString(Constants.WORKER_KEY_TARGET_DIRECTORY,targetDirectory.absolutePath)
+            .putString(Constants.WORKER_KEY_TARGET_DIRECTORY, targetDirectory.absolutePath)
             .build()
         val request = OneTimeWorkRequestBuilder<UnzipWorker>()
             .setInputData(inputData)
@@ -92,13 +92,13 @@ class Requests {
      */
 
     fun completedNotificationRequest(
-        notiTitle:String = "Completed",
-        notiText:String = "Work is done"
+        notiTitle: String = "Completed",
+        notiText: String = "Work is done"
     ): OneTimeWorkRequest {
         val inputData = Data.Builder()
-            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_TITLE,notiTitle)
-            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE,notiText)
-            .putBoolean(Constants.WORKER_KEY_IS_SILENT,false)
+            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_TITLE, notiTitle)
+            .putString(Constants.WORKER_KEY_NOTIFICATION_COMPLETE_MESSAGE, notiText)
+            .putBoolean(Constants.WORKER_KEY_IS_SILENT, false)
             .build()
         val noti = OneTimeWorkRequestBuilder<NotiWorker>()
             .setInputData(inputData)

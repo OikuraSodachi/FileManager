@@ -18,18 +18,21 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor():ViewModel() {
+class MainViewModel @Inject constructor() : ViewModel() {
 
-    companion object{
+    companion object {
         val myWorkerValue: Int = 1
     }
 
-    fun prepareObjects(appContext: Context,activity: Activity){
+    fun prepareObjects(appContext: Context, activity: Activity) {
         myNoti = MyNotification(appContext)
     }
 
     /** 모든 파일 접근 권한 처리**/
-    fun requestStorageManageAccess(activity: Activity,storages: MutableStateFlow<Array<File>> = Variables.storages) {
+    fun requestStorageManageAccess(
+        activity: Activity,
+        storages: MutableStateFlow<Array<File>> = Variables.storages
+    ) {
         viewModelScope.launch {
             if (Environment.isExternalStorageManager()) {
                 storages.value = getPhysicalStorages_td(activity)

@@ -6,12 +6,12 @@ import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
 import java.io.File
 
 class DeleteAction(
-    val selectedFiles:Array<File>
-):FileAction {
+    val selectedFiles: Array<File>
+) : FileAction {
 
-    var progress : Int = 0
+    var progress: Int = 0
     private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
-    private lateinit var currentFileInProcess : File
+    private lateinit var currentFileInProcess: File
 
     override fun main() {
         deleteRecursive_td(
@@ -26,19 +26,19 @@ class DeleteAction(
 
     override fun progressCallback() {
         progress++
-        myNoti.sendSilentNotification(currentFileInProcess.name,"deleted: $progress/$fileQuantity")
+        myNoti.sendSilentNotification(currentFileInProcess.name, "deleted: $progress/$fileQuantity")
     }
 
     override fun onComplete() {
-        myNoti.sendCompletedNotification("delete completed","deleted $progress files")
+        myNoti.sendCompletedNotification("delete completed", "deleted $progress files")
     }
 
-    fun deleteRecursive_td(selected: Array<File>, onProgress: (File) -> Unit){
+    fun deleteRecursive_td(selected: Array<File>, onProgress: (File) -> Unit) {
         selected.forEach { file ->
             currentFileInProcess = file
             if (file.isDirectory) {
                 file.listFiles()?.let {
-                    deleteRecursive_td(it,onProgress)
+                    deleteRecursive_td(it, onProgress)
                 }
             }
             file.delete()
