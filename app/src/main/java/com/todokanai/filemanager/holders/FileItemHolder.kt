@@ -68,7 +68,6 @@ class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Un
         multiSelectView.visibility = View.VISIBLE
     }
 
-
     fun onSelectionChanged(isSelected: Boolean) {
         if (isSelected) {
             multiSelectView.visibility = View.VISIBLE
