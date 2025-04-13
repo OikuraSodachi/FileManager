@@ -53,5 +53,4 @@ class FileListRecyclerAdapter(
 
         _bottomMenuEnabled.value = selectionTracker.hasSelection()
     }
-
 }

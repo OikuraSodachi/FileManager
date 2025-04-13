@@ -21,7 +21,7 @@ data class FileHolderItem(
 
     /** File.isDirectory **/
     fun isDirectory(): Boolean {
-        if(Files.isDirectory(Path(absolutePath))){
+        if (Files.isDirectory(Path(absolutePath))) {
             return true
         } else {
             return false

@@ -1,6 +1,5 @@
 package com.todokanai.filemanager.holders
 
-import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
@@ -22,26 +21,6 @@ class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Un
     private val lastModified = itemView.findViewById<TextView>(R.id.lastModified)
     private val multiSelectView = itemView.findViewById<ImageView>(R.id.multiSelectView)
 
-    /** file의 extension에 따른 기본 thumbnail 값 */
-    private fun FileHolderItem.thumbnail(context: Context): Drawable? {
-        return if (this.isDirectory()) {
-            getDrawable(context, R.drawable.ic_baseline_folder_24)
-        } else {
-            when (this.extension()) {
-                "pdf" -> {
-                    getDrawable(context, R.drawable.ic_pdf)
-                }
-
-                else -> {
-                    getDrawable(
-                        context,
-                        R.drawable.ic_baseline_insert_drive_file_24
-                    )
-                }
-            }
-        }
-    }
-
     fun onInit(item: FileHolderItem) {
         thumbnail.setThumbnail(item)
         fileName.text = item.name()
@@ -58,7 +37,16 @@ class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Un
                 .load(file.uri)
                 .into(this)
         } else {
-            this.setImageDrawable(file.thumbnail(itemView.context))
+            /** Todo: icon 가져오는 작업을 ViewModel 쪽으로 옮겨야 할 듯? **/
+            val icon: Drawable? =
+                if (file.isDirectory()) {
+                    getDrawable(context, R.drawable.ic_baseline_folder_24)
+                } else if (file.extension() == "pdf") {
+                    getDrawable(context, R.drawable.ic_pdf)
+                } else {
+                    getDrawable(context, R.drawable.ic_baseline_insert_drive_file_24)
+                }
+            this.setImageDrawable(icon)
         }
     }
 

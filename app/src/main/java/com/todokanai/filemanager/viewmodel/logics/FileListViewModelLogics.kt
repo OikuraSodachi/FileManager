@@ -25,7 +25,6 @@ abstract class FileListViewModelLogics : ViewModel() {
             } else {
                 readableFileSize_td(this.length())
             }
-
         return FileHolderItem(
             absolutePath = this.absolutePath,
             size = sizeText,
