@@ -22,40 +22,6 @@ class FileListFragment : FileListFragmentLogics() {
     lateinit var fileListAdapter: FileListRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
 
-    /*
-    private fun initSwipe(){
-        val swipe =binding.swipe
-        swipe.setOnRefreshListener {
-            viewModel.refreshFileList()
-            swipe.isRefreshing = false
-        }
-
-        /*
-        modeManager.isMultiSelectMode.asLiveData().observe(viewLifecycleOwner){ mode ->
-            swipe.apply{
-                viewTreeObserver.addOnScrollChangedListener() {
-                    if(fileListAdapter.isSelectionEnabled) {
-                        isEnabled = false
-                    }else{
-                        isEnabled = true
-                    }
-                }
-            }
-        }
-
-         */
-
-        fileListAdapter.isSelectionEnabled.asLiveData().observe(viewLifecycleOwner){
-            swipe.apply {
-                viewTreeObserver.addOnScrollChangedListener {
-                    isEnabled = !it
-                }
-            }
-        }
-    }
-
-     */
-
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
             onFileClick = {
