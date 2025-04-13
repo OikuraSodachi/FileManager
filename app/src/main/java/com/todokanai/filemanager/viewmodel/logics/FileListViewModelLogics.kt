@@ -28,7 +28,7 @@ abstract class FileListViewModelLogics : ViewModel() {
 
     abstract val fileHolderList: Flow<List<FileHolderItem>>
 
-    abstract suspend fun updateUI(uiState : MutableStateFlow<FileListUiState> = _uiState)
+    abstract suspend fun updateUI(uiState: MutableStateFlow<FileListUiState> = _uiState)
 
     abstract fun onDirectoryClick(file: File)
 

@@ -18,7 +18,6 @@ import javax.inject.Inject
 class FileListViewModel @Inject constructor(
     private val dsRepo: DataStoreRepository,
     val module: FileModule
-   // val netModule:NetFileModule
 ) : FileListViewModelLogics() {
 
     override val fileHolderList
@@ -34,7 +33,7 @@ class FileListViewModel @Inject constructor(
     override val dirTree
         get() = module.currentPath.map { File(it).dirTree() }
 
-    override suspend fun updateUI(uiState:MutableStateFlow<FileListUiState>) {
+    override suspend fun updateUI(uiState: MutableStateFlow<FileListUiState>) {
         fileHolderList.collect {
             uiState.update { currentState ->
                 currentState.copy(listFiles = it, emptyDirectoryText = it.isEmpty())

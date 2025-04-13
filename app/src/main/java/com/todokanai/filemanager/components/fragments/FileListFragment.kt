@@ -3,6 +3,7 @@ package com.todokanai.filemanager.components.fragments
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment : FileListFragmentLogics() {
@@ -61,7 +63,7 @@ class FileListFragment : FileListFragmentLogics() {
                 fileListAdapter.submitList(
                     it.listFiles
                 )
-                directoryAdapter.submitList(it.dirTree)
+                directoryAdapter_bug(it.dirTree)
                 binding.emptyDirectoryText.visibility =
                     if (it.emptyDirectoryText == true) {
                         View.VISIBLE
@@ -74,8 +76,6 @@ class FileListFragment : FileListFragmentLogics() {
                     } else {
                         View.GONE
                     }
-
-
             }
         }
         fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) { enabled ->
@@ -85,6 +85,7 @@ class FileListFragment : FileListFragmentLogics() {
                 binding.bottomMenuLayout.visibility = View.GONE
             }
         }
+        directoryAdapterBugFix()
     }
 
     override fun overrideBackButton() {
@@ -99,6 +100,17 @@ class FileListFragment : FileListFragmentLogics() {
                     }
                 }
             })
+    }
+
+    private fun directoryAdapter_bug(dirTree: List<File>) {
+        directoryAdapter.submitList(dirTree)   // Todo: submitList 가 호출되지 않고 있음
+    }
+
+    /** temporary fix for directoryAdapter uiState collect issue  [directoryAdapter_bug] **/
+    private fun directoryAdapterBugFix() {
+        viewModel.dirTree.asLiveData().observe(viewLifecycleOwner) {
+            directoryAdapter.submitList(it)
+        }
     }
 
 }
