@@ -92,9 +92,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             btn2.setOnClickListener { menuBtnExpanded.value = true }
-            netBtn.setOnClickListener {
-                fragmentCode.value = 3
-            }
             exitBtn.setOnClickListener {
                 viewModel.exit(this@MainActivity)
             }
@@ -113,8 +110,6 @@ class MainActivity : AppCompatActivity() {
                 binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
             } else if (it == 2) {
                 binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
-            } else {
-                binding.mainViewPager.setCurrentItem(2, false)   // toNetFrag
             }
         }
     }

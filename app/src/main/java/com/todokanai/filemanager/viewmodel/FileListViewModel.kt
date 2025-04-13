@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.core.net.toUri
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.tools.NetFileModule
 import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
@@ -20,7 +21,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(
     private val dsRepo: DataStoreRepository,
-    val module: FileModule
+    val module: FileModule,
+    val netModule:NetFileModule
 ) : FileListViewModelLogics() {
 
     private val _uiState = MutableStateFlow(FileListUiState())
