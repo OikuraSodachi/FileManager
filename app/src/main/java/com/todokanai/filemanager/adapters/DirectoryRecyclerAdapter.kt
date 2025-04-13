@@ -5,18 +5,24 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.todokanai.filemanager.R
+import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.holders.DirectoryHolder
-import java.io.File
 
 class DirectoryRecyclerAdapter(
-    private val onClick: (File) -> Unit
-) : ListAdapter<File, DirectoryHolder>(
-    object : DiffUtil.ItemCallback<File>() {
-        override fun areItemsTheSame(oldItem: File, newItem: File): Boolean {
+    private val onClick: (String) -> Unit
+) : ListAdapter<DirectoryHolderItem, DirectoryHolder>(
+    object : DiffUtil.ItemCallback<DirectoryHolderItem>() {
+        override fun areItemsTheSame(
+            oldItem: DirectoryHolderItem,
+            newItem: DirectoryHolderItem
+        ): Boolean {
             return oldItem.absolutePath == newItem.absolutePath
         }
 
-        override fun areContentsTheSame(oldItem: File, newItem: File): Boolean {
+        override fun areContentsTheSame(
+            oldItem: DirectoryHolderItem,
+            newItem: DirectoryHolderItem
+        ): Boolean {
             return oldItem == newItem
         }
     }

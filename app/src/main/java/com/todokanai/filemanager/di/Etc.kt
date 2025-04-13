@@ -19,7 +19,7 @@ class Etc {
     @Singleton
     @Provides
     fun provideFileModule(): FileModule {
-        return FileModule(Environment.getExternalStorageDirectory())
+        return FileModule(Environment.getExternalStorageDirectory().absolutePath)
     }
 
     @Singleton

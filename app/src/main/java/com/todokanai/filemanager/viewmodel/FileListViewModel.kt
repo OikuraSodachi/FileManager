@@ -1,10 +1,14 @@
 package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
+import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
+import com.todokanai.filemanager.abstracts.NetFileModuleLogics
+import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.FileModule
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(
     private val dsRepo: DataStoreRepository,
-    val module: FileModule
+    val module: FileModule,
+    val netModule: NetFileModuleLogics
 ) : FileListViewModelLogics() {
 
     private val _uiState = MutableStateFlow(FileListUiState())
@@ -56,29 +61,49 @@ class FileListViewModel @Inject constructor(
             module.listFiles,
             dsRepo.sortBy
         ) { listFiles, mode ->
-            sortedFileList_td(listFiles, mode).map {
-                it.toFileHolderItem()
+            sortedFileList_td(listFiles.map { File(it) }.toTypedArray(), mode).map {
+                val sizeText: String =
+                    if (it.isDirectory) {
+                        "${it.listFiles()?.size} 개"
+                    } else {
+                        readableFileSize_td(it.length())
+                    }
+                FileHolderItem(
+                    absolutePath = it.absolutePath,
+                    size = sizeText,
+                    lastModified = it.lastModified(),
+                    uri = it.toUri()
+                )
             }
         }
 
     override val dirTree
-        get() = module.currentPath.map { File(it).dirTree() }
+        // get() = module.currentPath.map { File(it).dirTree().map{it.toDirectoryHolderItem()} }
+        get() = module.dirTree.map {
+            it.map {
+                DirectoryHolderItem(
+                    name = File(it).name,
+                    absolutePath = it
+                )
+            }
+        }
 
-    override fun onDirectoryClick(file: File) {
-        module.updateCurrentPath(file.absolutePath)
+    override fun onDirectoryClick(absolutePath: String) {
+        module.updateCurrentPath(absolutePath)
     }
 
     override fun onFileClick(context: Context, item: File) {
-        module.onFileClick(context, item)
+        module.onFileClick(item.absolutePath)
     }
 
     fun onBackPressed() = module.onBackPressedCallback()
 
 }
 
+
 data class FileListUiState(
     val listFiles: List<FileHolderItem> = emptyList(),
-    val dirTree: List<File> = emptyList(),
+    val dirTree: List<DirectoryHolderItem> = emptyList(),
     val emptyDirectoryText: Boolean = false,
     val accessFailText: Boolean = false
 )
