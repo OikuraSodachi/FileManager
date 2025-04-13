@@ -3,6 +3,8 @@ package com.todokanai.filemanager.data.dataclass
 import android.net.Uri
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import java.io.File
+import java.nio.file.Files
+import kotlin.io.path.Path
 
 /** 주의: data layer 에서 이 class 를 사용하지 말 것
  *
@@ -19,7 +21,7 @@ data class FileHolderItem(
 
     /** File.isDirectory **/
     fun isDirectory(): Boolean {
-        if (getMimeType_td(absolutePath) == "resource/folder") {
+        if(Files.isDirectory(Path(absolutePath))){
             return true
         } else {
             return false
