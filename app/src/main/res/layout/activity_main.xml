@@ -38,6 +38,14 @@
                 style="?android:attr/buttonBarButtonStyle" />
 
             <Button
+                android:id="@+id/netButton"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/netButton" />
+
+            <Button
                 android:id="@+id/btn2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

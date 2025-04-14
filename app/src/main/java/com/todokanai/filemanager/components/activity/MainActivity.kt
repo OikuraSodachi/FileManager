@@ -98,6 +98,9 @@ class MainActivity : AppCompatActivity() {
             storageBtn.setOnClickListener {
                 fragmentCode.value = 1
             }
+            netButton.setOnClickListener {
+                fragmentCode.value = 3
+            }
 
             mainViewPager.run {
                 adapter = viewpagerAdapter
@@ -110,6 +113,8 @@ class MainActivity : AppCompatActivity() {
                 binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
             } else if (it == 2) {
                 binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
+            } else{
+                binding.mainViewPager.setCurrentItem(2, false)  // toNetFrag
             }
         }
     }

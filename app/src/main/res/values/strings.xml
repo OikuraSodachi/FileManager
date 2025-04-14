@@ -10,6 +10,7 @@
     <string name="menuCallbackItem3">Exit</string>
 
     <string name="storageBtn">Storage</string>
+    <string name="netButton">Net</string>
 
     <string name="menu_new_folder">New Folder</string>
     <string name="menu_sort">Sort</string>
