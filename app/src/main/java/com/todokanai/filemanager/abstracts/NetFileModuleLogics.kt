@@ -11,6 +11,8 @@ abstract class NetFileModuleLogics(defaultPath: String) {
     val currentDirectory: StateFlow<String>
         get() = _currentDirectory
 
+    val currentFTPFile = MutableStateFlow<FTPFile>(FTPFile())
+
     abstract val itemList: Flow<Array<FTPFile>>
 
     @CallSuper
@@ -33,6 +35,4 @@ abstract class NetFileModuleLogics(defaultPath: String) {
     abstract suspend fun requestListFilesFromNet(directory: String): Array<FTPFile>?
 
    // abstract fun toParentDirectory(current: String = currentDirectory.value)
-
-    abstract val netItemList: Flow<Array<FTPFile>>
 }

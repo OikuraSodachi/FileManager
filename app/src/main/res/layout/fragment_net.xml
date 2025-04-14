@@ -8,10 +8,18 @@
     tools:context=".components.fragments.NetFragment">
 
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/netDirectoryRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal" />
+
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/netRecyclerView"
@@ -21,6 +29,7 @@
             android:scrollbarFadeDuration="10"
             android:scrollbarSize="20dp"
             android:scrollbars="vertical">
+
 
         </androidx.recyclerview.widget.RecyclerView>
 
@@ -47,4 +56,41 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/bottomMenuLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/cancelBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Cancel" />
+
+        <Button
+            android:id="@+id/confirmBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Confirm" />
+
+        <Button
+            android:id="@+id/deleteBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Delete" />
+
+        <Button
+            android:id="@+id/moreBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="More" />
+    </LinearLayout>
+
 </LinearLayout>

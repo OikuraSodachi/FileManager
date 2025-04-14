@@ -1,8 +1,8 @@
 package com.todokanai.filemanager.viewmodel.logics
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import kotlinx.coroutines.flow.Flow
@@ -19,6 +19,15 @@ abstract class NetViewModelLogics : ViewModel() {
 
     init {
         viewModelScope.launch {
+            dirTree.collect{
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        currentPath = it
+                    )
+                }
+            }
+        }
+        viewModelScope.launch {
             itemList.collect{
                 _uiState.update { currentState ->
                     currentState.copy(
@@ -29,16 +38,14 @@ abstract class NetViewModelLogics : ViewModel() {
         }
     }
 
+    protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
     protected abstract val itemList: Flow<List<FileHolderItem>>
 
     abstract fun onItemClick(item: FileHolderItem)
-
     abstract fun toParent()
 
    // abstract fun listFilesFromNet(directory: String): Array<FTPFile>?
 
-
-    private val testUri: Uri = Uri.EMPTY
 
     protected fun FTPFile.toFileHolderItem(currentDirectory: String): FileHolderItem {
         return FileHolderItem(
@@ -51,5 +58,6 @@ abstract class NetViewModelLogics : ViewModel() {
 }
 
 data class NetUiState(
+    val currentPath:List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList()
 )
