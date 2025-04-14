@@ -39,7 +39,7 @@ class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Un
         } else {
             /** Todo: icon 가져오는 작업을 ViewModel 쪽으로 옮겨야 할 듯? **/
             val icon: Drawable? =
-                if (file.isDirectory()) {
+                if (file.isDirectory) {
                     getDrawable(context, R.drawable.ic_baseline_folder_24)
                 } else if (file.extension() == "pdf") {
                     getDrawable(context, R.drawable.ic_pdf)

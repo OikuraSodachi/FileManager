@@ -1,7 +1,6 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.NetFileModuleLogics
-import com.todokanai.filemanager.interfaces.FileModuleLogics
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import kotlinx.coroutines.Dispatchers
@@ -16,7 +15,7 @@ import java.io.IOException
 class NetFileModule(
     private val dsRepo: DataStoreRepository,
     defaultDirectory: String
-) : NetFileModuleLogics(defaultDirectory), FileModuleLogics {
+) : NetFileModuleLogics(defaultDirectory){
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
         return listFilesInFtpDirectory(
@@ -84,14 +83,4 @@ class NetFileModule(
         ) { items, directory ->
             items
         }
-
-    override val dirTree: Flow<List<String>>
-        get() = TODO("Not yet implemented")
-
-    override val listFiles: Flow<Array<String>>
-        get() = TODO("Not yet implemented")
-
-    override fun onFileClick(path: String) {
-        TODO("Not yet implemented")
-    }
 }

@@ -25,8 +25,8 @@ abstract class FileListViewModelLogics : ViewModel() {
         return FileHolderItem(
             absolutePath = this.name,
             size = readableFileSize_td(this.size),
-            lastModified = this.timestamp.time.time
-            //      uri = null
+            lastModified = this.timestamp.time.time,
+            isDirectory = this.isDirectory
         )
     }
 }

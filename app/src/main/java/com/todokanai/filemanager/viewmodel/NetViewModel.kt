@@ -1,5 +1,6 @@
 package com.todokanai.filemanager.viewmodel
 
+import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
@@ -9,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,6 +19,19 @@ class NetViewModel @Inject constructor(val module: NetFileModuleLogics) : NetVie
     private val _uiState = MutableStateFlow(NetUiState())
     val uiState: StateFlow<NetUiState>
         get() = _uiState
+
+    init {
+        viewModelScope.launch {
+            itemList.collect {
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        itemList = it
+                    )
+                }
+            }
+        }
+    }
+
 
     override val itemList: Flow<List<FileHolderItem>>
         get() = combine(
@@ -29,7 +44,7 @@ class NetViewModel @Inject constructor(val module: NetFileModuleLogics) : NetVie
         }
 
     override fun onItemClick(item: FileHolderItem) {
-        if (item.isDirectory()) {
+        if (item.isDirectory) {
             setCurrentDirectory(item.absolutePath)
         } else {
             println("this is a File")
@@ -44,15 +59,6 @@ class NetViewModel @Inject constructor(val module: NetFileModuleLogics) : NetVie
         module.toParentDirectory()
     }
 
-    override suspend fun updateUI() {
-        itemList.collect {
-            _uiState.update { currentState ->
-                currentState.copy(
-                    itemList = it
-                )
-            }
-        }
-    }
 
 
 }

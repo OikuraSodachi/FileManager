@@ -77,7 +77,8 @@ class FileListViewModel @Inject constructor(
                 FileHolderItem(
                     absolutePath = it.absolutePath,
                     size = sizeText,
-                    lastModified = it.lastModified()
+                    lastModified = it.lastModified(),
+                    isDirectory = it.isDirectory
                 )
             }
         }.flowOn(Dispatchers.IO)
