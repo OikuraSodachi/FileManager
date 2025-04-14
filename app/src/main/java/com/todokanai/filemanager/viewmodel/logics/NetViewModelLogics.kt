@@ -13,8 +13,6 @@ abstract class NetViewModelLogics : ViewModel() {
 
     abstract fun onItemClick(item: FileHolderItem)
 
-    abstract fun setCurrentDirectory(absolutePath: String)
-
     abstract fun toParent()
 
     private val testUri: Uri = Uri.EMPTY

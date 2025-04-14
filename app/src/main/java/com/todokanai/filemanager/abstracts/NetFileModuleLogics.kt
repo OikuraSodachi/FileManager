@@ -14,19 +14,25 @@ abstract class NetFileModuleLogics(defaultPath: String) {
     abstract val itemList: Flow<Array<FTPFile>>
 
     @CallSuper
-    open fun setCurrentDirectory(absolutePath: String) {
-        if (isFileValid(absolutePath)) {
+    open suspend fun setCurrentDirectory(absolutePath: String) {
+        val listFiles = requestListFilesFromNet(absolutePath)
+        if(listFiles!=null){
             _currentDirectory.value = absolutePath
         }
+//        //-----
+//        if (isFileValid(absolutePath)) {
+//            _currentDirectory.value = absolutePath
+//        }
     }
 
     /** returns true if the file is valid **/
     abstract fun isFileValid(absolutePath: String): Boolean
 
-    /** [directory] 내부의 파일 목록 가져오기 **/
-    abstract suspend fun requestListFilesFromNet(directory: String): Array<FTPFile>
+    /** [directory] 내부의 파일 목록 가져오기
+     * @return null on failure **/
+    abstract suspend fun requestListFilesFromNet(directory: String): Array<FTPFile>?
 
-    abstract fun toParentDirectory(current: String = currentDirectory.value)
+   // abstract fun toParentDirectory(current: String = currentDirectory.value)
 
     abstract val netItemList: Flow<Array<FTPFile>>
 }

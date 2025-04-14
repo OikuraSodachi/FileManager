@@ -2,7 +2,6 @@ package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
 import androidx.lifecycle.viewModelScope
-import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
@@ -26,13 +25,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(
     private val dsRepo: DataStoreRepository,
-    val module: FileModule,
-    val netModule: NetFileModuleLogics
+    val module: FileModule
 ) : FileListViewModelLogics() {
-
-    private val _isNetModule = MutableStateFlow<Boolean>(false)
-    val isNetModule: StateFlow<Boolean>
-        get() = _isNetModule
 
     private val _uiState = MutableStateFlow(FileListUiState())
     val uiState: StateFlow<FileListUiState>
@@ -84,7 +78,6 @@ class FileListViewModel @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
     override val dirTree
-        // get() = module.currentPath.map { File(it).dirTree().map{it.toDirectoryHolderItem()} }
         get() = module.dirTree.map {
             it.map {
                 DirectoryHolderItem(

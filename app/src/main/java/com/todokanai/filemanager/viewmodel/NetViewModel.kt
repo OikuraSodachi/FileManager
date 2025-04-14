@@ -3,6 +3,7 @@ package com.todokanai.filemanager.viewmodel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
+import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
@@ -44,19 +45,23 @@ class NetViewModel @Inject constructor(val module: NetFileModuleLogics) : NetVie
         }
 
     override fun onItemClick(item: FileHolderItem) {
-        if (item.isDirectory) {
-            setCurrentDirectory(item.absolutePath)
-        } else {
-            println("this is a File")
+        viewModelScope.launch {
+            if (item.isDirectory) {
+                module.setCurrentDirectory(item.absolutePath)
+            } else {
+                println("this is a File")
+            }
         }
     }
 
-    override fun setCurrentDirectory(absolutePath: String) {
-        module.setCurrentDirectory(absolutePath)
-    }
-
     override fun toParent() {
-        module.toParentDirectory()
+        viewModelScope.launch {
+            getParentAbsolutePath_td(module.currentDirectory.value)?.let {
+                module.setCurrentDirectory(
+                    it
+                )
+            }
+        }
     }
 
 

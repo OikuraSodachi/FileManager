@@ -2,12 +2,12 @@ package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
@@ -37,17 +37,17 @@ class NetFileModule(
             Dispatchers.Default
         )
 
-    override fun toParentDirectory(current: String) {
-        getParentAbsolutePath_td(current)?.let { setCurrentDirectory(it) }
-    }
+//    override fun toParentDirectory(current: String) {
+//        getParentAbsolutePath_td(current)?.let { setCurrentDirectory(it) }
+//    }
 
-    private fun listFilesInFtpDirectory(
+    private suspend fun listFilesInFtpDirectory(
         server: String,
         username: String,
         password: String,
         remoteDirectory: String,
         port: Int = 21
-    ): Array<FTPFile> {
+    ): Array<FTPFile> = withContext(Dispatchers.Default){
         val ftpClient = FTPClient()
         var result = emptyArray<FTPFile>()
         try {
@@ -73,7 +73,7 @@ class NetFileModule(
                 ex.printStackTrace()
             }
         }
-        return result
+        return@withContext result
     }
 
     override val netItemList
