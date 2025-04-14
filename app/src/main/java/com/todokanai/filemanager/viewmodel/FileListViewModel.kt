@@ -1,7 +1,6 @@
 package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
@@ -12,13 +11,9 @@ import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -27,34 +22,6 @@ class FileListViewModel @Inject constructor(
     private val dsRepo: DataStoreRepository,
     val module: FileModule
 ) : FileListViewModelLogics() {
-
-    private val _uiState = MutableStateFlow(FileListUiState())
-    val uiState: StateFlow<FileListUiState>
-        get() = _uiState
-
-    init {
-        viewModelScope.launch {
-            fileHolderList.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(listFiles = it, emptyDirectoryText = it.isEmpty())
-                }
-            }
-        }
-        viewModelScope.launch {
-            dirTree.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(dirTree = it)
-                }
-            }
-        }
-        viewModelScope.launch {
-            notAccessible.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(accessFailText = it)
-                }
-            }
-        }
-    }
 
     override val fileHolderList
         get() = combine(
@@ -100,11 +67,3 @@ class FileListViewModel @Inject constructor(
 
     fun onBackPressed() = module.onBackPressedCallback()
 }
-
-
-data class FileListUiState(
-    val listFiles: List<FileHolderItem> = emptyList(),
-    val dirTree: List<DirectoryHolderItem> = emptyList(),
-    val emptyDirectoryText: Boolean = false,
-    val accessFailText: Boolean = false
-)

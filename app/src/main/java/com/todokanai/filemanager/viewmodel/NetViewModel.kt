@@ -7,32 +7,12 @@ import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NetViewModel @Inject constructor(val module: NetFileModuleLogics) : NetViewModelLogics() {
-
-    private val _uiState = MutableStateFlow(NetUiState())
-    val uiState: StateFlow<NetUiState>
-        get() = _uiState
-
-    init {
-        viewModelScope.launch {
-            itemList.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        itemList = it
-                    )
-                }
-            }
-        }
-    }
-
 
     override val itemList: Flow<List<FileHolderItem>>
         get() = combine(
@@ -67,7 +47,3 @@ class NetViewModel @Inject constructor(val module: NetFileModuleLogics) : NetVie
 
 
 }
-
-data class NetUiState(
-    val itemList: List<FileHolderItem> = emptyList()
-)
