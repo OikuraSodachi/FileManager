@@ -34,7 +34,6 @@ abstract class NetViewModelLogics : ViewModel() {
             absolutePath = "${currentDirectory}/${this.name}",
             size = readableFileSize_td(this.size),
             lastModified = this.timestamp.timeInMillis,
-            uri = testUri
         )
     }
 }

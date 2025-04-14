@@ -41,18 +41,6 @@ class FileModule(defaultPath: String) : FileModuleLogics {
         }
     }
 
-//    /** file.isDirectory == true일 경우, currentPath 값을 update
-//     *
-//     *  false일 경우, Intent.ACTION_VIEW (파일 열기) 실행 **/
-//    fun onFileClick(context: Context, file: File) {
-//        if (file.isDirectory) {
-//            updateCurrentPath(file.absolutePath)
-//        } else {
-//            val mimeType = getMimeType_td(file.name)
-//            openFileFromUri_td(context, file.toUri(), mimeType)
-//        }
-//    }
-
     /** file.isDirectory == true일 경우, currentPath 값을 update
      *
      *  false일 경우, Intent.ACTION_VIEW (파일 열기) 실행 **/

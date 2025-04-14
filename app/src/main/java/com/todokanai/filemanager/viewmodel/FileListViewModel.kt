@@ -1,7 +1,6 @@
 package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
-import androidx.core.net.toUri
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
@@ -12,10 +11,12 @@ import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,7 +31,7 @@ class FileListViewModel @Inject constructor(
 ) : FileListViewModelLogics() {
 
     private val _isNetModule = MutableStateFlow<Boolean>(false)
-    val isNetModule : StateFlow<Boolean>
+    val isNetModule: StateFlow<Boolean>
         get() = _isNetModule
 
     private val _uiState = MutableStateFlow(FileListUiState())
@@ -65,7 +66,7 @@ class FileListViewModel @Inject constructor(
         get() = combine(
             module.listFiles,
             dsRepo.sortBy
-        ) { listFiles, mode->
+        ) { listFiles, mode ->
             sortedFileList_td(listFiles.map { File(it) }.toTypedArray(), mode).map {
                 val sizeText: String =
                     if (it.isDirectory) {
@@ -76,11 +77,10 @@ class FileListViewModel @Inject constructor(
                 FileHolderItem(
                     absolutePath = it.absolutePath,
                     size = sizeText,
-                    lastModified = it.lastModified(),
-                    uri = it.toUri()
+                    lastModified = it.lastModified()
                 )
             }
-        }
+        }.flowOn(Dispatchers.IO)
 
     override val dirTree
         // get() = module.currentPath.map { File(it).dirTree().map{it.toDirectoryHolderItem()} }
@@ -105,7 +105,6 @@ class FileListViewModel @Inject constructor(
     }
 
     fun onBackPressed() = module.onBackPressedCallback()
-
 }
 
 

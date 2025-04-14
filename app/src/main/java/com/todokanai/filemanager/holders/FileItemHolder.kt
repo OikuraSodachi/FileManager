@@ -34,7 +34,7 @@ class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Un
     private fun ImageView.setThumbnail(file: FileHolderItem) {
         if (file.isImage()) {
             Glide.with(itemView)
-                .load(file.uri)
+                .load(file.file())
                 .into(this)
         } else {
             /** Todo: icon 가져오는 작업을 ViewModel 쪽으로 옮겨야 할 듯? **/

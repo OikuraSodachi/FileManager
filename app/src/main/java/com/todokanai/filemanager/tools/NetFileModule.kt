@@ -16,7 +16,7 @@ import java.io.IOException
 class NetFileModule(
     private val dsRepo: DataStoreRepository,
     defaultDirectory: String
-) : NetFileModuleLogics(defaultDirectory),FileModuleLogics {
+) : NetFileModuleLogics(defaultDirectory), FileModuleLogics {
 
     override suspend fun requestListFilesFromNet(directory: String): Array<FTPFile> {
         return listFilesInFtpDirectory(

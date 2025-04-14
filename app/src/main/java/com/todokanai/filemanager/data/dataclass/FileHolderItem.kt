@@ -1,19 +1,17 @@
 package com.todokanai.filemanager.data.dataclass
 
-import android.net.Uri
+import android.graphics.Bitmap
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import java.io.File
 import java.nio.file.Files
 import kotlin.io.path.Path
 
-/** 주의: data layer 에서 이 class 를 사용하지 말 것
- *
- * @param uri File.toUri() **/
+/** 주의: data layer 에서 이 class 를 사용하지 말 것 **/
 data class FileHolderItem(
     val absolutePath: String,
     val size: String,
     val lastModified: Long,
-    val uri: Uri,
+    val thumbnail: Bitmap? = null,
     var isSelected: Boolean = false
 ) {
 
