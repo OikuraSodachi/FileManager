@@ -33,8 +33,6 @@ class NetFileModule(
 
     override val itemList: Flow<Array<FTPFile>>
         get() = currentDirectory.map {
-            val a = FTPClient()
-            val b = a.mlistFile()
             requestListFilesFromNet(it)
         }.flowOn(
             Dispatchers.Default

@@ -12,6 +12,7 @@ import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -27,6 +28,10 @@ class FileListViewModel @Inject constructor(
     val module: FileModule,
     val netModule: NetFileModuleLogics
 ) : FileListViewModelLogics() {
+
+    private val _isNetModule = MutableStateFlow<Boolean>(false)
+    val isNetModule : StateFlow<Boolean>
+        get() = _isNetModule
 
     private val _uiState = MutableStateFlow(FileListUiState())
     val uiState: StateFlow<FileListUiState>
@@ -48,7 +53,7 @@ class FileListViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            module.notAccessible.collect {
+            notAccessible.collect {
                 _uiState.update { currentState ->
                     currentState.copy(accessFailText = it)
                 }
@@ -60,7 +65,7 @@ class FileListViewModel @Inject constructor(
         get() = combine(
             module.listFiles,
             dsRepo.sortBy
-        ) { listFiles, mode ->
+        ) { listFiles, mode->
             sortedFileList_td(listFiles.map { File(it) }.toTypedArray(), mode).map {
                 val sizeText: String =
                     if (it.isDirectory) {
@@ -87,6 +92,9 @@ class FileListViewModel @Inject constructor(
                 )
             }
         }
+
+    override val notAccessible: Flow<Boolean>
+        get() = module.notAccessible
 
     override fun onDirectoryClick(absolutePath: String) {
         module.updateCurrentPath(absolutePath)
