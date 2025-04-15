@@ -37,6 +37,7 @@ class FileListViewModel @Inject constructor(
                     }
                 FileHolderItem(
                     absolutePath = it.absolutePath,
+                    name = it.name,
                     size = sizeText,
                     lastModified = it.lastModified(),
                     isDirectory = it.isDirectory

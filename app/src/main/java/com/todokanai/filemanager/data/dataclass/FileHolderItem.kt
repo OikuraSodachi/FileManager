@@ -7,6 +7,7 @@ import java.io.File
 /** 주의: data layer 에서 이 class 를 사용하지 말 것 **/
 data class FileHolderItem(
     val absolutePath: String,
+    val name: String,
     val size: String,
     val lastModified: Long,
     val isDirectory: Boolean,
@@ -28,8 +29,8 @@ data class FileHolderItem(
     /** File.extension **/
     fun extension() = """\.[^.]+$""".toRegex().find(absolutePath)?.value
 
-    /** File.name **/
-    fun name() = """[^/\\]+$""".toRegex().find(absolutePath)?.value
+//    /** File.name **/
+//    fun name() = """[^/\\]+$""".toRegex().find(absolutePath)?.value
 
     /** @return the original file **/
     fun file(): File = File(absolutePath)

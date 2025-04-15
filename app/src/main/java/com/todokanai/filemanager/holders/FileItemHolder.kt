@@ -23,7 +23,7 @@ class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Un
 
     fun onInit(item: FileHolderItem) {
         thumbnail.setThumbnail(item)
-        fileName.text = item.name()
+        fileName.text = item.name
         fileName.isSelected = true
         fileSize.text = item.size
         lastModified.text = DateFormat.getDateTimeInstance().format(item.lastModified)

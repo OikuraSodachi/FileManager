@@ -20,8 +20,10 @@ class NetViewModel @Inject constructor(val module: NetFileModule) : NetViewModel
         get() = emptyFlow() // Todo
 
     override val itemList: Flow<List<FileHolderItem>>
-        get() = module.itemList.map{ items ->
-            items.map { it.toFileHolderItem() }
+        get() = module.currentDirectory.map{ directory ->
+            module.ftpListFiles(directory).map {
+                it.toFileHolderItem(directory)
+            }
         }
 
     override val isLoggedIn: Flow<Boolean>
@@ -35,7 +37,9 @@ class NetViewModel @Inject constructor(val module: NetFileModule) : NetViewModel
 
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
-            if (item.isDirectory) {
+            val ftpFile = module.fileInfo(item.absolutePath)
+
+            if (ftpFile.isDirectory) {
                 module.setCurrentDirectory(item.absolutePath)
             } else {
                 println("this is a File")
@@ -44,13 +48,15 @@ class NetViewModel @Inject constructor(val module: NetFileModule) : NetViewModel
     }
 
     override fun toParent() {
-
+        viewModelScope.launch {
+            module.toParentDirectory()
+        }
     }
 
     fun test(){
         viewModelScope.launch {
-            val temp = module.ftpListFiles().map{it.name}
-            println(temp)
+            module.setCurrentDirectory("HDD1")
         }
     }
+
 }

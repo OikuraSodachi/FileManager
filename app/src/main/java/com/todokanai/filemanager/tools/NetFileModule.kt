@@ -2,9 +2,10 @@ package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
@@ -12,7 +13,7 @@ import java.io.IOException
 
 class NetFileModule(
     private val dsRepo: DataStoreRepository,
-    val defaultDirectory: String
+    defaultDirectory: String
 ) : NetFileModuleLogics(){
 
     private val ftpClient = FTPClient()
@@ -28,50 +29,48 @@ class NetFileModule(
         }
     }
 
-//    private val _currentFTPFile = MutableStateFlow<String>(defaultDirectory)
-//    val currentFTPFile : StateFlow<String>
-//        get() = _currentFTPFile
+    private val _currentDirectory = MutableStateFlow<String>(defaultDirectory)
+    val currentDirectory : StateFlow<String>
+        get() = _currentDirectory
 
-    override suspend fun ftpListFiles(): Array<FTPFile> {
-        return listFilesInFtpDirectoryOriginal(
+    override suspend fun ftpListFiles(directory: String): Array<FTPFile> {
+        return listFilesInFtpDirectory(
             dsRepo.getServerIp(),
             dsRepo.getUserId(),
             dsRepo.getUserPassword(),
-            defaultDirectory
+            directory
         )
     }
 
-    private val _itemList = MutableStateFlow<Array<FTPFile>>(emptyArray())
-    val itemList: Flow<Array<FTPFile>>
-        get() = _itemList
-
-//        get() = currentFTPFile.map {
-//            try {
-//                ftpClient.listFiles()
-//            }catch (e:Exception){
-//                emptyArray()
-//            }
-//        }.flowOn(
-//            Dispatchers.Default
-//        )
-
     override suspend fun setCurrentDirectory(directory: String) = withContext(Dispatchers.Default) {
-        println("ftp: ${ftpClient.printWorkingDirectory()}")
-        ftpClient.changeWorkingDirectory(directory)
-        println("newFTP: ${ftpClient.printWorkingDirectory()}")
-        val temp = ftpClient.listFiles(directory)
-        println("temp: ${temp.map { it.name }}")
-        _itemList.value = temp
+        if(isFileValid(directory)) {
+            _currentDirectory.value = directory
+        }
     }
 
-    suspend fun toParentDirectory(){
-        ftpClient.changeToParentDirectory()
+    suspend fun toParentDirectory() = withContext(Dispatchers.Default){
+        val parent = getParentAbsolutePath_td(currentDirectory.value)
+        parent?.let{
+            setCurrentDirectory(it)
+        }
     }
+
+    private fun isFileValid(directory: String):Boolean{
+        var result = false
+        val fileDetail = ftpClient.mlistFile(directory)
+        println("detail: ${fileDetail.name}")
+        result = true
+
+        return result
+    }
+
+    suspend fun fileInfo(directory: String) : FTPFile = withContext(Dispatchers.Default){ ftpClient.mlistFile(directory) }
 
     private suspend fun listFilesInFtpDirectory(
         server: String,
         username: String,
         password: String,
+        directory: String,
         port: Int = 21
     ): Array<FTPFile> = withContext(Dispatchers.Default){
         var result = emptyArray<FTPFile>()
@@ -84,19 +83,12 @@ class NetFileModule(
             }
 
             // 특정 디렉토리 내 파일 목록 가져오기
-            result = ftpClient.listFiles()
+            result = ftpClient.listFiles(directory)
 
             println("파일 목록 불러오기 성공: ${result.map{it.name}}")
         } catch (ex: IOException) {
             ex.printStackTrace()
             println("파일 목록을 가져오는 중 오류 발생: ${ex.message}")
-        } finally {
-            try {
-                ftpClient.logout()
-                ftpClient.disconnect()
-            } catch (ex: IOException) {
-                ex.printStackTrace()
-            }
         }
         return@withContext result
     }

@@ -55,10 +55,11 @@ abstract class NetViewModelLogics : ViewModel() {
     abstract fun onItemClick(item: FileHolderItem)
     abstract fun toParent()
 
-    protected fun FTPFile.toFileHolderItem(): FileHolderItem {
-     //   val absolutePathTemp = "${currentDirectory}/${this.name}"
+    protected fun FTPFile.toFileHolderItem(currentDirectory:String): FileHolderItem {
+        val absolutePathTemp = "${currentDirectory}/${this.name}"
         return FileHolderItem(
-            absolutePath = "",
+            absolutePath = absolutePathTemp,
+            name = this.name,
             size = readableFileSize_td(this.size),
             lastModified = this.timestamp.timeInMillis,
             isDirectory = this.isDirectory
