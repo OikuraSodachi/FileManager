@@ -58,13 +58,10 @@ class NetFileModule(
     override suspend fun setCurrentDirectory(directory: String) = withContext(Dispatchers.Default) {
         println("ftp: ${ftpClient.printWorkingDirectory()}")
         ftpClient.changeWorkingDirectory(directory)
-      //  if(changed) {
-            //  _currentFTPFile.value = directory
         println("newFTP: ${ftpClient.printWorkingDirectory()}")
-            val temp = ftpClient.listFiles(directory)
-            println("temp: ${temp.map { it.name }}")
-            _itemList.value = temp
-     //   }
+        val temp = ftpClient.listFiles(directory)
+        println("temp: ${temp.map { it.name }}")
+        _itemList.value = temp
     }
 
     suspend fun toParentDirectory(){
