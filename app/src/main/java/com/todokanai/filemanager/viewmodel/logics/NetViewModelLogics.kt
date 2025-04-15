@@ -36,20 +36,29 @@ abstract class NetViewModelLogics : ViewModel() {
                 }
             }
         }
+        viewModelScope.launch {
+            isLoggedIn.collect{
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        loggedIn = it
+                    )
+                }
+            }
+        }
     }
 
     protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
     protected abstract val itemList: Flow<List<FileHolderItem>>
+    protected abstract val isLoggedIn:Flow<Boolean>
 
+    abstract fun login()
     abstract fun onItemClick(item: FileHolderItem)
     abstract fun toParent()
 
-   // abstract fun listFilesFromNet(directory: String): Array<FTPFile>?
-
-
-    protected fun FTPFile.toFileHolderItem(currentDirectory: String): FileHolderItem {
+    protected fun FTPFile.toFileHolderItem(): FileHolderItem {
+     //   val absolutePathTemp = "${currentDirectory}/${this.name}"
         return FileHolderItem(
-            absolutePath = "${currentDirectory}/${this.name}",
+            absolutePath = "",
             size = readableFileSize_td(this.size),
             lastModified = this.timestamp.timeInMillis,
             isDirectory = this.isDirectory
@@ -59,5 +68,6 @@ abstract class NetViewModelLogics : ViewModel() {
 
 data class NetUiState(
     val currentPath:List<DirectoryHolderItem> = emptyList(),
-    val itemList: List<FileHolderItem> = emptyList()
+    val itemList: List<FileHolderItem> = emptyList(),
+    val loggedIn: Boolean = false
 )

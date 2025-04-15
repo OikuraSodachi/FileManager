@@ -1,5 +1,6 @@
 package com.todokanai.filemanager.components.fragments
 
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -32,12 +33,25 @@ class NetFragment : NetFragmentLogics() {
             layoutManager = verticalManager
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
+
+        binding.loginButton.setOnClickListener {
+            viewModel.login()
+        }
+        binding.loggedInButton.setOnClickListener {
+            viewModel.test()
+        }
     }
 
     override fun collectUIState() {
         lifecycleScope.launch {
             viewModel.uiState.collect { uiState ->
                 netAdapter.submitList(uiState.itemList)
+                binding.loggedInButton.visibility =
+                    if(uiState.loggedIn){
+                        View.VISIBLE
+                    }else{
+                        View.GONE
+                    }
             }
         }
     }

@@ -4,12 +4,12 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.tools.NetFileModule
-import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,14 +20,18 @@ class NetViewModel @Inject constructor(val module: NetFileModule) : NetViewModel
         get() = emptyFlow() // Todo
 
     override val itemList: Flow<List<FileHolderItem>>
-        get() = combine(
-            module.itemList,
-            module.currentDirectory
-        ) { items, directory ->
-            items.map {
-                it.toFileHolderItem(directory)
-            }
+        get() = module.itemList.map{ items ->
+            items.map { it.toFileHolderItem() }
         }
+
+    override val isLoggedIn: Flow<Boolean>
+        get() = module.loggedIn
+
+    override fun login() {
+        viewModelScope.launch(Dispatchers.Default) {
+            module.login()
+        }
+    }
 
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
@@ -40,12 +44,13 @@ class NetViewModel @Inject constructor(val module: NetFileModule) : NetViewModel
     }
 
     override fun toParent() {
+
+    }
+
+    fun test(){
         viewModelScope.launch {
-            getParentAbsolutePath_td(module.currentDirectory.value)?.let {
-                module.setCurrentDirectory(
-                    it
-                )
-            }
+            val temp = module.ftpListFiles().map{it.name}
+            println(temp)
         }
     }
 }
