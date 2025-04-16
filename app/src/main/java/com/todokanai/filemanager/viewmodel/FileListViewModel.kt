@@ -35,10 +35,7 @@ class FileListViewModel @Inject constructor(
     override val dirTree
         get() = module.dirTree.map {
             it.map {
-                DirectoryHolderItem(
-                    name = File(it).name,
-                    absolutePath = it
-                )
+                DirectoryHolderItem.fromFile(File(it))
             }
         }
 
