@@ -1,6 +1,5 @@
 package com.todokanai.filemanager.tools
 
-import com.todokanai.filemanager.abstracts.NetFileModuleLogics
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import kotlinx.coroutines.Dispatchers
@@ -13,7 +12,7 @@ import java.io.IOException
 
 class NetFileModule(
     private val dsRepo: DataStoreRepository
-) : NetFileModuleLogics(){
+) {
 
     private val ftpClient = FTPClient()
     private val _loggedIn = MutableStateFlow(false)
@@ -34,16 +33,7 @@ class NetFileModule(
     val currentDirectory : StateFlow<String>
         get() = _currentDirectory
 
-    override suspend fun ftpListFiles(directory: String): Array<FTPFile> {
-        return listFilesInFtpDirectory(
-            dsRepo.getServerIp(),
-            dsRepo.getUserId(),
-            dsRepo.getUserPassword(),
-            directory
-        )
-    }
-
-    override suspend fun setCurrentDirectory(directory: String) = withContext(Dispatchers.Default) {
+    suspend fun setCurrentDirectory(directory: String) = withContext(Dispatchers.Default) {
         if(isFileValid(directory)) {
             _currentDirectory.value = directory
         }
@@ -58,6 +48,7 @@ class NetFileModule(
 
     private fun isFileValid(directory: String):Boolean{
         var result = false
+
         val fileDetail = ftpClient.mlistFile(directory)
         println("detail: ${fileDetail.name}")
         result = true
@@ -67,7 +58,7 @@ class NetFileModule(
 
     suspend fun fileInfo(directory: String) : FTPFile = withContext(Dispatchers.Default){ ftpClient.mlistFile(directory) }
 
-    private suspend fun listFilesInFtpDirectory(
+    suspend fun listFilesInFtpDirectory(
         server: String,
         username: String,
         password: String,

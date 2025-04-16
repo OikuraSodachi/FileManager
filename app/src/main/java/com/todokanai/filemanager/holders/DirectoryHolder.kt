@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 
-class DirectoryHolder(itemView: View, private val onClick: (String) -> Unit) :
+class DirectoryHolder(itemView: View, private val onClick: (DirectoryHolderItem) -> Unit) :
     RecyclerView.ViewHolder(itemView) {
     private val directoryName = itemView.findViewById<TextView>(R.id.directoryName)
     private val dividerSlot = itemView.findViewById<ImageView>(R.id.divider)
@@ -22,7 +22,7 @@ class DirectoryHolder(itemView: View, private val onClick: (String) -> Unit) :
             )
         )
         itemView.setOnClickListener {
-            onClick(item.absolutePath)
+            onClick(item)
         }
     }
 }

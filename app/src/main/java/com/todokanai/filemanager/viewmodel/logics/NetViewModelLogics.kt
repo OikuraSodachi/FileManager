@@ -20,7 +20,7 @@ abstract class NetViewModelLogics : ViewModel() {
             dirTree.collect{
                 _uiState.update { currentState ->
                     currentState.copy(
-                        currentPath = it
+                        dirTree = it
                     )
                 }
             }
@@ -51,11 +51,41 @@ abstract class NetViewModelLogics : ViewModel() {
 
     abstract fun login()
     abstract fun onItemClick(item: FileHolderItem)
+    abstract fun onDirectoryClick(item: DirectoryHolderItem)
     abstract fun toParent()
+
+    protected fun convertToDirTree(absolutePath:String):List<DirectoryHolderItem>{
+        val result = mutableListOf<DirectoryHolderItem>()
+        var target = absolutePath
+        while(target != ""){
+            result.add(
+                DirectoryHolderItem(
+                    name = getLastSegment(target),
+                    absolutePath = target
+                )
+            )
+            target = testRegex(target)
+        }
+        result.reverse()
+        return result
+    }
+
+    private fun testRegex(path: String): String {
+        val regex = """(.*)/[^/]*$""".toRegex()
+        val matchResult = regex.find(path)
+        return matchResult?.groups?.get(1)?.value ?: ""
+    }
+
+    private fun getLastSegment(path: String): String {
+        val regex = """[^/]*$""".toRegex()
+        val matchResult = regex.find(path)
+        return matchResult?.value ?: ""
+    }
+
 }
 
 data class NetUiState(
-    val currentPath:List<DirectoryHolderItem> = emptyList(),
+    val dirTree:List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList(),
     val loggedIn: Boolean = false
 )

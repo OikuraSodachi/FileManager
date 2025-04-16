@@ -9,7 +9,7 @@ import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.holders.DirectoryHolder
 
 class DirectoryRecyclerAdapter(
-    private val onClick: (String) -> Unit
+    private val onClick: (DirectoryHolderItem) -> Unit
 ) : ListAdapter<DirectoryHolderItem, DirectoryHolder>(
     object : DiffUtil.ItemCallback<DirectoryHolderItem>() {
         override fun areItemsTheSame(
