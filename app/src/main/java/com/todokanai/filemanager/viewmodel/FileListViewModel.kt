@@ -5,7 +5,6 @@ import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.FileModule
-import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,19 +28,7 @@ class FileListViewModel @Inject constructor(
             dsRepo.sortBy
         ) { listFiles, mode ->
             sortedFileList_td(listFiles.map { File(it) }.toTypedArray(), mode).map {
-                val sizeText: String =
-                    if (it.isDirectory) {
-                        "${it.listFiles()?.size} 개"
-                    } else {
-                        readableFileSize_td(it.length())
-                    }
-                FileHolderItem(
-                    absolutePath = it.absolutePath,
-                    name = it.name,
-                    size = sizeText,
-                    lastModified = it.lastModified(),
-                    isDirectory = it.isDirectory
-                )
+                FileHolderItem.fromFile(it)
             }
         }.flowOn(Dispatchers.IO)
 

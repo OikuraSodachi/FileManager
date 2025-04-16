@@ -4,13 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
-import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import org.apache.commons.net.ftp.FTPFile
 
 abstract class NetViewModelLogics : ViewModel() {
     private val _uiState = MutableStateFlow(NetUiState())
@@ -54,17 +52,6 @@ abstract class NetViewModelLogics : ViewModel() {
     abstract fun login()
     abstract fun onItemClick(item: FileHolderItem)
     abstract fun toParent()
-
-    protected fun FTPFile.toFileHolderItem(currentDirectory:String): FileHolderItem {
-        val absolutePathTemp = "${currentDirectory}/${this.name}"
-        return FileHolderItem(
-            absolutePath = absolutePathTemp,
-            name = this.name,
-            size = readableFileSize_td(this.size),
-            lastModified = this.timestamp.timeInMillis,
-            isDirectory = this.isDirectory
-        )
-    }
 }
 
 data class NetUiState(

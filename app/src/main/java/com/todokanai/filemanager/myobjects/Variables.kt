@@ -7,6 +7,5 @@ class Variables {
 
     companion object {
         val storages = MutableStateFlow<Array<File>>(emptyArray())
-        var defaultDirectory: String = "HDD1"
     }
 }

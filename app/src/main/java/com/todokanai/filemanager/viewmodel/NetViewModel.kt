@@ -22,7 +22,8 @@ class NetViewModel @Inject constructor(val module: NetFileModule) : NetViewModel
     override val itemList: Flow<List<FileHolderItem>>
         get() = module.currentDirectory.map{ directory ->
             module.ftpListFiles(directory).map {
-                it.toFileHolderItem(directory)
+                FileHolderItem.fromFTPFile(it,directory)
+               // it.toFileHolderItem(directory)
             }
         }
 

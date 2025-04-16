@@ -12,24 +12,25 @@ import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
 
 class NetFileModule(
-    private val dsRepo: DataStoreRepository,
-    defaultDirectory: String
+    private val dsRepo: DataStoreRepository
 ) : NetFileModuleLogics(){
 
     private val ftpClient = FTPClient()
-    val loggedIn = MutableStateFlow(false)
+    private val _loggedIn = MutableStateFlow(false)
+    val loggedIn:StateFlow<Boolean>
+        get() = _loggedIn
 
     suspend fun login() = withContext(Dispatchers.Default){
         ftpClient.run{
             connect(dsRepo.getServerIp(),21)
             if(login(dsRepo.getUserId(), dsRepo.getUserPassword())){
-                loggedIn.value = true
+                _loggedIn.value = true
             }
             enterLocalPassiveMode() // Passive Mode 사용
         }
     }
 
-    private val _currentDirectory = MutableStateFlow<String>(defaultDirectory)
+    private val _currentDirectory = MutableStateFlow<String>("")
     val currentDirectory : StateFlow<String>
         get() = _currentDirectory
 
