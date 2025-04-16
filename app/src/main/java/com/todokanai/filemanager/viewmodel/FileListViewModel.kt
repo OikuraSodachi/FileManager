@@ -42,7 +42,7 @@ class FileListViewModel @Inject constructor(
     override val notAccessible: Flow<Boolean>
         get() = module.notAccessible
 
-    override fun onDirectoryClick(item:DirectoryHolderItem) {
+    override fun onDirectoryClick(item: DirectoryHolderItem) {
         module.updateCurrentPath(item.absolutePath)
     }
 

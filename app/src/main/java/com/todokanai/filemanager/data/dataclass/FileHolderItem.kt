@@ -33,14 +33,15 @@ data class FileHolderItem(
 
     /** @return the original file **/
     fun file(): File = File(absolutePath)
-    companion object{
+
+    companion object {
 
         fun fromFile(file: File): FileHolderItem {
 
             val sizeText =
-                if(file.isDirectory){
+                if (file.isDirectory) {
                     "${file.listFiles()?.size} 개"
-                }else{
+                } else {
                     readableFileSize_td(file.length())
                 }
             return FileHolderItem(
@@ -52,12 +53,12 @@ data class FileHolderItem(
             )
         }
 
-        fun fromFTPFile(ftpFile:FTPFile,currentDirectory:String):FileHolderItem{
+        fun fromFTPFile(ftpFile: FTPFile, currentDirectory: String): FileHolderItem {
             val absolutePathTemp = "${currentDirectory}/${ftpFile.name}"
             val sizeText =
-                if(ftpFile.isDirectory){
+                if (ftpFile.isDirectory) {
                     ""
-                }else{
+                } else {
                     readableFileSize_td(ftpFile.size)
                 }
             return FileHolderItem(

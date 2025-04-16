@@ -4,7 +4,8 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
-import com.todokanai.filemanager.tools.NetFileModule
+import com.todokanai.filemanager.tools.independent.NetFileModule
+import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -14,7 +15,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NetViewModel @Inject constructor(private val dsRepo:DataStoreRepository,val module: NetFileModule) : NetViewModelLogics() {
+class NetViewModel @Inject constructor(
+    private val dsRepo: DataStoreRepository,
+    val module: NetFileModule
+) : NetViewModelLogics() {
 
     override val dirTree: Flow<List<DirectoryHolderItem>>
         get() = module.currentDirectory.map {
@@ -22,23 +26,25 @@ class NetViewModel @Inject constructor(private val dsRepo:DataStoreRepository,va
         }
 
     override val itemList: Flow<List<FileHolderItem>>
-        get() = module.currentDirectory.map{ directory ->
+        get() = module.currentDirectory.map { directory ->
             module.listFilesInFtpDirectory(
                 dsRepo.getServerIp(),
                 dsRepo.getUserId(),
                 dsRepo.getUserPassword(),
                 directory
             ).map {
-                FileHolderItem.fromFTPFile(it,directory)
+                FileHolderItem.fromFTPFile(it, directory)
             }
         }
 
-    override val isLoggedIn: Flow<Boolean>
-        get() = module.loggedIn
-
     override fun login() {
         viewModelScope.launch(Dispatchers.Default) {
-            module.login()
+            module.login(
+                server = dsRepo.getServerIp(),
+                username = dsRepo.getUserId(),
+                password = dsRepo.getUserPassword(),
+                port = 21
+            )
         }
     }
 
@@ -61,13 +67,11 @@ class NetViewModel @Inject constructor(private val dsRepo:DataStoreRepository,va
     }
 
     override fun toParent() {
-        viewModelScope.launch {
-            module.toParentDirectory()
+        val parent = getParentAbsolutePath_td(module.currentDirectory.value)
+        parent?.let {
+            viewModelScope.launch {
+                module.setCurrentDirectory(directory = it)
+            }
         }
     }
-
-    fun test(){
-
-    }
-
 }

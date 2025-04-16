@@ -33,22 +33,19 @@ class NetFragment : NetFragmentLogics() {
     override fun prepareView() {
         binding.run {
             netRecyclerView.run {
-                val verticalManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                val verticalManager =
+                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = netAdapter
                 layoutManager = verticalManager
                 addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
             }
 
-            netDirectoryRecyclerView.run{
-                val horizontalManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            netDirectoryRecyclerView.run {
+                val horizontalManager =
+                    LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
             }
-
-//            loginButton.setOnClickListener {
-//            }
-//            loggedInButton.setOnClickListener {
-//            }
         }
     }
 
@@ -57,12 +54,6 @@ class NetFragment : NetFragmentLogics() {
             viewModel.uiState.collect { uiState ->
                 netAdapter.submitList(uiState.itemList)
                 directoryAdapter.submitList(uiState.dirTree)
-//                binding.loggedInButton.visibility =
-//                    if(uiState.loggedIn){
-//                        View.VISIBLE
-//                    }else{
-//                        View.GONE
-//                    }
             }
         }
     }

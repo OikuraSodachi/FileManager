@@ -17,7 +17,7 @@ abstract class NetViewModelLogics : ViewModel() {
 
     init {
         viewModelScope.launch {
-            dirTree.collect{
+            dirTree.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
                         dirTree = it
@@ -26,19 +26,10 @@ abstract class NetViewModelLogics : ViewModel() {
             }
         }
         viewModelScope.launch {
-            itemList.collect{
+            itemList.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
                         itemList = it
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            isLoggedIn.collect{
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        loggedIn = it
                     )
                 }
             }
@@ -47,17 +38,16 @@ abstract class NetViewModelLogics : ViewModel() {
 
     protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
     protected abstract val itemList: Flow<List<FileHolderItem>>
-    protected abstract val isLoggedIn:Flow<Boolean>
 
     abstract fun login()
     abstract fun onItemClick(item: FileHolderItem)
     abstract fun onDirectoryClick(item: DirectoryHolderItem)
     abstract fun toParent()
 
-    protected fun convertToDirTree(absolutePath:String):List<DirectoryHolderItem>{
+    protected fun convertToDirTree(absolutePath: String): List<DirectoryHolderItem> {
         val result = mutableListOf<DirectoryHolderItem>()
         var target = absolutePath
-        while(target != ""){
+        while (target != "") {
             result.add(
                 DirectoryHolderItem(
                     name = getLastSegment(target),
@@ -85,7 +75,7 @@ abstract class NetViewModelLogics : ViewModel() {
 }
 
 data class NetUiState(
-    val dirTree:List<DirectoryHolderItem> = emptyList(),
+    val dirTree: List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList(),
     val loggedIn: Boolean = false
 )

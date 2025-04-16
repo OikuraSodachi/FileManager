@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity() {
                 binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
             } else if (it == 2) {
                 binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
-            } else{
+            } else {
                 binding.mainViewPager.setCurrentItem(2, false)  // toNetFrag
             }
         }

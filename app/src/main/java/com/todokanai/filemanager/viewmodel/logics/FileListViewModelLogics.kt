@@ -47,7 +47,7 @@ abstract class FileListViewModelLogics : ViewModel() {
 
     abstract val notAccessible: Flow<Boolean>
 
-    abstract fun onDirectoryClick(item:DirectoryHolderItem)
+    abstract fun onDirectoryClick(item: DirectoryHolderItem)
 
     abstract fun onFileClick(context: Context, item: File)
 
