@@ -87,18 +87,14 @@ class FileListFragment : FileListFragmentLogics() {
         }
     }
 
-    override fun overrideBackButton() {
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (fileListAdapter.selectionTracker.hasSelection()) {
-                        fileListAdapter.selectionTracker.clearSelection()
-                    } else {
-                        viewModel.onBackPressed()
-                    }
+    override val overrideBackButton :OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (fileListAdapter.selectionTracker.hasSelection()) {
+                    fileListAdapter.selectionTracker.clearSelection()
+                } else {
+                    viewModel.onBackPressed()
                 }
-            })
-    }
-
+            }
+        }
 }
