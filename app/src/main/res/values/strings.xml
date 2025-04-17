@@ -9,6 +9,7 @@
     <string name="menuCallbackItem2">Sort</string>
     <string name="menuCallbackItem3">Exit</string>
 
+    <string name="localListButton">Local List</string>
     <string name="storageBtn">Storage</string>
     <string name="netButton">Net</string>
 

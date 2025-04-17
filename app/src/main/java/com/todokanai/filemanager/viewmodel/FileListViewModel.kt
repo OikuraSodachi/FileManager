@@ -46,7 +46,7 @@ class FileListViewModel @Inject constructor(
         module.updateCurrentPath(item.absolutePath)
     }
 
-    override fun onFileClick(context: Context, item: File) {
+    override fun onFileClick(context: Context, item: FileHolderItem) {
         module.onFileClick(item.absolutePath)
     }
 

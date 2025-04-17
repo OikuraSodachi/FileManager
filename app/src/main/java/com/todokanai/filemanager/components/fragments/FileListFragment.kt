@@ -27,7 +27,7 @@ class FileListFragment : FileListFragmentLogics() {
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
             onFileClick = {
-                viewModel.onFileClick(requireActivity(), it.file())
+                viewModel.onFileClick(requireActivity(), it)
             },
         ).apply {
             setHasStableIds(true)

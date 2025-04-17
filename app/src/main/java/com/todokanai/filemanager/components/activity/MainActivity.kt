@@ -95,6 +95,9 @@ class MainActivity : AppCompatActivity() {
             exitBtn.setOnClickListener {
                 viewModel.exit(this@MainActivity)
             }
+            localListButton.setOnClickListener {
+                fragmentCode.value = 2
+            }
             storageBtn.setOnClickListener {
                 fragmentCode.value = 1
             }

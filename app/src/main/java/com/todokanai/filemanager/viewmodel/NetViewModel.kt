@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -73,5 +74,9 @@ class NetViewModel @Inject constructor(
                 module.setCurrentDirectory(directory = it)
             }
         }
+    }
+
+    fun startDownload(targetDirectory: File,targetFiles:Array<FileHolderItem>){
+
     }
 }

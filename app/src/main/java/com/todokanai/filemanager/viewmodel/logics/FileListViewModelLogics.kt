@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.io.File
 
 abstract class FileListViewModelLogics : ViewModel() {
     private val _uiState = MutableStateFlow(FileListUiState())
@@ -49,7 +48,7 @@ abstract class FileListViewModelLogics : ViewModel() {
 
     abstract fun onDirectoryClick(item: DirectoryHolderItem)
 
-    abstract fun onFileClick(context: Context, item: File)
+    abstract fun onFileClick(context: Context, item: FileHolderItem)
 
 }
 

@@ -1,5 +1,6 @@
 package com.todokanai.filemanager.components.fragments
 
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +25,9 @@ class NetFragment : NetFragmentLogics() {
     override fun prepareLateInit() {
         netAdapter = NetRecyclerAdapter(
             onItemClick = { viewModel.onItemClick(it) }
-        )
+        ).apply {
+            setHasStableIds(true)
+        }
         directoryAdapter = DirectoryRecyclerAdapter(
             onClick = { viewModel.onDirectoryClick(it) }
         )
@@ -56,6 +59,14 @@ class NetFragment : NetFragmentLogics() {
                 directoryAdapter.submitList(uiState.dirTree)
             }
         }
+        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner){
+            binding.netBottomMenuLayout.visibility =
+                if(it){
+                    View.VISIBLE
+                }else{
+                    View.GONE
+                }
+        }
     }
 
     override fun overrideBackButton() {
@@ -63,7 +74,11 @@ class NetFragment : NetFragmentLogics() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    viewModel.toParent()
+                    if(netAdapter.selectionTracker.hasSelection()){
+                        netAdapter.selectionTracker.clearSelection()
+                    }else{
+                        viewModel.toParent()
+                    }
                 }
             })
     }

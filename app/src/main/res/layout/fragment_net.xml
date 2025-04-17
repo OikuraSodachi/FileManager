@@ -34,7 +34,7 @@
         </androidx.recyclerview.widget.RecyclerView>
 
         <TextView
-            android:id="@+id/accessFailText"
+            android:id="@+id/netAccessFailText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/access_fail"
@@ -45,7 +45,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/emptyDirectoryText"
+            android:id="@+id/netEmptyDirectoryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/empty_directory"
@@ -58,35 +58,35 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
-        android:id="@+id/bottomMenuLayout"
+        android:id="@+id/netBottomMenuLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="gone">
 
         <Button
-            android:id="@+id/cancelBtn"
+            android:id="@+id/netCancelBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Cancel" />
 
         <Button
-            android:id="@+id/confirmBtn"
+            android:id="@+id/netConfirmBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Confirm" />
 
         <Button
-            android:id="@+id/deleteBtn"
+            android:id="@+id/netDeleteBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Delete" />
 
         <Button
-            android:id="@+id/moreBtn"
+            android:id="@+id/netMoreBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

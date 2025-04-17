@@ -2,15 +2,17 @@ package com.todokanai.filemanager.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import com.todokanai.filemanager.R
+import com.todokanai.filemanager.abstracts.multiselectrecyclerview.MultiSelectRecyclerAdapter
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.holders.FileItemHolder
 
 class NetRecyclerAdapter(
     private val onItemClick: (FileHolderItem) -> Unit
-) : ListAdapter<FileHolderItem, FileItemHolder>(
+) : MultiSelectRecyclerAdapter<FileHolderItem, FileItemHolder>(
     object : DiffUtil.ItemCallback<FileHolderItem>() {
         override fun areItemsTheSame(oldItem: FileHolderItem, newItem: FileHolderItem): Boolean {
             return oldItem.absolutePath == newItem.absolutePath
@@ -21,6 +23,22 @@ class NetRecyclerAdapter(
         }
     }
 ) {
+
+    /** Todo: 이거 LiveData 형태로 여기에 두는게 적절한지 의문... **/
+    private val _bottomMenuEnabled = MutableLiveData<Boolean>(false)
+    val bottomMenuEnabled: LiveData<Boolean>
+        get() = _bottomMenuEnabled
+
+    override val selectionId = "netSelectionId"
+
+    override fun onSelectionChanged(index: Int, item: FileHolderItem) {
+        if (selectionTracker.selection.contains(index.toLong())) {
+            item.isSelected = true
+        } else {
+            item.isSelected = false
+        }
+        _bottomMenuEnabled.value = selectionTracker.hasSelection()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
         val view =
