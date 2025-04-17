@@ -69,17 +69,14 @@ class NetFragment : NetFragmentLogics() {
         }
     }
 
-    override fun overrideBackButton() {
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if(netAdapter.selectionTracker.hasSelection()){
-                        netAdapter.selectionTracker.clearSelection()
-                    }else{
-                        viewModel.toParent()
-                    }
+    override val overrideBackButton : OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if(netAdapter.selectionTracker.hasSelection()){
+                    netAdapter.selectionTracker.clearSelection()
+                }else{
+                    viewModel.toParent()
                 }
-            })
-    }
+            }
+        }
 }

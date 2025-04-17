@@ -4,10 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.todokanai.filemanager.abstracts.ViewPagerFragment
 
-abstract class NetFragmentLogics : Fragment() {
+abstract class NetFragmentLogics : ViewPagerFragment() {
 
     abstract val binding: ViewBinding
 
@@ -19,7 +19,6 @@ abstract class NetFragmentLogics : Fragment() {
         prepareLateInit()
         prepareView()
         collectUIState()
-        overrideBackButton()
         return binding.root
     }
 
@@ -31,8 +30,5 @@ abstract class NetFragmentLogics : Fragment() {
 
     /** update view**/
     abstract fun collectUIState()
-
-    /** back button 설정 **/
-    abstract fun overrideBackButton()
 
 }
