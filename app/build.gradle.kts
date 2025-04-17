@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -96,4 +98,9 @@ dependencies {
     implementation("net.lingala.zip4j:zip4j:2.6.0")
     implementation("commons-net:commons-net:3.11.1")       /// ftp nas upload (?)
 
+}
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        languageVersion = "1.9"
+    }
 }
