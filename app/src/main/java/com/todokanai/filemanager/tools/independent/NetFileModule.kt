@@ -59,16 +59,15 @@ class NetFileModule {
         var result = emptyArray<FTPFile>()
         try {
             // FTP 서버 연결
-            ftpClient.run {
-                connect(server, port)
-                login(username, password)
-                enterLocalPassiveMode() // Passive Mode 사용
-            }
+            login(server, username, password, port)
             result = ftpClient.listFiles(directory)
             println("result: ${result.map { it.name }}")
         } catch (ex: IOException) {
             ex.printStackTrace()
         }
         return@withContext result
+    }
+
+    suspend fun downloadFTPFiles(ftpFiles:Array<FTPFile>) = withContext(Dispatchers.IO){
     }
 }
