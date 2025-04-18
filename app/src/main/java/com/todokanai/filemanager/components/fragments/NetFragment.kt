@@ -59,22 +59,22 @@ class NetFragment : NetFragmentLogics() {
                 directoryAdapter.submitList(uiState.dirTree)
             }
         }
-        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner){
+        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
             binding.netBottomMenuLayout.visibility =
-                if(it){
+                if (it) {
                     View.VISIBLE
-                }else{
+                } else {
                     View.GONE
                 }
         }
     }
 
-    override val overrideBackButton : OnBackPressedCallback =
+    override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if(netAdapter.selectionTracker.hasSelection()){
+                if (netAdapter.selectionTracker.hasSelection()) {
                     netAdapter.selectionTracker.clearSelection()
-                }else{
+                } else {
                     viewModel.toParent()
                 }
             }

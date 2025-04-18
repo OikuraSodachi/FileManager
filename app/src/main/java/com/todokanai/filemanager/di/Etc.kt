@@ -1,8 +1,8 @@
 package com.todokanai.filemanager.di
 
 import android.os.Environment
-import com.todokanai.filemanager.tools.independent.NetFileModule
 import com.todokanai.filemanager.tools.independent.FileModule
+import com.todokanai.filemanager.tools.independent.NetFileModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -35,19 +35,16 @@ class NetFileModule {
         }
     }
 
-    /** Todo: try-catch 로 exception 처리 추가할 것 **/
+    /** @return true if file is valid. else false **/
     private fun isFileValid(directory: String): Boolean {
-        var result = false
-
-        val fileDetail = ftpClient.mlistFile(directory)
-        println("detail: ${fileDetail.name}")
-        result = true
-
-        return result
+        try {
+            ftpClient.mlistFile(directory)
+            return true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
     }
-
-    suspend fun fileInfo(directory: String): FTPFile =
-        withContext(Dispatchers.Default) { ftpClient.mlistFile(directory) }
 
     suspend fun listFilesInFtpDirectory(
         server: String,
@@ -61,13 +58,12 @@ class NetFileModule {
             // FTP 서버 연결
             login(server, username, password, port)
             result = ftpClient.listFiles(directory)
-            println("result: ${result.map { it.name }}")
         } catch (ex: IOException) {
             ex.printStackTrace()
         }
         return@withContext result
     }
 
-    suspend fun downloadFTPFiles(ftpFiles:Array<FTPFile>) = withContext(Dispatchers.IO){
+    suspend fun downloadFTPFiles(ftpFiles: Array<FTPFile>) = withContext(Dispatchers.IO) {
     }
 }

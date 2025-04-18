@@ -87,7 +87,7 @@ class FileListFragment : FileListFragmentLogics() {
         }
     }
 
-    override val overrideBackButton :OnBackPressedCallback =
+    override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 if (fileListAdapter.selectionTracker.hasSelection()) {

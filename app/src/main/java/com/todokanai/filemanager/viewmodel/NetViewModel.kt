@@ -51,9 +51,7 @@ class NetViewModel @Inject constructor(
 
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
-            val ftpFile = module.fileInfo(item.absolutePath)
-
-            if (ftpFile.isDirectory) {
+            if (item.isDirectory) {
                 module.setCurrentDirectory(item.absolutePath)
             } else {
                 println("this is a File")
@@ -76,7 +74,7 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    fun startDownload(targetDirectory: File,targetFiles:Array<FileHolderItem>){
+    fun startDownload(targetDirectory: File, targetFiles: Array<FileHolderItem>) {
 
     }
 }
