@@ -17,7 +17,7 @@ data class FileHolderItem(
     var isSelected: Boolean = false
 ) {
 
-    private fun mimeType() = getMimeType_td(absolutePath)
+    fun mimeType() = getMimeType_td(absolutePath)
 
     fun isImage(): Boolean {
         val type = mimeType()
