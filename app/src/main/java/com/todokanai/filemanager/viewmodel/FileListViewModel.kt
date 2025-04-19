@@ -47,13 +47,13 @@ class FileListViewModel @Inject constructor(
         get() = module.notAccessible
 
     override fun onDirectoryClick(item: DirectoryHolderItem) {
-        module.updateCurrentPath(item.absolutePath)
+        setCurrentDirectory(item.absolutePath)
     }
 
     override fun onFileClick(context: Context, item: FileHolderItem) {
         viewModelScope.launch {
             if(item.isDirectory){
-                module.updateCurrentPath(item.absolutePath)
+                setCurrentDirectory(item.absolutePath)
             }else{
                 println("this is a file: ${item.name}")
                 openFileFromUri_td(
@@ -65,10 +65,14 @@ class FileListViewModel @Inject constructor(
         }
     }
 
+    override fun setCurrentDirectory(directory: String) {
+        module.updateCurrentPath(directory)
+    }
+
     fun onBackPressed(){
         val parent = File(module.currentPath.value).parentFile
         parent?.let{
-            module.updateCurrentPath(it.absolutePath)
+            setCurrentDirectory(it.absolutePath)
         }
     }
 }

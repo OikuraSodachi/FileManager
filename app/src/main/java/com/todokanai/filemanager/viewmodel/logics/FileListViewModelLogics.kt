@@ -50,6 +50,8 @@ abstract class FileListViewModelLogics : ViewModel() {
 
     abstract fun onFileClick(context: Context, item: FileHolderItem)
 
+    abstract fun setCurrentDirectory(directory: String)
+
 }
 
 data class FileListUiState(
