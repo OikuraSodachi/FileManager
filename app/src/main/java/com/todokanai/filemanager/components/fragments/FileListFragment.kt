@@ -12,6 +12,7 @@ import com.todokanai.filemanager.abstractlogics.FileListFragmentLogics
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -55,6 +56,14 @@ class FileListFragment : FileListFragmentLogics() {
             layoutManager = verticalManager
             addItemDecoration(DividerItemDecoration(context, verticalManager.orientation))
         }
+
+        binding.moreBtn.setOnClickListener {
+            popupMenu_td(
+                context = requireActivity(),
+                anchor = it,
+                itemList = viewModel.popupMenuList(fileListAdapter.selectedItems())
+            )
+        }
     }
 
     override fun collectUIState() {
@@ -79,11 +88,7 @@ class FileListFragment : FileListFragmentLogics() {
             }
         }
         fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) { enabled ->
-            if (enabled) {
-                binding.bottomMenuLayout.visibility = View.VISIBLE
-            } else {
-                binding.bottomMenuLayout.visibility = View.GONE
-            }
+            binding.bottomMenuLayout.visibility = if(enabled) View.VISIBLE else View.GONE
         }
     }
 

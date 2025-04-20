@@ -76,4 +76,17 @@ class FileListViewModel @Inject constructor(
             setCurrentDirectory(it.absolutePath)
         }
     }
+
+    fun popupMenuList(selected:Set<FileHolderItem>):List<Pair<String,()->Unit>>{
+        val result = mutableListOf<Pair<String,()->Unit>>()
+        result.add(
+            Pair(
+                "Upload",
+                {
+                    println("${selected.map{it.name}}")
+                }
+            )
+        )
+        return result
+    }
 }
