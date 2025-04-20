@@ -12,8 +12,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class FileListViewModelLogics : ViewModel() {
+
     private val _uiState = MutableStateFlow(FileListUiState())
     val uiState = _uiState.asStateFlow()
+//  val uiState : StateFlow<FileListUiState>
+//      get() = _uiState
+//
+//      -> Refactoring 할 때, 편의성 면에서 asStateFlow() 방식이 더 좋은듯
 
     init {
         viewModelScope.launch {
