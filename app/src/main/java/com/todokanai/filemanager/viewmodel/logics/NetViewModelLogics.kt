@@ -6,14 +6,13 @@ import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 abstract class NetViewModelLogics : ViewModel() {
     private val _uiState = MutableStateFlow(NetUiState())
-    val uiState: StateFlow<NetUiState>
-        get() = _uiState
+    val uiState = _uiState.asStateFlow()
 
     init {
         viewModelScope.launch {
