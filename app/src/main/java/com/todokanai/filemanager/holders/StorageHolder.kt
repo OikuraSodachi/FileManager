@@ -22,12 +22,6 @@ class StorageHolder(itemView: View, private val onClick: (File) -> Unit) :
         itemView.setOnClickListener { onClick(item) }
     }
 
-    fun setDataNew(file: File) {
-        this.storage.text = file.absolutePath
-        this.size.text = storageSize(file)
-        this.progress.progress = progress(file)
-    }
-
     private fun progress(file: File): Int {
         val used = file.totalSpace - file.freeSpace
         return (used * 100 / file.totalSpace).toInt()

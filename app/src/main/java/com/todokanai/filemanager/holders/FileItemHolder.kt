@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
+import java.io.File
 import java.text.DateFormat
 
 class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Unit) :
@@ -34,7 +35,7 @@ class FileItemHolder(itemView: View, private val onClick: (FileHolderItem) -> Un
     private fun ImageView.setThumbnail(file: FileHolderItem) {
         if (file.isImage()) {
             Glide.with(itemView)
-                .load(file.file())
+                .load(File(file.absolutePath))
                 .into(this)
         } else {
             /** Todo: icon 가져오는 작업을 ViewModel 쪽으로 옮겨야 할 듯? **/

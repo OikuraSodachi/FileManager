@@ -1,6 +1,5 @@
 package com.todokanai.filemanager.data.dataclass
 
-import android.graphics.Bitmap
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import org.apache.commons.net.ftp.FTPFile
@@ -13,14 +12,11 @@ data class FileHolderItem(
     val size: String,
     val lastModified: Long,
     val isDirectory: Boolean,
-    val thumbnail: Bitmap? = null,
     var isSelected: Boolean = false
 ) {
 
-    fun mimeType() = getMimeType_td(absolutePath)
-
     fun isImage(): Boolean {
-        val type = mimeType()
+        val type = getMimeType_td(absolutePath)
         if (type == "video/*" || type == "image/*") {
             return true
         } else {
@@ -30,9 +26,6 @@ data class FileHolderItem(
 
     /** File.extension **/
     fun extension() = """\.[^.]+$""".toRegex().find(absolutePath)?.value
-
-    /** @return the original file **/
-    fun file(): File = File(absolutePath)
 
     companion object {
 

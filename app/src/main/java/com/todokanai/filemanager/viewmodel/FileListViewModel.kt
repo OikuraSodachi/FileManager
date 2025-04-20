@@ -7,6 +7,7 @@ import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.independent.FileModule
+import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
@@ -37,8 +38,8 @@ class FileListViewModel @Inject constructor(
         }.flowOn(Dispatchers.IO)
 
     override val dirTree
-        get() = module.dirTree.map {
-            it.map {
+        get() = module.dirTree.map { tree ->
+            tree.map {
                 DirectoryHolderItem.fromFile(File(it))
             }
         }
@@ -58,8 +59,8 @@ class FileListViewModel @Inject constructor(
                 println("this is a file: ${item.name}")
                 openFileFromUri_td(
                     context = context,
-                    uri = item.file().toUri(),
-                    mimeType = item.mimeType()
+                    uri = File(item.absolutePath).toUri(),
+                    mimeType = getMimeType_td(item.absolutePath)
                 )
             }
         }
