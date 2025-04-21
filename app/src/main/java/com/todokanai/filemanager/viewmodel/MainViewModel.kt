@@ -59,5 +59,5 @@ class MainViewModel @Inject constructor() : ViewModel() {
 }
 
 data class MainActivityUiState(
-    val temp:Int = 1
+    val temp: Int = 1
 )

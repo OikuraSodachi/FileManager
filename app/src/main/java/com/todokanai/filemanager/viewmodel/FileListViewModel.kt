@@ -83,9 +83,9 @@ class FileListViewModel @Inject constructor(
 
     override fun onFileClick(context: Context, item: FileHolderItem) {
         viewModelScope.launch {
-            if(item.isDirectory){
+            if (item.isDirectory) {
                 setCurrentDirectory(item.absolutePath)
-            }else{
+            } else {
                 println("this is a file: ${item.name}")
                 openFileFromUri_td(
                     context = context,
@@ -100,20 +100,20 @@ class FileListViewModel @Inject constructor(
         module.updateCurrentPath(directory)
     }
 
-    fun onBackPressed(){
+    fun onBackPressed() {
         val parent = File(module.currentPath.value).parentFile
-        parent?.let{
+        parent?.let {
             setCurrentDirectory(it.absolutePath)
         }
     }
 
-    fun popupMenuList(selected:Set<FileHolderItem>):List<Pair<String,()->Unit>>{
-        val result = mutableListOf<Pair<String,()->Unit>>()
+    fun popupMenuList(selected: Set<FileHolderItem>): List<Pair<String, () -> Unit>> {
+        val result = mutableListOf<Pair<String, () -> Unit>>()
         result.add(
             Pair(
                 "Upload",
                 {
-                    println("${selected.map{it.name}}")
+                    println("${selected.map { it.name }}")
                 }
             )
         )

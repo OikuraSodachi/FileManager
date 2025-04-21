@@ -33,8 +33,14 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val fragmentList = listOf(StorageFragment(), FileListFragment(), NetFragment())
     private val viewpagerAdapter by lazy { ViewpagerAdapter(this) }
+    private val fragmentList by lazy {
+        listOf(
+            StorageFragment(binding.mainViewPager),
+            FileListFragment(binding.mainViewPager),
+            NetFragment(binding.mainViewPager)
+        )
+    }
 
     val shouldShowDialog = mutableStateOf(false)
     val menuBtnExpanded = mutableStateOf(false)
@@ -127,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun collectUiState(){
+    private fun collectUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {

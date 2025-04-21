@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.map
 import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
-class FileModule(defaultPath: String){
+class FileModule(defaultPath: String) {
 
     /** 현재 보고있는 Directory
      *

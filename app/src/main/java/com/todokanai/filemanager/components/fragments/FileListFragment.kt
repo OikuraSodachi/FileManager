@@ -8,7 +8,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.todokanai.filemanager.abstractlogics.FileListFragmentLogics
+import androidx.viewpager2.widget.ViewPager2
+import com.todokanai.filemanager.abstracts.ViewPagerFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
@@ -18,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FileListFragment : FileListFragmentLogics() {
+class FileListFragment(val parentViewPager: ViewPager2) : ViewPagerFragment() {
 
     override val binding by lazy { FragmentFileListBinding.inflate(layoutInflater) }
     private val viewModel: FileListViewModel by viewModels()
@@ -88,7 +89,7 @@ class FileListFragment : FileListFragmentLogics() {
             }
         }
         fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) { enabled ->
-            binding.bottomMenuLayout.visibility = if(enabled) View.VISIBLE else View.GONE
+            binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
         }
     }
 

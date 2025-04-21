@@ -1,24 +1,23 @@
 package com.todokanai.filemanager.components.fragments
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.fragment.app.Fragment
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewpager2.widget.ViewPager2
+import com.todokanai.filemanager.abstracts.ViewPagerFragment
 import com.todokanai.filemanager.adapters.StorageRecyclerAdapter
 import com.todokanai.filemanager.components.activity.MainActivity.Companion.fragmentCode
 import com.todokanai.filemanager.databinding.FragmentStorageBinding
 import com.todokanai.filemanager.viewmodel.StorageViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class StorageFragment : Fragment() {
+class StorageFragment(val parentViewPager: ViewPager2) : ViewPagerFragment() {
 
     private val viewModel: StorageViewModel by viewModels()
-    private val binding by lazy { FragmentStorageBinding.inflate(layoutInflater) }
+    override val binding by lazy { FragmentStorageBinding.inflate(layoutInflater) }
     private val linearManager by lazy {
         LinearLayoutManager(
             context,
@@ -28,25 +27,34 @@ class StorageFragment : Fragment() {
     }
     private lateinit var storageAdapter: StorageRecyclerAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
+    override fun prepareLateInit() {
         storageAdapter = StorageRecyclerAdapter(
             onItemClick = {
                 viewModel.onItemClick(it)
                 fragmentCode.value = 2
             }
         )
+    }
+
+    override fun prepareView() {
         binding.storageRecyclerView.run {
             adapter = storageAdapter
             layoutManager = linearManager
         }
-
-        viewModel.storageHolderList.asLiveData().observe(viewLifecycleOwner) {
-            storageAdapter.submitList(it)
-        }
-
-        return binding.root
     }
+
+    override fun collectUIState() {
+        lifecycleScope.launch {
+            viewModel.storageHolderList.collect {
+                storageAdapter.submitList(it)
+            }
+        }
+    }
+
+    override val overrideBackButton: OnBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+
+            }
+        }
 }
