@@ -1,39 +1,12 @@
 package com.todokanai.filemanager.viewmodel.logics
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 abstract class NetViewModelLogics : ViewModel() {
-    private val _uiState = MutableStateFlow(NetUiState())
-    val uiState = _uiState.asStateFlow()
 
-    init {
-        viewModelScope.launch {
-            dirTree.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        dirTree = it
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            itemList.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        itemList = it
-                    )
-                }
-            }
-        }
-    }
 
     protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
     protected abstract val itemList: Flow<List<FileHolderItem>>
@@ -72,9 +45,3 @@ abstract class NetViewModelLogics : ViewModel() {
     }
 
 }
-
-data class NetUiState(
-    val dirTree: List<DirectoryHolderItem> = emptyList(),
-    val itemList: List<FileHolderItem> = emptyList(),
-    val loggedIn: Boolean = false
-)

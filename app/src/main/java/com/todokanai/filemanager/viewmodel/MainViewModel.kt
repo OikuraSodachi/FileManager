@@ -4,21 +4,41 @@ import android.app.Activity
 import android.content.Context
 import android.os.Environment
 import androidx.lifecycle.viewModelScope
-import com.todokanai.filemanager.viewmodel.logics.MainViewModelLogics
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td
+import com.todokanai.filemanager.viewmodel.logics.MainViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor() : MainViewModelLogics() {
+
+    private val _uiState = MutableStateFlow(MainActivityUiState())
+    val uiState = _uiState.asStateFlow()
+
+    private val _fragCode = MutableStateFlow(1)
+    override val fragCode: Flow<Int>
+        get() = _fragCode
+
+    init {
+        viewModelScope.launch{
+            fragCode.collect {
+                _uiState.update { currentState ->
+                    currentState.copy(fragCode = it)
+                }
+            }
+        }
+    }
 
     fun prepareObjects(appContext: Context, activity: Activity) {
         myNoti = MyNotification(appContext)
@@ -41,3 +61,7 @@ class MainViewModel @Inject constructor() : MainViewModelLogics() {
     fun exit(activity: Activity) = exit_td(activity)
 
 }
+
+data class MainActivityUiState(
+    val fragCode:Int = 1
+)
