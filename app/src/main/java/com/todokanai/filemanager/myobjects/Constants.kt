@@ -8,6 +8,10 @@ object Constants {
 
     const val PERMISSION_REQUEST_CODE: Int = 111
 
+    const val STORAGE_FRAG = 1
+    const val FILE_LIST_FRAG = 2
+    const val NET_FRAG = 3
+
     const val DEFAULT_MODE: Int = 10
     const val MULTI_SELECT_MODE: Int = 11
     const val CONFIRM_MODE_COPY: Int = 12

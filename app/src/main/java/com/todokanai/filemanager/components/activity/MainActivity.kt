@@ -8,10 +8,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.todokanai.filemanager.adapters.ViewpagerAdapter
+import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.components.fragments.FileListFragment
 import com.todokanai.filemanager.components.fragments.NetFragment
 import com.todokanai.filemanager.components.fragments.StorageFragment
@@ -22,7 +21,6 @@ import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -33,14 +31,14 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val viewpagerAdapter by lazy { ViewpagerAdapter(this) }
+    private val viewpagerAdapter by lazy { ViewPagerAdapter(this, binding.mainViewPager) }
 
-    private val parentViewPager by lazy { binding.mainViewPager }
+  //  private val parentViewPager by lazy { binding.mainViewPager }
     private val fragmentList by lazy {
         listOf(
-            StorageFragment(parentViewPager),
-            FileListFragment(parentViewPager),
-            NetFragment(parentViewPager)
+            StorageFragment(viewpagerAdapter),
+            FileListFragment(viewpagerAdapter),
+            NetFragment(viewpagerAdapter)
         )
     }
 
@@ -53,7 +51,7 @@ class MainActivity : AppCompatActivity() {
          * 2: FileListFragment
          *
          * 3: NetFragment **/
-        val fragmentCode = MutableStateFlow<Int>(2)
+      //  val fragmentCode = MutableStateFlow<Int>(2)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,13 +107,17 @@ class MainActivity : AppCompatActivity() {
                 viewModel.exit(this@MainActivity)
             }
             localListButton.setOnClickListener {
-                fragmentCode.value = 2
+              //  fragmentCode.value = 2
+                viewpagerAdapter.toFileListFragment()
             }
             storageBtn.setOnClickListener {
-                fragmentCode.value = 1
+                viewpagerAdapter.toStorageFragment()
             }
             netButton.setOnClickListener {
-                fragmentCode.value = 3
+                viewpagerAdapter.toNetFragment()
+            }
+            mainBottomButton.setOnClickListener {
+                viewpagerAdapter.toStorageFragment()
             }
 
             mainViewPager.run {
@@ -124,15 +126,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        fragmentCode.asLiveData().observe(this) {
-            if (it == 1) {
-                binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
-            } else if (it == 2) {
-                binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
-            } else {
-                binding.mainViewPager.setCurrentItem(2, false)  // toNetFrag
-            }
-        }
+//        fragmentCode.asLiveData().observe(this) {
+//            if (it == 1) {
+//                viewpagerAdapter.notifyItemChanged(0)
+//                binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
+//            } else if (it == 2) {
+//                binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
+//            } else {
+//                binding.mainViewPager.setCurrentItem(2, false)  // toNetFrag
+//            }
+//        }
     }
 
     private fun collectUiState() {
@@ -143,6 +146,5 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 }

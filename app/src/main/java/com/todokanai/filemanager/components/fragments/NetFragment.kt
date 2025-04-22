@@ -6,17 +6,17 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.viewpager2.widget.ViewPager2
 import com.todokanai.filemanager.abstracts.ViewPagerFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.NetRecyclerAdapter
+import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentNetBinding
 import com.todokanai.filemanager.viewmodel.NetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class NetFragment(parentViewPager: ViewPager2) : ViewPagerFragment(parentViewPager) {
+class NetFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
 
     lateinit var netAdapter: NetRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter

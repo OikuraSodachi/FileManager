@@ -7,10 +7,8 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
-import androidx.viewpager2.widget.ViewPager2
 
-/** @param parentViewPager parent ViewPager2 instance **/
-abstract class ViewPagerFragment(val parentViewPager: ViewPager2) : Fragment() {
+abstract class ViewPagerFragment() : Fragment() {
 
     abstract val binding: ViewBinding
 
