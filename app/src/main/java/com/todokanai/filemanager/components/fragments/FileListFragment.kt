@@ -19,7 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class FileListFragment(val parentViewPager: ViewPager2) : ViewPagerFragment() {
+class FileListFragment(parentViewPager: ViewPager2) : ViewPagerFragment(parentViewPager) {
 
     override val binding by lazy { FragmentFileListBinding.inflate(layoutInflater) }
     private val viewModel: FileListViewModel by viewModels()

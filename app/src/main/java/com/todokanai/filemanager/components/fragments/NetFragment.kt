@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class NetFragment(val parentViewPager: ViewPager2) : ViewPagerFragment() {
+class NetFragment(parentViewPager: ViewPager2) : ViewPagerFragment(parentViewPager) {
 
     lateinit var netAdapter: NetRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter

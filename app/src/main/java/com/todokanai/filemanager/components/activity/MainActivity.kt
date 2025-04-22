@@ -34,11 +34,13 @@ class MainActivity : AppCompatActivity() {
     private val viewModel: MainViewModel by viewModels()
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
     private val viewpagerAdapter by lazy { ViewpagerAdapter(this) }
+
+    private val parentViewPager by lazy { binding.mainViewPager }
     private val fragmentList by lazy {
         listOf(
-            StorageFragment(binding.mainViewPager),
-            FileListFragment(binding.mainViewPager),
-            NetFragment(binding.mainViewPager)
+            StorageFragment(parentViewPager),
+            FileListFragment(parentViewPager),
+            NetFragment(parentViewPager)
         )
     }
 

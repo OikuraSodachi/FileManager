@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import androidx.viewpager2.widget.ViewPager2
 
-/** [androidx.viewpager2.widget.ViewPager2] 안에 배치되는 Fragment 의 onBackPressed 케어 **/
-abstract class ViewPagerFragment() : Fragment() {
+/** @param parentViewPager parent ViewPager2 instance **/
+abstract class ViewPagerFragment(val parentViewPager: ViewPager2) : Fragment() {
 
     abstract val binding: ViewBinding
 
@@ -26,15 +27,17 @@ abstract class ViewPagerFragment() : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            overrideBackButton
-        )
+        overrideBackButton?.let {
+            requireActivity().onBackPressedDispatcher.addCallback(
+                viewLifecycleOwner,
+                it
+            )    // add callback while fragment is visible
+        }
     }
 
     override fun onPause() {
         super.onPause()
-        overrideBackButton.remove()
+        overrideBackButton?.remove()                                               // remove callback when fragment is no longer visible
     }
 
     /** lateInit property initialization **/
@@ -46,6 +49,6 @@ abstract class ViewPagerFragment() : Fragment() {
     /** update view**/
     abstract fun collectUIState()
 
-    /** back button 설정 **/
-    abstract val overrideBackButton: OnBackPressedCallback
+    /** set this to null if you don't want customize back button callback **/
+    abstract val overrideBackButton: OnBackPressedCallback?
 }

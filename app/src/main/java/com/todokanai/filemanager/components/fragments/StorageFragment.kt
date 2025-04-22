@@ -14,7 +14,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class StorageFragment(val parentViewPager: ViewPager2) : ViewPagerFragment() {
+class StorageFragment(parentViewPager: ViewPager2) : ViewPagerFragment(parentViewPager) {
 
     private val viewModel: StorageViewModel by viewModels()
     override val binding by lazy { FragmentStorageBinding.inflate(layoutInflater) }
