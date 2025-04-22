@@ -45,15 +45,6 @@ class MainActivity : AppCompatActivity() {
     val shouldShowDialog = mutableStateOf(false)
     val menuBtnExpanded = mutableStateOf(false)
 
-    companion object {
-        /** 1: StorageFragment
-         *
-         * 2: FileListFragment
-         *
-         * 3: NetFragment **/
-      //  val fragmentCode = MutableStateFlow<Int>(2)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (permissions.isNotEmpty()) {
@@ -125,17 +116,6 @@ class MainActivity : AppCompatActivity() {
                 isUserInputEnabled = false
             }
         }
-
-//        fragmentCode.asLiveData().observe(this) {
-//            if (it == 1) {
-//                viewpagerAdapter.notifyItemChanged(0)
-//                binding.mainViewPager.setCurrentItem(0, false)  // toStorageFrag
-//            } else if (it == 2) {
-//                binding.mainViewPager.setCurrentItem(1, false)  // toFileListFrag
-//            } else {
-//                binding.mainViewPager.setCurrentItem(2, false)  // toNetFrag
-//            }
-//        }
     }
 
     private fun collectUiState() {
