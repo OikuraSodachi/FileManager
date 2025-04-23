@@ -8,7 +8,9 @@ import com.todokanai.filemanager.data.dataclass.ServerHolderItem
 import com.todokanai.filemanager.databinding.ServerRecyclerBinding
 import com.todokanai.filemanager.holders.ServerItemHolder
 
-class ServerRecyclerAdapter: ListAdapter<ServerHolderItem, ServerItemHolder>(
+class ServerRecyclerAdapter(
+    private val onItemClick: (ServerHolderItem) -> Unit
+): ListAdapter<ServerHolderItem, ServerItemHolder>(
     object : DiffUtil.ItemCallback<ServerHolderItem>() {
         override fun areItemsTheSame(oldItem: ServerHolderItem, newItem: ServerHolderItem): Boolean {
             return oldItem == newItem
@@ -21,14 +23,12 @@ class ServerRecyclerAdapter: ListAdapter<ServerHolderItem, ServerItemHolder>(
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerItemHolder {
         val binding = ServerRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return ServerItemHolder(binding)
+        return ServerItemHolder(binding,onItemClick)
     }
 
     override fun onBindViewHolder(holder: ServerItemHolder, position: Int) {
         val item = getItem(position)
-        holder.run{
-
-        }
+        holder.onInit(item)
     }
 
 }

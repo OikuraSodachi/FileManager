@@ -14,22 +14,31 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class LoginFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
+class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
     override val binding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
     private val viewModel: LoginViewModel by viewModels()
-    lateinit var loginAdapter: ServerRecyclerAdapter
+    lateinit var serverAdapter: ServerRecyclerAdapter
 
     override fun prepareLateInit() {
-        loginAdapter = ServerRecyclerAdapter()
+        serverAdapter = ServerRecyclerAdapter(
+            onItemClick = {
+                viewModel.onServerClick(it)
+                viewPagerAdapter.toNetFragment()
+            }
+        )
     }
 
     override fun prepareView() {
         val linearManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.run{
             serverRecyclerView.run {
-                adapter = loginAdapter
+                adapter = serverAdapter
                 layoutManager = linearManager
                 DividerItemDecoration(context, linearManager.orientation)
+            }
+            serverAddButton.setOnClickListener {
+                // Todo: dialog for add server
+
             }
         }
     }

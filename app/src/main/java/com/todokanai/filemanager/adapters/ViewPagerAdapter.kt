@@ -12,7 +12,9 @@ class ViewPagerAdapter(activity: AppCompatActivity, val viewPager: ViewPager2) :
      *
      * 2: FileListFragment
      *
-     * 3: NetFragment **/
+     * 3: NetFragment
+     *
+     * 4: LoginFragment **/
 
     override fun getItemCount(): Int {
         return fragmentList.size
@@ -32,5 +34,9 @@ class ViewPagerAdapter(activity: AppCompatActivity, val viewPager: ViewPager2) :
 
     fun toNetFragment(){
         viewPager.setCurrentItem(2,false)
+    }
+
+    fun toLoginFragment(){
+        viewPager.setCurrentItem(3,false)
     }
 }
