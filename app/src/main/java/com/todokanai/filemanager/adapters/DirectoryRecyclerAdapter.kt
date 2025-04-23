@@ -4,8 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.todokanai.filemanager.R
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
+import com.todokanai.filemanager.databinding.DirectoryRecyclerBinding
 import com.todokanai.filemanager.holders.DirectoryHolder
 
 class DirectoryRecyclerAdapter(
@@ -29,9 +29,8 @@ class DirectoryRecyclerAdapter(
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.directory_recycler, parent, false)
-        return DirectoryHolder(view, onClick)
+        val binding = DirectoryRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return DirectoryHolder(binding, onClick)
     }
 
     override fun onBindViewHolder(holder: DirectoryHolder, position: Int) {

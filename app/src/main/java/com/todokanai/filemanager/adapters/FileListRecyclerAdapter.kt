@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.DiffUtil
-import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.multiselectrecyclerview.MultiSelectRecyclerAdapter
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
+import com.todokanai.filemanager.databinding.FilelistRecyclerBinding
 import com.todokanai.filemanager.holders.FileItemHolder
 
 class FileListRecyclerAdapter(
@@ -32,9 +32,8 @@ class FileListRecyclerAdapter(
     override val selectionId = "selectionId"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.filelist_recycler, parent, false)
-        return FileItemHolder(view, onFileClick)
+        val binding = FilelistRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return FileItemHolder(binding, onFileClick)
     }
 
     override fun onBindViewHolder(holder: FileItemHolder, position: Int) {

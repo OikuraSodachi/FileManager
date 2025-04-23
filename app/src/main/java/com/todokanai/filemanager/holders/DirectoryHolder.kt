@@ -1,21 +1,17 @@
 package com.todokanai.filemanager.holders
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources.getDrawable
 import androidx.recyclerview.widget.RecyclerView
 import com.todokanai.filemanager.R
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
+import com.todokanai.filemanager.databinding.DirectoryRecyclerBinding
 
-class DirectoryHolder(itemView: View, private val onClick: (DirectoryHolderItem) -> Unit) :
-    RecyclerView.ViewHolder(itemView) {
-    private val directoryName = itemView.findViewById<TextView>(R.id.directoryName)
-    private val dividerSlot = itemView.findViewById<ImageView>(R.id.divider)
+class DirectoryHolder(val binding:DirectoryRecyclerBinding, private val onClick: (DirectoryHolderItem) -> Unit) :
+    RecyclerView.ViewHolder(binding.root) {
 
     fun onInit(item: DirectoryHolderItem) {
-        directoryName.text = item.name
-        dividerSlot.setImageDrawable(
+        binding.directoryName.text = item.name
+        binding.divider.setImageDrawable(
             getDrawable(
                 itemView.context,
                 R.drawable.baseline_label_important_24
