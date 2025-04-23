@@ -1,9 +1,9 @@
 package com.todokanai.filemanager.workers
 
 import android.content.Context
-import androidx.work.CoroutineWorker
 import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
+import com.todokanai.filemanager.abstracts.FileWorkerLogics
 import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
@@ -14,7 +14,7 @@ import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-class CopyWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
+class CopyWorker(val context: Context, params: WorkerParameters) : FileWorkerLogics(context, params) {
 
     var progress: Int = 0
 
@@ -26,28 +26,24 @@ class CopyWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
 
     val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
-        try {
-            copyFiles_Recursive_td(
-                selected = selectedFiles,
-                targetDirectory = targetDirectory,
-                onProgress = {
-                    progress++
-                    //getForegroundInfo()
-                    myNoti.sendSilentNotification(it.name, "$progress/$fileQuantity")
-                }
-            )
-
-            Result.success()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Result.failure()
-        }
-    }
-    // dragSelectRecyclerView
-
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        return createForegroundInfo(fileQuantity, progress)
+        return createForegroundInfo(context,fileQuantity, progress)
+    }
+
+    override suspend fun workContent() {
+        copyFiles_Recursive_td(
+            selected = selectedFiles,
+            targetDirectory = targetDirectory,
+            onProgress = {
+                progress++
+                //getForegroundInfo()
+                myNoti.sendSilentNotification(context,it.name, "$progress/$fileQuantity")
+            }
+        )
+    }
+
+    override fun onFailure(e: Exception) {
+        e.printStackTrace()
     }
 
     /** independent **/
@@ -80,9 +76,9 @@ class CopyWorker(context: Context, params: WorkerParameters) : CoroutineWorker(c
 
     // Creates an instance of ForegroundInfo which can be used to update the
     // ongoing notification.
-    private fun createForegroundInfo(max: Int, progress: Int): ForegroundInfo {
+    private fun createForegroundInfo(context: Context,max: Int, progress: Int): ForegroundInfo {
         println("max:$max, progress:$progress")
-        val test = myNoti.ongoingNotiTest
+        val test = myNoti.ongoingNotiTest(context)
             .setProgress(max, progress, false)
             .setContentText("$progress/$max")
 

@@ -1,6 +1,7 @@
 package com.todokanai.filemanager.viewmodel
 
 import android.app.Activity
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Environment
 import androidx.lifecycle.ViewModel
@@ -24,20 +25,8 @@ class MainViewModel @Inject constructor() : ViewModel() {
     private val _uiState = MutableStateFlow(MainActivityUiState())
     val uiState = _uiState.asStateFlow()
 
-    init {
-        /*
-        viewModelScope.launch{
-            fragCode.collect {
-                _uiState.update { currentState ->
-
-                }
-            }
-        }
-         */
-    }
-
     fun prepareObjects(appContext: Context, activity: Activity) {
-        myNoti = MyNotification(appContext)
+        myNoti = MyNotification(appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
     }
 
     /** 모든 파일 접근 권한 처리**/

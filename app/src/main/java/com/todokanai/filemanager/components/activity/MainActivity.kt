@@ -1,15 +1,14 @@
 package com.todokanai.filemanager.components.activity
 
-import android.os.Bundle
 import androidx.activity.addCallback
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import com.todokanai.filemanager.abstactlogics.MainActivityLogics
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.components.fragments.FileListFragment
 import com.todokanai.filemanager.components.fragments.NetFragment
@@ -24,49 +23,38 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
+class MainActivity : MainActivityLogics() {
 
     private val permissions = Objects.permissions
-    private val requestCode = Constants.PERMISSION_REQUEST_CODE
-
     private val viewModel: MainViewModel by viewModels()
-    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val viewpagerAdapter by lazy { ViewPagerAdapter(this, binding.mainViewPager) }
-
-  //  private val parentViewPager by lazy { binding.mainViewPager }
-    private val fragmentList by lazy {
+    override val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+    private val pagerAdapter by lazy { ViewPagerAdapter(this, binding.mainViewPager) }
+    private val fragments by lazy {
         listOf(
-            StorageFragment(viewpagerAdapter),
-            FileListFragment(viewpagerAdapter),
-            NetFragment(viewpagerAdapter)
+            StorageFragment(pagerAdapter),
+            FileListFragment(pagerAdapter),
+            NetFragment(pagerAdapter)
         )
     }
 
     val shouldShowDialog = mutableStateOf(false)
     val menuBtnExpanded = mutableStateOf(false)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun handlePermission() {
         if (permissions.isNotEmpty()) {
-            requestPermissions(permissions, requestCode)
+            requestPermissions(permissions, Constants.PERMISSION_REQUEST_CODE)
         }
-        prepareView(viewModel)
-        collectUiState()
+    }
+
+    override fun prepareLateInit() {
         viewModel.run {
             prepareObjects(applicationContext, this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
         }
-
-        onBackPressedDispatcher.addCallback {
-
-        }
-        setContentView(binding.root)
+        pagerAdapter.fragmentList = fragments
     }
 
-    /** view 내용 setter 구분 편리성을 위해 묶어서 분리 **/
-    private fun prepareView(viewModel: MainViewModel) {
-        viewpagerAdapter.fragmentList = fragmentList
-
+    override fun prepareView() {
         binding.run {
             composeDialogView.apply {
                 setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
@@ -98,27 +86,29 @@ class MainActivity : AppCompatActivity() {
                 viewModel.exit(this@MainActivity)
             }
             localListButton.setOnClickListener {
-              //  fragmentCode.value = 2
-                viewpagerAdapter.toFileListFragment()
+                pagerAdapter.toFileListFragment()
             }
             storageBtn.setOnClickListener {
-                viewpagerAdapter.toStorageFragment()
+                pagerAdapter.toStorageFragment()
             }
             netButton.setOnClickListener {
-                viewpagerAdapter.toNetFragment()
+                pagerAdapter.toNetFragment()
             }
             mainBottomButton.setOnClickListener {
-                viewpagerAdapter.toStorageFragment()
+                pagerAdapter.toStorageFragment()
             }
 
             mainViewPager.run {
-                adapter = viewpagerAdapter
+                adapter = pagerAdapter
                 isUserInputEnabled = false
             }
         }
+        onBackPressedDispatcher.addCallback {
+
+        }
     }
 
-    private fun collectUiState() {
+    override fun collectUiState() {
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {

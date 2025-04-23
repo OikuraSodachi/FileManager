@@ -1,43 +1,39 @@
 package com.todokanai.filemanager.tools.actions
 
-import com.todokanai.filemanager.interfaces.FileAction
-import com.todokanai.filemanager.myobjects.Objects.myNoti
 import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
+/** dummy class (?) **/
 class CopyAction(
     val selectedFiles: Array<File>,
     val targetDirectory: File
-) : FileAction {
+) {
     var progress: Int = 0
     private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
     private lateinit var currentFileInProcess: File
 
-    override fun main() {
-        copyFiles_Recursive_td(
-            selected = selectedFiles,
-            targetDirectory = targetDirectory,
-            onProgress = { progressCallback() }
-        )
+    fun main(){
+        CoroutineScope(Dispatchers.IO).launch {
+            copyFiles_Recursive_td(
+                selected = selectedFiles,
+                targetDirectory = targetDirectory,
+                onProgress = {
+                    progress++
+//        myNoti.sendSilentNotification(
+//            title = currentFileInProcess.name,
+//            message = "$progress/$fileQuantity"
+//        )
+                }
+            )
+        }
     }
 
-    override fun abort() {
 
-    }
-
-    override fun progressCallback() {
-        progress++
-        myNoti.sendSilentNotification(
-            title = currentFileInProcess.name,
-            message = "$progress/$fileQuantity"
-        )
-    }
-
-    override fun onComplete() {
-        myNoti.sendCompletedNotification("copied $progress files", "copy complete")
-    }
 
     fun copyFiles_Recursive_td(
         selected: Array<File>,
