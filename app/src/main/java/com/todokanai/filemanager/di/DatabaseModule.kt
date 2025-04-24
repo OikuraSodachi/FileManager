@@ -3,7 +3,9 @@ package com.todokanai.filemanager.di
 import android.content.Context
 import androidx.work.WorkManager
 import com.todokanai.filemanager.data.room.MyDatabase
+import com.todokanai.filemanager.data.room.ServerInfoDao
 import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.repository.ServerInfoRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,7 +30,18 @@ class DatabaseModule {
     }
 
     @Provides
-    fun providesWorkManager(@ApplicationContext context: Context): WorkManager {
+    fun provideServerInfoDao(myDatabase: MyDatabase):ServerInfoDao{
+        return myDatabase.serverDao()
+    }
+
+    @Singleton
+    @Provides
+    fun provideServerInfoRepository(serverInfoDao: ServerInfoDao):ServerInfoRepository{
+        return ServerInfoRepository(serverInfoDao)
+    }
+
+    @Provides
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
     }
 

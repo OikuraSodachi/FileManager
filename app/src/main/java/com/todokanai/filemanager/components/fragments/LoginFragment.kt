@@ -36,7 +36,11 @@ class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment(
             }
 
             serverAddButton.setOnClickListener {
-
+                viewModel.saveServerInfo(
+                    ip = ipEditText.text.toString(),
+                    id = idEditText.text.toString(),
+                    password = passwordEditText.text.toString()
+                )
 
             }
         }
