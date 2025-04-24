@@ -34,9 +34,6 @@ class LoginViewModel @Inject constructor(private val dsRepo: DataStoreRepository
         ServerHolderItem("3")
     )
 
-    override val dialogCallback: List<Pair<String, () -> Unit>>
-        get() = emptyList()
-
     override val serverListFlow: Flow<List<ServerHolderItem>>
         get() = flowOf(tempList)
 
