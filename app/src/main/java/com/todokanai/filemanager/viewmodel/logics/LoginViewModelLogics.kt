@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class LoginViewModelLogics : ViewModel() {
 
+    abstract val dialogCallback:List<Pair<String,()->Unit>>
+
     abstract val serverListFlow:Flow<List<ServerHolderItem>>
 
 }

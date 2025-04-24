@@ -34,8 +34,9 @@ class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment(
                 layoutManager = linearManager
                 DividerItemDecoration(context, linearManager.orientation)
             }
+
             serverAddButton.setOnClickListener {
-                // Todo: dialog for add server
+
 
             }
         }
