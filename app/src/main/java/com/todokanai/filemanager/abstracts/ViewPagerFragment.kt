@@ -6,7 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.launch
 
 abstract class ViewPagerFragment() : Fragment() {
 
@@ -19,7 +23,12 @@ abstract class ViewPagerFragment() : Fragment() {
     ): View? {
         prepareLateInit()
         prepareView()
-        collectUIState()
+       // collectUIState()
+        lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+                collectUIState()
+            }
+        }
         return binding.root
     }
 
@@ -45,7 +54,7 @@ abstract class ViewPagerFragment() : Fragment() {
     abstract fun prepareView()
 
     /** update view**/
-    abstract fun collectUIState()
+    abstract suspend fun collectUIState()
 
     /** set this to null if you don't want customize back button callback **/
     abstract val overrideBackButton: OnBackPressedCallback?

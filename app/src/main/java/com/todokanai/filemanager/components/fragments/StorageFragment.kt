@@ -2,7 +2,6 @@ package com.todokanai.filemanager.components.fragments
 
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.ViewPagerFragment
 import com.todokanai.filemanager.adapters.StorageRecyclerAdapter
@@ -10,7 +9,6 @@ import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentStorageBinding
 import com.todokanai.filemanager.viewmodel.StorageViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class StorageFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
@@ -31,7 +29,6 @@ class StorageFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragmen
             onItemClick = {
                 viewModel.onItemClick(it)
                 viewPagerAdapter.toFileListFragment()
-             //   fragmentCode.value = 2
             }
         )
     }
@@ -43,11 +40,9 @@ class StorageFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragmen
         }
     }
 
-    override fun collectUIState() {
-        lifecycleScope.launch {
-            viewModel.storageHolderList.collect {
-                storageAdapter.submitList(it)
-            }
+    override suspend fun collectUIState() {
+        viewModel.storageHolderList.collect {
+            storageAdapter.submitList(it)
         }
     }
 

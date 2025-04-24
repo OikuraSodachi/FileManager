@@ -3,7 +3,6 @@ package com.todokanai.filemanager.components.fragments
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.ViewPagerFragment
@@ -13,7 +12,6 @@ import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentNetBinding
 import com.todokanai.filemanager.viewmodel.NetViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class NetFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
@@ -50,24 +48,30 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
             }
+            netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
+                binding.netBottomMenuLayout.visibility =
+                    if (it) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+            }
         }
     }
 
-    override fun collectUIState() {
-        lifecycleScope.launch {
-            viewModel.uiState.collect { uiState ->
-                netAdapter.submitList(uiState.itemList)
-                directoryAdapter.submitList(uiState.dirTree)
-            }
+    override suspend fun collectUIState() {
+        viewModel.uiState.collect { uiState ->
+            netAdapter.submitList(uiState.itemList)
+            directoryAdapter.submitList(uiState.dirTree)
         }
-        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
-            binding.netBottomMenuLayout.visibility =
-                if (it) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
-        }
+//        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
+//            binding.netBottomMenuLayout.visibility =
+//                if (it) {
+//                    View.VISIBLE
+//                } else {
+//                    View.GONE
+//                }
+//        }
     }
 
     override val overrideBackButton: OnBackPressedCallback =

@@ -2,7 +2,6 @@ package com.todokanai.filemanager.components.fragments
 
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.ViewPagerFragment
@@ -11,7 +10,6 @@ import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentLoginBinding
 import com.todokanai.filemanager.viewmodel.LoginViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
@@ -43,11 +41,9 @@ class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment(
         }
     }
 
-    override fun collectUIState() {
-        lifecycleScope.launch {
-            viewModel.uiState.collect {
-
-            }
+    override suspend fun collectUIState() {
+        viewModel.uiState.collect { uiState ->
+            serverAdapter.submitList(uiState.serverList)
         }
     }
 

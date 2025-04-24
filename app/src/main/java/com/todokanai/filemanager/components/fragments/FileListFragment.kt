@@ -3,9 +3,6 @@ package com.todokanai.filemanager.components.fragments
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.ViewPagerFragment
@@ -16,7 +13,6 @@ import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
@@ -65,32 +61,32 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment()
                 itemList = viewModel.popupMenuList(fileListAdapter.selectedItems())
             )
         }
-    }
 
-    override fun collectUIState() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
-                    fileListAdapter.submitList(it.listFiles)
-                    directoryAdapter.submitList(it.dirTree)
-                    binding.emptyDirectoryText.visibility =
-                        if (it.emptyDirectoryText == true) {
-                            View.VISIBLE
-                        } else {
-                            View.GONE
-                        }
-                    binding.accessFailText.visibility =
-                        if (it.accessFailText == true) {
-                            View.VISIBLE
-                        } else {
-                            View.GONE
-                        }
-                }
-            }
-        }
         fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) { enabled ->
             binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
         }
+    }
+
+    override suspend fun collectUIState() {
+        viewModel.uiState.collect {
+            fileListAdapter.submitList(it.listFiles)
+            directoryAdapter.submitList(it.dirTree)
+            binding.emptyDirectoryText.visibility =
+                if (it.emptyDirectoryText == true) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+            binding.accessFailText.visibility =
+                if (it.accessFailText == true) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+        }
+//        fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) { enabled ->
+//            binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
+//        }
     }
 
     override val overrideBackButton: OnBackPressedCallback =

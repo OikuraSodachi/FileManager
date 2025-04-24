@@ -5,9 +5,6 @@ import androidx.activity.viewModels
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import com.todokanai.filemanager.abstactlogics.MainActivityLogics
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.components.fragments.FileListFragment
@@ -21,7 +18,6 @@ import com.todokanai.filemanager.myobjects.Constants
 import com.todokanai.filemanager.myobjects.Objects
 import com.todokanai.filemanager.viewmodel.MainViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MainActivity : MainActivityLogics() {
@@ -110,13 +106,9 @@ class MainActivity : MainActivityLogics() {
         }
     }
 
-    override fun collectUiState() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.uiState.collect {
+    override suspend fun collectUIState() {
+        viewModel.uiState.collect {
 
-                }
-            }
         }
     }
 }

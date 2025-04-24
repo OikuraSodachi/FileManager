@@ -2,7 +2,11 @@ package com.todokanai.filemanager.abstactlogics
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
+import kotlinx.coroutines.launch
 
 abstract class MainActivityLogics: AppCompatActivity() {
 
@@ -13,13 +17,17 @@ abstract class MainActivityLogics: AppCompatActivity() {
         prepareLateInit()
         handlePermission()
         prepareView()
-        collectUiState()
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                collectUIState()
+            }
+        }
         setContentView(binding.root)
     }
 
     abstract fun handlePermission()
     abstract fun prepareLateInit()
     abstract fun prepareView()
-    abstract fun collectUiState()
+    abstract suspend fun collectUIState()
 
 }
