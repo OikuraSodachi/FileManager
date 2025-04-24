@@ -2,8 +2,6 @@ package com.todokanai.filemanager.viewmodel
 
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.ServerHolderItem
-import com.todokanai.filemanager.data.room.ServerInfo
-import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.repository.ServerInfoRepository
 import com.todokanai.filemanager.viewmodel.logics.LoginViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +17,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val dsRepo: DataStoreRepository,
     private val serverRepo:ServerInfoRepository
 ) : LoginViewModelLogics() {
 
@@ -33,23 +30,15 @@ class LoginViewModel @Inject constructor(
                 }
             }
         }
-//        viewModelScope.launch {
-//            serverRepo.serverInfoFlow.collect {
-//                _uiState.update { currentState ->
-//                    currentState.copy(
-//                        serverList = it.map{
-//                            ServerHolderItem(name = it.ip)
-//                        }
-//                    )
-//                }
-//            }
-//        }
     }
 
     override val serverListFlow: Flow<List<ServerHolderItem>> =
         serverRepo.serverInfoFlow.map{ infoList ->
             infoList.map{
-                ServerHolderItem(name = it.ip)
+                ServerHolderItem(
+                    name = it.ip,
+                    id = it.no!!    // Todo: NPE 발생 가능성 확인 필요
+                )
             }
         }
 
@@ -57,9 +46,15 @@ class LoginViewModel @Inject constructor(
 
     }
 
-    fun saveServerInfo(ip:String,id:String,password:String){
+    override fun deleteServer(server:ServerHolderItem){
         CoroutineScope(Dispatchers.IO).launch {
-            serverRepo.insert(ServerInfo(ip,id,password))
+            serverRepo.deleteByIndex(server.id)
+        }
+    }
+
+    override fun saveServerInfo(ip:String,id:String,password:String){
+        CoroutineScope(Dispatchers.IO).launch {
+            serverRepo.insert(ip,id,password)
         }
     }
 

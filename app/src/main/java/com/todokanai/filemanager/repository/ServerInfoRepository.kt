@@ -10,9 +10,11 @@ class ServerInfoRepository @Inject constructor(private val serverInfoDao:ServerI
 
     val serverInfoFlow = serverInfoDao.getAll()
 
-    suspend fun insert(serverInfo: ServerInfo) = serverInfoDao.insert(serverInfo)
+    suspend fun insert(id:String,ip:String,password:String) = serverInfoDao.insert(ServerInfo(id,ip,password))
 
     suspend fun delete(serverInfo: ServerInfo) = serverInfoDao.delete(serverInfo)
+
+    suspend fun deleteByIndex(no: Long) = serverInfoDao.deleteByIndex(no)
 
     suspend fun deleteAll() = serverInfoDao.deleteAll()
 }

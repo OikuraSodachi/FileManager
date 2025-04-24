@@ -19,9 +19,9 @@ class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment(
 
     override fun prepareLateInit() {
         serverAdapter = ServerRecyclerAdapter(
-            onItemClick = {
-                viewModel.onServerClick(it)
-                viewPagerAdapter.toNetFragment()
+            onDeleteServer = {
+                viewModel.deleteServer(it)
+              //  viewPagerAdapter.toNetFragment()
             }
         )
     }

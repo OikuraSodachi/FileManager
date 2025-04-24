@@ -21,6 +21,9 @@ interface ServerInfoDao {
     @Delete
     suspend fun delete(serverInfo: ServerInfo)
 
+    @Query("delete from room_server where `no`=:no")
+    suspend fun deleteByIndex(no: Long)
+
     @Query("delete from room_server")
     suspend fun deleteAll()
 
