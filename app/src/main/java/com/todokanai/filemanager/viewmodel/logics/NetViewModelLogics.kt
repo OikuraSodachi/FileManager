@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class NetViewModelLogics : ViewModel() {
 
-
     protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
     protected abstract val itemList: Flow<List<FileHolderItem>>
 
