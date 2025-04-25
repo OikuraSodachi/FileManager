@@ -74,6 +74,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment()
                 {
                     /** Todo: position:Int 값을 viewModel 에서 완성시킨 채로 가져오기 **/
                     val position = viewModel.scrollPosition(it.listFiles, it.lastKnownDirectory)
+                    /** Todo: item 이 화면 중앙에 오도록 scroll 하기 **/
                     binding.fileListRecyclerView.scrollToPosition(position)
                     println("scrollTo: ${position}")
                 }
