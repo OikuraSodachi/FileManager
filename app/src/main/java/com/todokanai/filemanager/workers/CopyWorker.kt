@@ -14,7 +14,8 @@ import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-class CopyWorker(val context: Context, params: WorkerParameters) : FileWorkerLogics(context, params) {
+class CopyWorker(val context: Context, params: WorkerParameters) :
+    FileWorkerLogics(context, params) {
 
     var progress: Int = 0
 
@@ -27,7 +28,7 @@ class CopyWorker(val context: Context, params: WorkerParameters) : FileWorkerLog
     val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
 
     override suspend fun getForegroundInfo(): ForegroundInfo {
-        return createForegroundInfo(context,fileQuantity, progress)
+        return createForegroundInfo(context, fileQuantity, progress)
     }
 
     override suspend fun workContent() {
@@ -37,7 +38,7 @@ class CopyWorker(val context: Context, params: WorkerParameters) : FileWorkerLog
             onProgress = {
                 progress++
                 //getForegroundInfo()
-                myNoti.sendSilentNotification(context,it.name, "$progress/$fileQuantity")
+                myNoti.sendSilentNotification(context, it.name, "$progress/$fileQuantity")
             }
         )
     }
@@ -76,7 +77,7 @@ class CopyWorker(val context: Context, params: WorkerParameters) : FileWorkerLog
 
     // Creates an instance of ForegroundInfo which can be used to update the
     // ongoing notification.
-    private fun createForegroundInfo(context: Context,max: Int, progress: Int): ForegroundInfo {
+    private fun createForegroundInfo(context: Context, max: Int, progress: Int): ForegroundInfo {
         println("max:$max, progress:$progress")
         val test = myNoti.ongoingNotiTest(context)
             .setProgress(max, progress, false)

@@ -21,14 +21,14 @@ class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment(
         serverAdapter = ServerRecyclerAdapter(
             onDeleteServer = {
                 viewModel.deleteServer(it)
-              //  viewPagerAdapter.toNetFragment()
+                //  viewPagerAdapter.toNetFragment()
             }
         )
     }
 
     override fun prepareView() {
         val linearManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        binding.run{
+        binding.run {
             serverRecyclerView.run {
                 adapter = serverAdapter
                 layoutManager = linearManager

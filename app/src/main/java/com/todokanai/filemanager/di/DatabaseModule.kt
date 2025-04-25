@@ -30,13 +30,13 @@ class DatabaseModule {
     }
 
     @Provides
-    fun provideServerInfoDao(myDatabase: MyDatabase):ServerInfoDao{
+    fun provideServerInfoDao(myDatabase: MyDatabase): ServerInfoDao {
         return myDatabase.serverDao()
     }
 
     @Singleton
     @Provides
-    fun provideServerInfoRepository(serverInfoDao: ServerInfoDao):ServerInfoRepository{
+    fun provideServerInfoRepository(serverInfoDao: ServerInfoDao): ServerInfoRepository {
         return ServerInfoRepository(serverInfoDao)
     }
 

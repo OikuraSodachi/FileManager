@@ -13,7 +13,10 @@ import com.todokanai.filemanager.databinding.FilelistRecyclerBinding
 import java.io.File
 import java.text.DateFormat
 
-class FileItemHolder(val binding: FilelistRecyclerBinding, private val onClick: (FileHolderItem) -> Unit) :
+class FileItemHolder(
+    val binding: FilelistRecyclerBinding,
+    private val onClick: (FileHolderItem) -> Unit
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun onInit(item: FileHolderItem) {

@@ -8,7 +8,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.launch
 
-abstract class MainActivityLogics: AppCompatActivity() {
+abstract class MainActivityLogics : AppCompatActivity() {
 
     abstract val binding: ViewBinding
 
@@ -18,7 +18,7 @@ abstract class MainActivityLogics: AppCompatActivity() {
         handlePermission()
         prepareView()
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 collectUIState()
             }
         }

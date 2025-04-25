@@ -41,7 +41,8 @@ class NetRecyclerAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
-        val binding = FilelistRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding =
+            FilelistRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return FileItemHolder(binding, onItemClick)
     }
 

@@ -5,7 +5,7 @@ import com.todokanai.filemanager.databinding.StorageRecyclerBinding
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import java.io.File
 
-class StorageHolder(val binding:StorageRecyclerBinding, private val onClick: (File) -> Unit) :
+class StorageHolder(val binding: StorageRecyclerBinding, private val onClick: (File) -> Unit) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun onInit(item: File) {

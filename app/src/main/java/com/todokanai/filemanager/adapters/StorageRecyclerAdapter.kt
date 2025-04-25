@@ -22,7 +22,8 @@ class StorageRecyclerAdapter(
     }
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StorageHolder {
-        val binding = StorageRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding =
+            StorageRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return StorageHolder(binding, onItemClick)
     }
 

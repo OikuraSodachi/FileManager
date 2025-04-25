@@ -17,7 +17,7 @@ class CopyAction(
     private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
     private lateinit var currentFileInProcess: File
 
-    fun main(){
+    fun main() {
         CoroutineScope(Dispatchers.IO).launch {
             copyFiles_Recursive_td(
                 selected = selectedFiles,
@@ -32,7 +32,6 @@ class CopyAction(
             )
         }
     }
-
 
 
     fun copyFiles_Recursive_td(

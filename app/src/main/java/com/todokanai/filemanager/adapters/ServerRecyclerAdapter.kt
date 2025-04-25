@@ -10,20 +10,27 @@ import com.todokanai.filemanager.holders.ServerItemHolder
 
 class ServerRecyclerAdapter(
     private val onDeleteServer: (ServerHolderItem) -> Unit
-): ListAdapter<ServerHolderItem, ServerItemHolder>(
+) : ListAdapter<ServerHolderItem, ServerItemHolder>(
     object : DiffUtil.ItemCallback<ServerHolderItem>() {
-        override fun areItemsTheSame(oldItem: ServerHolderItem, newItem: ServerHolderItem): Boolean {
+        override fun areItemsTheSame(
+            oldItem: ServerHolderItem,
+            newItem: ServerHolderItem
+        ): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: ServerHolderItem, newItem: ServerHolderItem): Boolean {
+        override fun areContentsTheSame(
+            oldItem: ServerHolderItem,
+            newItem: ServerHolderItem
+        ): Boolean {
             return oldItem == newItem
         }
     }
 ) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerItemHolder {
-        val binding = ServerRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
-        return ServerItemHolder(binding,onDeleteServer)
+        val binding =
+            ServerRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ServerItemHolder(binding, onDeleteServer)
     }
 
     override fun onBindViewHolder(holder: ServerItemHolder, position: Int) {

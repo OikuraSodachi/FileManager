@@ -6,13 +6,14 @@ import androidx.work.WorkerParameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-abstract class FileWorkerLogics(context: Context, params: WorkerParameters):CoroutineWorker(context, params) {
+abstract class FileWorkerLogics(context: Context, params: WorkerParameters) :
+    CoroutineWorker(context, params) {
 
-    override suspend fun doWork(): Result = withContext(Dispatchers.IO){
-        try{
+    override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
+        try {
             workContent()
             Result.success()
-        }catch (e:Exception){
+        } catch (e: Exception) {
             onFailure(e)
             Result.failure()
         }
@@ -20,6 +21,6 @@ abstract class FileWorkerLogics(context: Context, params: WorkerParameters):Coro
 
     abstract suspend fun workContent()
 
-    abstract fun onFailure(e:Exception)
+    abstract fun onFailure(e: Exception)
 
 }

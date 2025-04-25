@@ -6,10 +6,10 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class LoginViewModelLogics : ViewModel() {
 
-    abstract val serverListFlow:Flow<List<ServerHolderItem>>
+    abstract val serverListFlow: Flow<List<ServerHolderItem>>
 
-    abstract fun deleteServer(server:ServerHolderItem)
+    abstract fun deleteServer(server: ServerHolderItem)
 
-    abstract fun saveServerInfo(ip:String,id:String,password:String)
+    abstract fun saveServerInfo(ip: String, id: String, password: String)
 
 }

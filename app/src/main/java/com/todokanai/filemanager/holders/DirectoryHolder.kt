@@ -6,7 +6,10 @@ import com.todokanai.filemanager.R
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.databinding.DirectoryRecyclerBinding
 
-class DirectoryHolder(val binding:DirectoryRecyclerBinding, private val onClick: (DirectoryHolderItem) -> Unit) :
+class DirectoryHolder(
+    val binding: DirectoryRecyclerBinding,
+    private val onClick: (DirectoryHolderItem) -> Unit
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun onInit(item: DirectoryHolderItem) {

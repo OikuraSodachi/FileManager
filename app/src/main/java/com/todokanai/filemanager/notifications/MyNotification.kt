@@ -25,7 +25,7 @@ class MyNotification(val manager: NotificationManager) {
     )
     private val icon by lazy { R.drawable.ic_launcher_background }
 
-    fun sendSilentNotification(context:Context,title: String?, message: String?) {
+    fun sendSilentNotification(context: Context, title: String?, message: String?) {
         NotificationCompat.Builder(context, silentChannel.id)
             .setSmallIcon(icon)
             .setContentTitle(title)
@@ -54,7 +54,6 @@ class MyNotification(val manager: NotificationManager) {
 //            .setPriority(NotificationCompat.PRIORITY_LOW)
 //            .launch_td(silentChannel)
 //    }
-
 
 
     fun ongoingNotiTest(context: Context) = Notification.Builder(context, silentChannel.id)

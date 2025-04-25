@@ -69,7 +69,16 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment()
 
     override suspend fun collectUIState() {
         viewModel.uiState.collect {
-            fileListAdapter.submitList(it.listFiles)
+            fileListAdapter.submitList(
+                it.listFiles,
+                {
+                    /** Todo: position:Int 값을 viewModel 에서 완성시킨 채로 가져오기 **/
+                    val position = viewModel.scrollPosition(it.listFiles, it.lastKnownDirectory)
+                    binding.fileListRecyclerView.scrollToPosition(position)
+                    println("scrollTo: ${position}")
+                }
+            )
+
             directoryAdapter.submitList(it.dirTree)
             binding.emptyDirectoryText.visibility =
                 if (it.emptyDirectoryText == true) {

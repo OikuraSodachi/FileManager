@@ -29,7 +29,8 @@ class DirectoryRecyclerAdapter(
 ) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DirectoryHolder {
-        val binding = DirectoryRecyclerBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        val binding =
+            DirectoryRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return DirectoryHolder(binding, onClick)
     }
 

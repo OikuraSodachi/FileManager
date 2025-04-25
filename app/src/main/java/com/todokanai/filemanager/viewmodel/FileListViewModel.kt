@@ -10,10 +10,10 @@ import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.sortedFileList_td
+import com.todokanai.filemanager.tools.independent.withPrevious_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -49,9 +49,16 @@ class FileListViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            notAccessible.collect {
+            module.notAccessible.collect {
                 _uiState.update { currentState ->
                     currentState.copy(accessFailText = it)
+                }
+            }
+        }
+        viewModelScope.launch {
+            module.currentPath.withPrevious_td().collect {
+                _uiState.update { currentState ->
+                    currentState.copy(lastKnownDirectory = it)
                 }
             }
         }
@@ -73,9 +80,6 @@ class FileListViewModel @Inject constructor(
                 DirectoryHolderItem.fromFile(File(it))
             }
         }
-
-    override val notAccessible: Flow<Boolean>
-        get() = module.notAccessible
 
     override fun onDirectoryClick(item: DirectoryHolderItem) {
         setCurrentDirectory(item.absolutePath)
@@ -107,6 +111,11 @@ class FileListViewModel @Inject constructor(
         }
     }
 
+    /** 새 경로로 이동할 때, scroll 할 위치 가져오기 ( auto scroll 이 필요하다면 ) **/
+    fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
+        return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
+    }
+
     fun popupMenuList(selected: Set<FileHolderItem>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf<Pair<String, () -> Unit>>()
         result.add(
@@ -125,5 +134,6 @@ data class FileListUiState(
     val listFiles: List<FileHolderItem> = emptyList(),
     val dirTree: List<DirectoryHolderItem> = emptyList(),
     val emptyDirectoryText: Boolean = false,
-    val accessFailText: Boolean = false
+    val accessFailText: Boolean = false,
+    val lastKnownDirectory: String? = null
 )

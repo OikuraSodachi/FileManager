@@ -6,11 +6,12 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class ServerInfoRepository @Inject constructor(private val serverInfoDao:ServerInfoDao){
+class ServerInfoRepository @Inject constructor(private val serverInfoDao: ServerInfoDao) {
 
     val serverInfoFlow = serverInfoDao.getAll()
 
-    suspend fun insert(id:String,ip:String,password:String) = serverInfoDao.insert(ServerInfo(id,ip,password))
+    suspend fun insert(id: String, ip: String, password: String) =
+        serverInfoDao.insert(ServerInfo(id, ip, password))
 
     suspend fun delete(serverInfo: ServerInfo) = serverInfoDao.delete(serverInfo)
 

@@ -23,9 +23,9 @@ abstract class ViewPagerFragment() : Fragment() {
     ): View? {
         prepareLateInit()
         prepareView()
-       // collectUIState()
+        // collectUIState()
         lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED){
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 collectUIState()
             }
         }

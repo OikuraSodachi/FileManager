@@ -26,7 +26,8 @@ class MainViewModel @Inject constructor() : ViewModel() {
     val uiState = _uiState.asStateFlow()
 
     fun prepareObjects(appContext: Context, activity: Activity) {
-        myNoti = MyNotification(appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+        myNoti =
+            MyNotification(appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
     }
 
     /** 모든 파일 접근 권한 처리**/

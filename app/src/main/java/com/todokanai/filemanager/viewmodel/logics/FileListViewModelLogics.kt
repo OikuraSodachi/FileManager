@@ -8,22 +8,14 @@ import kotlinx.coroutines.flow.Flow
 
 abstract class FileListViewModelLogics : ViewModel() {
 
+    protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
 
-//  val uiState : StateFlow<FileListUiState>
-//      get() = _uiState
-//
-//      -> Refactoring 할 때, 편의성 면에서 asStateFlow() 방식이 더 좋은듯
-
-    abstract val dirTree: Flow<List<DirectoryHolderItem>>
-
-    abstract val fileHolderList: Flow<List<FileHolderItem>>
-
-    abstract val notAccessible: Flow<Boolean>
+    protected abstract val fileHolderList: Flow<List<FileHolderItem>>
 
     abstract fun onDirectoryClick(item: DirectoryHolderItem)
 
     abstract fun onFileClick(context: Context, item: FileHolderItem)
 
-    abstract fun setCurrentDirectory(directory: String)
+    protected abstract fun setCurrentDirectory(directory: String)
 
 }

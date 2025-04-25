@@ -17,15 +17,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val serverRepo:ServerInfoRepository
+    private val serverRepo: ServerInfoRepository
 ) : LoginViewModelLogics() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState = _uiState.asStateFlow()
-    init{
+
+    init {
         viewModelScope.launch {
-            serverListFlow.collect{
-                _uiState.update{ currentState ->
+            serverListFlow.collect {
+                _uiState.update { currentState ->
                     currentState.copy(serverList = it)
                 }
             }
@@ -33,8 +34,8 @@ class LoginViewModel @Inject constructor(
     }
 
     override val serverListFlow: Flow<List<ServerHolderItem>> =
-        serverRepo.serverInfoFlow.map{ infoList ->
-            infoList.map{
+        serverRepo.serverInfoFlow.map { infoList ->
+            infoList.map {
                 ServerHolderItem(
                     name = it.ip,
                     id = it.no!!    // Todo: NPE 발생 가능성 확인 필요
@@ -42,19 +43,19 @@ class LoginViewModel @Inject constructor(
             }
         }
 
-    fun onServerClick(server:ServerHolderItem){
+    fun onServerClick(server: ServerHolderItem) {
 
     }
 
-    override fun deleteServer(server:ServerHolderItem){
+    override fun deleteServer(server: ServerHolderItem) {
         CoroutineScope(Dispatchers.IO).launch {
             serverRepo.deleteByIndex(server.id)
         }
     }
 
-    override fun saveServerInfo(ip:String,id:String,password:String){
+    override fun saveServerInfo(ip: String, id: String, password: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            serverRepo.insert(ip,id,password)
+            serverRepo.insert(ip, id, password)
         }
     }
 
