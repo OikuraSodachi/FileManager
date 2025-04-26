@@ -5,7 +5,7 @@ import androidx.work.ForegroundInfo
 import androidx.work.WorkerParameters
 import com.todokanai.filemanager.abstracts.FileWorkerLogics
 import com.todokanai.filemanager.myobjects.Constants
-import com.todokanai.filemanager.myobjects.Objects.myNoti
+import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,9 +13,15 @@ import java.io.File
 import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
+import javax.inject.Inject
 
-class CopyWorker(val context: Context, params: WorkerParameters) :
-    FileWorkerLogics(context, params) {
+class CopyWorker(
+    val context: Context,
+    params: WorkerParameters
+) : FileWorkerLogics(context, params) {
+
+    @Inject
+    lateinit var myNoti: MyNotification  // Todo: 이 방식으로 MyNotification 을 가져오는 게 바람직한지?
 
     var progress: Int = 0
 

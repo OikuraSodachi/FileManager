@@ -46,7 +46,6 @@ class MainActivity : MainActivityLogics() {
 
     override fun prepareLateInit() {
         viewModel.run {
-            prepareObjects(applicationContext, this@MainActivity)
             requestStorageManageAccess(this@MainActivity)
         }
         pagerAdapter.fragmentList = fragments

@@ -1,14 +1,12 @@
 package com.todokanai.filemanager.viewmodel
 
 import android.app.Activity
-import android.app.NotificationManager
-import android.content.Context
 import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.todokanai.filemanager.myobjects.Objects.myNoti
+import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Variables
-import com.todokanai.filemanager.notifications.MyNotification
+import com.todokanai.filemanager.tools.Requests
 import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td
@@ -20,15 +18,10 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor() : ViewModel() {
+class MainViewModel @Inject constructor(val workManager:WorkManager) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainActivityUiState())
     val uiState = _uiState.asStateFlow()
-
-    fun prepareObjects(appContext: Context, activity: Activity) {
-        myNoti =
-            MyNotification(appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-    }
 
     /** 모든 파일 접근 권한 처리**/
     fun requestStorageManageAccess(
@@ -45,6 +38,11 @@ class MainViewModel @Inject constructor() : ViewModel() {
     }
 
     fun exit(activity: Activity) = exit_td(activity)
+
+    fun workRequestTest(){
+        val request = Requests().copyRequest(emptyArray(), File(""))
+        workManager.enqueue(request)
+    }
 
 }
 
