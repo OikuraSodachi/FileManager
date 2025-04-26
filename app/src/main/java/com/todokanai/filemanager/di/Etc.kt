@@ -31,7 +31,7 @@ class Etc {
     }
 
     @Provides
-    fun provideMyNotification(notificationManager: NotificationManager):MyNotification{
+    fun provideMyNotification(notificationManager: NotificationManager): MyNotification {
         return MyNotification(notificationManager)
     }
 

@@ -18,7 +18,7 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(val workManager:WorkManager) : ViewModel() {
+class MainViewModel @Inject constructor(val workManager: WorkManager) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainActivityUiState())
     val uiState = _uiState.asStateFlow()
@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(val workManager:WorkManager) : ViewModel
 
     fun exit(activity: Activity) = exit_td(activity)
 
-    fun workRequestTest(){
+    fun workRequestTest() {
         val request = Requests().copyRequest(emptyArray(), File(""))
         workManager.enqueue(request)
     }
