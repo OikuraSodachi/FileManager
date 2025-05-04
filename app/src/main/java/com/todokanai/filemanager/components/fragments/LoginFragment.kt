@@ -21,7 +21,10 @@ class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment(
         serverAdapter = ServerRecyclerAdapter(
             onDeleteServer = {
                 viewModel.deleteServer(it)
-                //  viewPagerAdapter.toNetFragment()
+            },
+            onItemClick = {
+                viewModel.onServerClick(it)
+                viewPagerAdapter.toNetFragment()
             }
         )
     }
@@ -37,6 +40,7 @@ class LoginFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment(
 
             serverAddButton.setOnClickListener {
                 viewModel.saveServerInfo(
+                    name = nameEditText.text.toString(),
                     ip = ipEditText.text.toString(),
                     id = idEditText.text.toString(),
                     password = passwordEditText.text.toString()

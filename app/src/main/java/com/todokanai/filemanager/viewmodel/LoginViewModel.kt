@@ -37,7 +37,7 @@ class LoginViewModel @Inject constructor(
         serverRepo.serverInfoFlow.map { infoList ->
             infoList.map {
                 ServerHolderItem(
-                    name = it.ip,
+                    name = it.name,
                     id = it.no!!    // Todo: NPE 발생 가능성 확인 필요
                 )
             }
@@ -53,9 +53,9 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    override fun saveServerInfo(ip: String, id: String, password: String) {
+    override fun saveServerInfo(name: String, ip: String, id: String, password: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            serverRepo.insert(ip, id, password)
+            serverRepo.insert(name, ip, id, password)
         }
     }
 
