@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.todokanai.filemanager.abstracts.ViewPagerFragment
+import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.NetRecyclerAdapter
 import com.todokanai.filemanager.adapters.ServerRecyclerAdapter
@@ -15,7 +15,7 @@ import com.todokanai.filemanager.viewmodel.NetViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NetFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
+class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
     lateinit var netAdapter: NetRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
@@ -65,7 +65,8 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
                     }
             }
             serverRecyclerView.run {
-                val linearManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                val linearManager =
+                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = serverAdapter
                 layoutManager = linearManager
                 DividerItemDecoration(context, linearManager.orientation)
@@ -86,13 +87,13 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
             netAdapter.submitList(uiState.itemList)
             directoryAdapter.submitList(uiState.dirTree)
             serverAdapter.submitList(uiState.serverList)
-            if(uiState.loggedIn){
-                binding.run{
+            if (uiState.loggedIn) {
+                binding.run {
                     netLayout.visibility = View.VISIBLE
                     loginLayout.visibility = View.GONE
                 }
-            }else{
-                binding.run{
+            } else {
+                binding.run {
                     netLayout.visibility = View.GONE
                     loginLayout.visibility = View.VISIBLE
                 }

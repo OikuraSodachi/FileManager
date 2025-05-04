@@ -12,7 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewbinding.ViewBinding
 import kotlinx.coroutines.launch
 
-abstract class ViewPagerFragment() : Fragment() {
+abstract class BaseFragment() : Fragment() {
 
     abstract val binding: ViewBinding
 
@@ -23,7 +23,6 @@ abstract class ViewPagerFragment() : Fragment() {
     ): View? {
         prepareLateInit()
         prepareView()
-        // collectUIState()
         lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 collectUIState()
@@ -44,7 +43,7 @@ abstract class ViewPagerFragment() : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        overrideBackButton?.remove()                                               // remove callback when fragment is no longer visible
+        overrideBackButton?.remove()                // remove callback when fragment is no longer visible
     }
 
     /** lateInit property initialization **/

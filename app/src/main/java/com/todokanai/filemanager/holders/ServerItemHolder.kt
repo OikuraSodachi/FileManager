@@ -7,12 +7,12 @@ import com.todokanai.filemanager.databinding.ServerRecyclerBinding
 class ServerItemHolder(
     val binding: ServerRecyclerBinding,
     val onDeleteServer: (ServerHolderItem) -> Unit,
-    val onItemClick:(ServerHolderItem)->Unit
+    val onItemClick: (ServerHolderItem) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun onInit(item: ServerHolderItem) {
         binding.run {
-            serverName.run{
+            serverName.run {
                 text = item.name
                 setOnClickListener {
                     onItemClick(item)

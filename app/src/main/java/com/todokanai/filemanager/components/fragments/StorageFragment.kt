@@ -3,7 +3,7 @@ package com.todokanai.filemanager.components.fragments
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.todokanai.filemanager.abstracts.ViewPagerFragment
+import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.StorageRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentStorageBinding
@@ -11,7 +11,7 @@ import com.todokanai.filemanager.viewmodel.StorageViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class StorageFragment(val viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
+class StorageFragment(val viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
     private val viewModel: StorageViewModel by viewModels()
     override val binding by lazy { FragmentStorageBinding.inflate(layoutInflater) }

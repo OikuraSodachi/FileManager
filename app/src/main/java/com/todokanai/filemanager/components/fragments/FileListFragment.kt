@@ -5,7 +5,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.todokanai.filemanager.abstracts.ViewPagerFragment
+import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
@@ -15,7 +15,7 @@ import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : ViewPagerFragment() {
+class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
     override val binding by lazy { FragmentFileListBinding.inflate(layoutInflater) }
     private val viewModel: FileListViewModel by viewModels()

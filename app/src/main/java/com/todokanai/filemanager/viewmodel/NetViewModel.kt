@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NetViewModel @Inject constructor(
     private val dsRepo: DataStoreRepository,
-    val serverRepo:ServerInfoRepository,
+    val serverRepo: ServerInfoRepository,
     val module: NetFileModule
 ) : NetViewModelLogics() {
 

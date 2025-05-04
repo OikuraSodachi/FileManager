@@ -31,7 +31,7 @@ class ServerRecyclerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ServerItemHolder {
         val binding =
             ServerRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ServerItemHolder(binding, onDeleteServer,onItemClick)
+        return ServerItemHolder(binding, onDeleteServer, onItemClick)
     }
 
     override fun onBindViewHolder(holder: ServerItemHolder, position: Int) {

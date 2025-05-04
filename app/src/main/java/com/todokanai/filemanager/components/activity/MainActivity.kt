@@ -90,7 +90,7 @@ class MainActivity : MainActivityLogics() {
                 pagerAdapter.toNetFragment()
             }
             mainBottomButton.setOnClickListener {
-             //   pagerAdapter.toLoginFragment()
+                //   pagerAdapter.toLoginFragment()
             }
 
             mainViewPager.run {
