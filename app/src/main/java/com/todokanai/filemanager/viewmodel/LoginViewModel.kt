@@ -43,7 +43,7 @@ class LoginViewModel @Inject constructor(
             }
         }
 
-    fun onServerClick(server: ServerHolderItem) {
+    override fun onServerClick(server: ServerHolderItem) {
 
     }
 

@@ -3,9 +3,23 @@ package com.todokanai.filemanager.viewmodel.logics
 import androidx.lifecycle.ViewModel
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
+import com.todokanai.filemanager.data.dataclass.ServerHolderItem
 import kotlinx.coroutines.flow.Flow
 
 abstract class NetViewModelLogics : ViewModel() {
+
+    //---------
+    // LoginFragment part
+
+    protected abstract val serverListFlow: Flow<List<ServerHolderItem>>
+
+    abstract fun deleteServer(server: ServerHolderItem)
+
+    abstract fun onServerClick(server: ServerHolderItem)
+
+    abstract fun saveServerInfo(name: String, ip: String, id: String, password: String)
+
+    //-----------------------------------
 
     protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
     protected abstract val itemList: Flow<List<FileHolderItem>>

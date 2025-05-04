@@ -10,6 +10,8 @@ abstract class LoginViewModelLogics : ViewModel() {
 
     abstract fun deleteServer(server: ServerHolderItem)
 
+    abstract fun onServerClick(server: ServerHolderItem)
+
     abstract fun saveServerInfo(name: String, ip: String, id: String, password: String)
 
 }
