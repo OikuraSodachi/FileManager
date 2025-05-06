@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Environment
 import androidx.work.WorkManager
 import com.todokanai.filemanager.notifications.MyNotification
+import com.todokanai.filemanager.repository.NetUiRepository
+import com.todokanai.filemanager.repository.ServerInfoRepository
 import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.NetFileModule
 import dagger.Module
@@ -38,5 +40,10 @@ class Etc {
     @Provides
     fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
         return WorkManager.getInstance(context)
+    }
+
+    @Provides
+    fun provideNetUiRepository(netFileModule: NetFileModule,serverRepository:ServerInfoRepository): NetUiRepository {
+        return NetUiRepository(netFileModule,serverRepository)
     }
 }
