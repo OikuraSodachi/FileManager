@@ -70,19 +70,6 @@
 
             android:layout_weight="1" />
 
-        <LinearLayout
-            android:id="@+id/mainBottomBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/mainBottomButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="toLogin" />
-        </LinearLayout>
-
     </LinearLayout>
 
     <androidx.compose.ui.platform.ComposeView
