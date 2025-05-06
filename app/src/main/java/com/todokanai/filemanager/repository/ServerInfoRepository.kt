@@ -18,4 +18,6 @@ class ServerInfoRepository @Inject constructor(private val serverInfoDao: Server
     suspend fun deleteByIndex(no: Long) = serverInfoDao.deleteByIndex(no)
 
     suspend fun deleteAll() = serverInfoDao.deleteAll()
+
+    suspend fun getById(id: Long) = serverInfoDao.getServerById(id)
 }

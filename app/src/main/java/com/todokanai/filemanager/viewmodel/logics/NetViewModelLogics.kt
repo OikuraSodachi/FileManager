@@ -19,12 +19,19 @@ abstract class NetViewModelLogics : ViewModel() {
 
     abstract fun saveServerInfo(name: String, ip: String, id: String, password: String)
 
+    //
     //-----------------------------------
 
+    //------------------
+    //   Todo: 아마 abstract class 단계에서 완성시켜놔야 할듯
+
+    protected abstract val currentDirectory: Flow<String>
     protected abstract val dirTree: Flow<List<DirectoryHolderItem>>
     protected abstract val itemList: Flow<List<FileHolderItem>>
 
-    abstract fun login()
+    //
+    //----------
+
     abstract fun onItemClick(item: FileHolderItem)
     abstract fun onDirectoryClick(item: DirectoryHolderItem)
     abstract fun toParent()

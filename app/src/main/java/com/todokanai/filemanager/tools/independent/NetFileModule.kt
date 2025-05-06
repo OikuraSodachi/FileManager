@@ -13,13 +13,13 @@ class NetFileModule {
     private val ftpClient = FTPClient()
 
     suspend fun login(
-        server: String,
+        serverIp: String,
         username: String,
         password: String,
         port: Int
     ) = withContext(Dispatchers.Default) {
         ftpClient.run {
-            connect(server, port)
+            connect(serverIp, port)
             login(username, password)
             enterLocalPassiveMode() // Passive Mode 사용
         }
@@ -47,7 +47,7 @@ class NetFileModule {
     }
 
     suspend fun listFilesInFtpDirectory(
-        server: String,
+        serverIp: String,
         username: String,
         password: String,
         directory: String,
@@ -56,7 +56,7 @@ class NetFileModule {
         var result = emptyArray<FTPFile>()
         try {
             // FTP 서버 연결
-            login(server, username, password, port)
+            login(serverIp, username, password, port)
             result = ftpClient.listFiles(directory)
         } catch (ex: IOException) {
             ex.printStackTrace()

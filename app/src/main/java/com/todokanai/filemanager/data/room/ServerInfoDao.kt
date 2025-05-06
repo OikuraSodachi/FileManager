@@ -28,5 +28,5 @@ interface ServerInfoDao {
     suspend fun deleteAll()
 
     @Query("select * from room_server where `no`=:no")
-    fun getServerByIndex(no: Long): Flow<ServerInfo>
+    suspend fun getServerById(no: Long): ServerInfo
 }
