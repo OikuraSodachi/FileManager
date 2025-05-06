@@ -2,6 +2,7 @@ package com.todokanai.filemanager.viewmodel
 
 import android.content.Context
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
@@ -28,7 +29,7 @@ import javax.inject.Inject
 class FileListViewModel @Inject constructor(
     private val dsRepo: DataStoreRepository,
     val module: FileModule
-) : FileListViewModelLogics() {
+) : ViewModel(), FileListViewModelLogics {
 
     private val _uiState = MutableStateFlow(FileListUiState())
     val uiState = _uiState.asStateFlow()

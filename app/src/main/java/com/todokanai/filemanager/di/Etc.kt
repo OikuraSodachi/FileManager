@@ -43,7 +43,10 @@ class Etc {
     }
 
     @Provides
-    fun provideNetUiRepository(netFileModule: NetFileModule,serverRepository:ServerInfoRepository): NetUiRepository {
-        return NetUiRepository(netFileModule,serverRepository)
+    fun provideNetUiRepository(
+        netFileModule: NetFileModule,
+        serverRepository: ServerInfoRepository
+    ): NetUiRepository {
+        return NetUiRepository(netFileModule, serverRepository)
     }
 }
