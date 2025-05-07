@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FileListViewModel @Inject constructor(
-    val uiRepo: FileListUiRepository,
+    private val uiRepo: FileListUiRepository,
     val module: FileModule
 ) : ViewModel(), FileListViewModelLogics {
 
