@@ -8,6 +8,7 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import java.io.IOException
 
+/** Todo: FileModuleLogics 적용하기 **/
 class NetFileModule {
 
     private val ftpClient = FTPClient()
