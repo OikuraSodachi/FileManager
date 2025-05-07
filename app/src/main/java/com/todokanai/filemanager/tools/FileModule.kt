@@ -1,41 +1,27 @@
-package com.todokanai.filemanager.tools.independent
+package com.todokanai.filemanager.tools
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.todokanai.filemanager.abstracts.FileModuleLogics
 import kotlinx.coroutines.flow.map
 import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
-class FileModule(defaultPath: String) {
+class FileModule(defaultPath: String) : FileModuleLogics<File>(defaultPath) {
 
-    /** 현재 보고있는 Directory
-     *
-     *  Primary Key(?) **/
-    private val _currentPath = MutableStateFlow<String>(defaultPath)
-    val currentPath: StateFlow<String>
-        get() = _currentPath
-
-    /** array of files to show **/
-    val listFiles = currentPath.map {
-        File(it).listFiles()?.map {
-            it.absolutePath
-        }?.toTypedArray() ?: emptyArray()
-    }
-
-    val dirTree = currentPath.map {
+    val dirTree = currentDirectory.map {
         File(it).dirTree().map {
             it.absolutePath
         }
     }
 
     /** whether currentPath is Accessible **/
-    val notAccessible = currentPath.map { File(it).listFiles() == null }
+    val notAccessible = currentDirectory.map { !isDirectoryValid(it) }
 
-    /** setter for currentPath **/
-    fun updateCurrentPath(directory: String) {
-        if (isAccessible_td(File(directory))) {        // 접근 가능여부 체크
-            _currentPath.value = directory
-        }
+    override suspend fun getListFiles(directory: String): Array<File> {
+        return File(directory).listFiles() ?: emptyArray()
+    }
+
+    override suspend fun isDirectoryValid(directory: String): Boolean {
+        return File(directory).listFiles() != null
     }
 
 //    /** file.isDirectory == true일 경우, currentPath 값을 update

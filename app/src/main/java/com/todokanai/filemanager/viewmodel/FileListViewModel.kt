@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.FileListUiRepository
-import com.todokanai.filemanager.tools.independent.FileModule
+import com.todokanai.filemanager.tools.FileModule
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
@@ -53,7 +53,7 @@ class FileListViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            module.currentPath.withPrevious_td().collect {
+            module.currentDirectory.withPrevious_td().collect {
                 _uiState.update { currentState ->
                     currentState.copy(lastKnownDirectory = it)
                 }
@@ -95,11 +95,13 @@ class FileListViewModel @Inject constructor(
     }
 
     override fun setCurrentDirectory(directory: String) {
-        module.updateCurrentPath(directory)
+        viewModelScope.launch {
+            module.setCurrentDirectory(directory)
+        }
     }
 
     fun onBackPressed() {
-        val parent = File(module.currentPath.value).parentFile
+        val parent = File(module.currentDirectory.value).parentFile
         parent?.let {
             setCurrentDirectory(it.absolutePath)
         }

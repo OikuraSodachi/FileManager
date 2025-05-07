@@ -9,7 +9,7 @@ import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.repository.FileListUiRepository
 import com.todokanai.filemanager.repository.NetUiRepository
 import com.todokanai.filemanager.repository.ServerInfoRepository
-import com.todokanai.filemanager.tools.independent.FileModule
+import com.todokanai.filemanager.tools.FileModule
 import com.todokanai.filemanager.tools.independent.NetFileModule
 import dagger.Module
 import dagger.Provides
