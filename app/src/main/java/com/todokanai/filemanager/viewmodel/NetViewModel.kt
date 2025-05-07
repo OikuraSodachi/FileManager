@@ -89,10 +89,10 @@ class NetViewModel @Inject constructor(
     }
 
     override fun toParent() {
-        val parent = getParentAbsolutePath_td(module.currentDirectory.value)
-        parent?.let {
-            viewModelScope.launch {
-                module.setCurrentDirectory(directory = it)
+        viewModelScope.launch {
+            val parent = getParentAbsolutePath_td(module.currentDirectory.value)
+            parent?.let {
+                module.setCurrentDirectory(directory = parent)
             }
         }
     }
