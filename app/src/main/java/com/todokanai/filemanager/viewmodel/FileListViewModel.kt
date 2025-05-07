@@ -6,19 +6,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
-import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.repository.FileListUiRepository
 import com.todokanai.filemanager.tools.independent.FileModule
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
-import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,7 +23,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FileListViewModel @Inject constructor(
-    private val dsRepo: DataStoreRepository,
+    val uiRepo: FileListUiRepository,
     val module: FileModule
 ) : ViewModel(), FileListViewModelLogics {
 
@@ -66,19 +62,16 @@ class FileListViewModel @Inject constructor(
     }
 
     override val fileHolderList
-        get() = combine(
-            module.listFiles,
-            dsRepo.sortBy
-        ) { listFiles, mode ->
-            sortedFileList_td(listFiles.map { File(it) }.toTypedArray(), mode).map {
+        get() = uiRepo.listFiles.map { list ->
+            list.map {
                 FileHolderItem.fromFile(it)
             }
-        }.flowOn(Dispatchers.IO)
+        }
 
     override val dirTree
-        get() = module.dirTree.map { tree ->
+        get() = uiRepo.dirTree.map { tree ->
             tree.map {
-                DirectoryHolderItem.fromFile(File(it))
+                DirectoryHolderItem.fromFile(it)
             }
         }
 

@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Environment
 import androidx.work.WorkManager
 import com.todokanai.filemanager.notifications.MyNotification
+import com.todokanai.filemanager.repository.DataStoreRepository
+import com.todokanai.filemanager.repository.FileListUiRepository
 import com.todokanai.filemanager.repository.NetUiRepository
 import com.todokanai.filemanager.repository.ServerInfoRepository
 import com.todokanai.filemanager.tools.independent.FileModule
@@ -48,5 +50,13 @@ class Etc {
         serverRepository: ServerInfoRepository
     ): NetUiRepository {
         return NetUiRepository(netFileModule, serverRepository)
+    }
+
+    @Provides
+    fun provideFileListUiRepository(
+        fileModule: FileModule,
+        dataStoreRepository: DataStoreRepository
+    ): FileListUiRepository {
+        return FileListUiRepository(fileModule, dataStoreRepository)
     }
 }

@@ -32,10 +32,10 @@ class NetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            uiRepo.dirTree.collect {
+            uiRepo.currentDirectory.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        dirTree = it
+                        dirTree = convertToDirTree(it)
                     )
                 }
             }
@@ -44,7 +44,7 @@ class NetViewModel @Inject constructor(
             uiRepo.itemList.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        itemList = it
+                        itemList = it.map { FileHolderItem.fromFTPFile(it.first, it.second) }
                     )
                 }
             }
@@ -52,7 +52,14 @@ class NetViewModel @Inject constructor(
         viewModelScope.launch {
             uiRepo.serverListFlow.collect {
                 _uiState.update { currentState ->
-                    currentState.copy(serverList = it)
+                    currentState.copy(
+                        serverList = it.map {
+                            ServerHolderItem(
+                                name = it.name,
+                                id = it.no!!  // Todo: NPE 발생 가능성 확인 필요
+                            )
+                        }
+                    )
                 }
             }
         }
@@ -121,6 +128,34 @@ class NetViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             serverRepo.insert(ServerInfo(name, ip, id, password))
         }
+    }
+
+    private fun convertToDirTree(absolutePath: String): List<DirectoryHolderItem> {
+        val result = mutableListOf<DirectoryHolderItem>()
+        var target = absolutePath
+        while (target != "") {
+            result.add(
+                DirectoryHolderItem(
+                    name = getLastSegment(target),
+                    absolutePath = target
+                )
+            )
+            target = testRegex(target)
+        }
+        result.reverse()
+        return result
+    }
+
+    private fun testRegex(path: String): String {
+        val regex = """(.*)/[^/]*$""".toRegex()
+        val matchResult = regex.find(path)
+        return matchResult?.groups?.get(1)?.value ?: ""
+    }
+
+    private fun getLastSegment(path: String): String {
+        val regex = """[^/]*$""".toRegex()
+        val matchResult = regex.find(path)
+        return matchResult?.value ?: ""
     }
 }
 
