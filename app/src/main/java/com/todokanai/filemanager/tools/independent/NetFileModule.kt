@@ -47,22 +47,9 @@ class NetFileModule {
         }
     }
 
-    suspend fun listFilesInFtpDirectory(
-        serverIp: String,
-        username: String,
-        password: String,
-        directory: String,
-        port: Int = 21
-    ): Array<FTPFile> = withContext(Dispatchers.Default) {
-        var result = emptyArray<FTPFile>()
-        try {
-            // FTP 서버 연결
-            login(serverIp, username, password, port)
-            result = ftpClient.listFiles(directory)
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-        }
-        return@withContext result
+    /** @throws IOException **/
+    suspend fun listFilesInFtpDirectory(directory: String): Array<FTPFile> = withContext(Dispatchers.Default) {
+        return@withContext ftpClient.listFiles(directory)
     }
 
     suspend fun downloadFTPFiles(ftpFiles: Array<FTPFile>) = withContext(Dispatchers.IO) {
