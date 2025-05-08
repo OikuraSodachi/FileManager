@@ -26,7 +26,7 @@ class NetUiRepository @Inject constructor(
         currentDirectory,
         currentServer
     ) { directory, server ->
-        if (server != null) {
+        if (server != null) {       // 로그인 여부 체크
             netModule.listFilesInFtpDirectory(directory).map {
                 Pair(it, directory)
             }
