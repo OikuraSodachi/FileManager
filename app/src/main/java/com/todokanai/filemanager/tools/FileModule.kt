@@ -1,6 +1,7 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.FileModuleLogics
+import com.todokanai.filemanager.tools.independent.dirTree_td
 import kotlinx.coroutines.flow.map
 import java.io.File
 
@@ -8,7 +9,7 @@ import java.io.File
 class FileModule(defaultPath: String) : FileModuleLogics<File>(defaultPath) {
 
     val dirTree = currentDirectory.map {
-        File(it).dirTree().map {
+        dirTree_td(File(it)).map {
             it.absolutePath
         }
     }
@@ -41,23 +42,4 @@ class FileModule(defaultPath: String) : FileModuleLogics<File>(defaultPath) {
 //            ) // Todo: appContext 써도 무방한지?
 //        }
 //    }
-
-//    fun onBackPressedCallback() {
-//        File(currentPath.value).parentFile?.let {
-//            updateCurrentPath(it.absolutePath)
-//        }
-//    }
-
-    /** Todokanai
-     *
-     *  == File.dirTree_td() **/
-    private fun File.dirTree(): List<File> {
-        val result = mutableListOf<File>()
-        var now = this
-        while (now.parentFile != null) {
-            result.add(now)
-            now = now.parentFile!!
-        }
-        return result.reversed()
-    }
 }
