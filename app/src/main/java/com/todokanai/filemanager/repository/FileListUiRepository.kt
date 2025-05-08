@@ -17,10 +17,10 @@ class FileListUiRepository @Inject constructor(
         module.currentDirectory,
         dsRepo.sortBy
     ) { directory, mode ->
-       // directory.map {
-            sortedFileList_td( module.getListFiles(directory),mode)
-      //  }
- //       sortedFileList_td(listFiles, mode)
+        // directory.map {
+        sortedFileList_td(module.getListFiles(directory), mode)
+        //  }
+        //       sortedFileList_td(listFiles, mode)
     }
 
     val dirTree = module.dirTree.map { tree ->

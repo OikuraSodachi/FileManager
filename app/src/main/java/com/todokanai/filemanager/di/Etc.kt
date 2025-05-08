@@ -31,7 +31,7 @@ class Etc {
     @Singleton
     @Provides
     fun provideNetFileModule(): NetFileModule {
-        return NetFileModule()
+        return NetFileModule(defaultPath = "")
     }
 
     @Provides

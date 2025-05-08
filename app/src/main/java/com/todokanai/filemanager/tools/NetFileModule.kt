@@ -6,8 +6,8 @@ import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 
-/** Todo: FileModuleLogics 적용하기, Dispatchers 주입식으로 바꾸기 **/
-class NetFileModule : FileModuleLogics<FTPFile>("") {
+/** Todo: Dispatchers 주입식으로 바꾸기...? **/
+class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath) {
 
     private val ftpClient = FTPClient()
 
@@ -24,22 +24,24 @@ class NetFileModule : FileModuleLogics<FTPFile>("") {
         }
     }
 
-    /** @throws IOException **/
-    suspend fun listFilesInFtpDirectory(directory: String): Array<FTPFile> = withContext(Dispatchers.Default) {
-        return@withContext ftpClient.listFiles(directory)
-    }
+//    /** @throws IOException **/
+//    suspend fun listFilesInFtpDirectory(directory: String): Array<FTPFile> = withContext(Dispatchers.Default) {
+//        return@withContext ftpClient.listFiles(directory)
+//    }
 
-    override suspend fun getListFiles(directory: String): Array<FTPFile> {
-        return ftpClient.listFiles(directory)
-    }
-
-    override suspend fun isDirectoryValid(directory: String): Boolean {
-        try {
-            ftpClient.mlistFile(directory)
-            return true
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
+    override suspend fun getListFiles(directory: String): Array<FTPFile> =
+        withContext(Dispatchers.Default) {
+            return@withContext ftpClient.listFiles(directory)
         }
-    }
+
+    override suspend fun isDirectoryValid(directory: String): Boolean =
+        withContext(Dispatchers.Default) {
+            try {
+                ftpClient.mlistFile(directory)
+                return@withContext true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@withContext false
+            }
+        }
 }
