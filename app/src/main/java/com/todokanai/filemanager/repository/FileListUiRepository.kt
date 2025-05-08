@@ -14,10 +14,13 @@ class FileListUiRepository @Inject constructor(
 
     /** 경로 내 File 목록 **/
     val listFiles = combine(
-        module.listFilesFlow,
+        module.currentDirectory,
         dsRepo.sortBy
-    ) { listFiles, mode ->
-        sortedFileList_td(listFiles, mode)
+    ) { directory, mode ->
+       // directory.map {
+            sortedFileList_td( module.getListFiles(directory),mode)
+      //  }
+ //       sortedFileList_td(listFiles, mode)
     }
 
     val dirTree = module.dirTree.map { tree ->

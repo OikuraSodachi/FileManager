@@ -35,13 +35,6 @@ class NetUiRepository @Inject constructor(
         }
     }
 
-//    val itemList = currentDirectory.map{ directory ->
-//        netModule.listFilesInFtpDirectory(directory).map {
-//              Pair(it, directory)
-//        }
-//    }
-
-
     fun setCurrentServer(server: ServerInfo) {
         _currentServer.value = server
     }
