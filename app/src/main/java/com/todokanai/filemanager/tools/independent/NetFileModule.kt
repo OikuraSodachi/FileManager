@@ -1,14 +1,13 @@
 package com.todokanai.filemanager.tools.independent
 
+import com.todokanai.filemanager.abstracts.FileModuleLogics
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 
 /** Todo: FileModuleLogics 적용하기, Dispatchers 주입식으로 바꾸기 **/
-class NetFileModule {
+class NetFileModule : FileModuleLogics<FTPFile>("") {
 
     private val ftpClient = FTPClient()
 
@@ -25,18 +24,16 @@ class NetFileModule {
         }
     }
 
-    private val _currentDirectory = MutableStateFlow<String>("")
-    val currentDirectory: StateFlow<String>
-        get() = _currentDirectory
-
-    suspend fun setCurrentDirectory(directory: String) = withContext(Dispatchers.Default) {
-        if (isFileValid(directory)) {
-            _currentDirectory.value = directory
-        }
+    /** @throws IOException **/
+    suspend fun listFilesInFtpDirectory(directory: String): Array<FTPFile> = withContext(Dispatchers.Default) {
+        return@withContext ftpClient.listFiles(directory)
     }
 
-    /** @return true if file is valid. else false **/
-    private fun isFileValid(directory: String): Boolean {
+    override suspend fun getListFiles(directory: String): Array<FTPFile> {
+        return ftpClient.listFiles(directory)
+    }
+
+    override suspend fun isDirectoryValid(directory: String): Boolean {
         try {
             ftpClient.mlistFile(directory)
             return true
@@ -44,13 +41,5 @@ class NetFileModule {
             e.printStackTrace()
             return false
         }
-    }
-
-    /** @throws IOException **/
-    suspend fun listFilesInFtpDirectory(directory: String): Array<FTPFile> = withContext(Dispatchers.Default) {
-        return@withContext ftpClient.listFiles(directory)
-    }
-
-    suspend fun downloadFTPFiles(ftpFiles: Array<FTPFile>) = withContext(Dispatchers.IO) {
     }
 }
