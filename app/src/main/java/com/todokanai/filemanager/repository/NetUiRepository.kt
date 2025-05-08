@@ -5,7 +5,7 @@ import com.todokanai.filemanager.tools.independent.NetFileModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
 class NetUiRepository @Inject constructor(
@@ -22,24 +22,24 @@ class NetUiRepository @Inject constructor(
     val currentDirectory = netModule.currentDirectory
     val serverListFlow = serverRepo.serverInfoFlow
 
-//    val itemList = combine(
-//        currentDirectory,
-//        currentServer
-//    ) { directory, server ->
-//        if (server != null) {
-//            netModule.listFilesInFtpDirectory(directory).map {
-//                Pair(it, directory)
-//            }
-//        } else {
-//            emptyList()
-//        }
-//    }
-
-    val itemList = currentDirectory.map{ directory ->
-        netModule.listFilesInFtpDirectory(directory).map {
-              Pair(it, directory)
+    val itemList = combine(
+        currentDirectory,
+        currentServer
+    ) { directory, server ->
+        if (server != null) {
+            netModule.listFilesInFtpDirectory(directory).map {
+                Pair(it, directory)
+            }
+        } else {
+            emptyList()
         }
     }
+
+//    val itemList = currentDirectory.map{ directory ->
+//        netModule.listFilesInFtpDirectory(directory).map {
+//              Pair(it, directory)
+//        }
+//    }
 
 
     fun setCurrentServer(server: ServerInfo) {

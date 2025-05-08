@@ -6,9 +6,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
-import java.io.IOException
 
-/** Todo: FileModuleLogics 적용하기 **/
+/** Todo: FileModuleLogics 적용하기, Dispatchers 주입식으로 바꾸기 **/
 class NetFileModule {
 
     private val ftpClient = FTPClient()
