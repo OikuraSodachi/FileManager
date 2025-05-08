@@ -8,7 +8,7 @@ import com.todokanai.filemanager.data.dataclass.ServerHolderItem
 import com.todokanai.filemanager.data.room.ServerInfo
 import com.todokanai.filemanager.repository.NetUiRepository
 import com.todokanai.filemanager.repository.ServerInfoRepository
-import com.todokanai.filemanager.tools.independent.NetFileModule
+import com.todokanai.filemanager.tools.NetFileModule
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel

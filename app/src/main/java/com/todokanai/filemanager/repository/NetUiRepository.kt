@@ -1,7 +1,7 @@
 package com.todokanai.filemanager.repository
 
 import com.todokanai.filemanager.data.room.ServerInfo
-import com.todokanai.filemanager.tools.independent.NetFileModule
+import com.todokanai.filemanager.tools.NetFileModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

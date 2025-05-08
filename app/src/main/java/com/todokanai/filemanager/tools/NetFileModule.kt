@@ -1,4 +1,4 @@
-package com.todokanai.filemanager.tools.independent
+package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.FileModuleLogics
 import kotlinx.coroutines.Dispatchers
