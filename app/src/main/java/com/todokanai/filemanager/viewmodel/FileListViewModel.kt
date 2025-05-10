@@ -15,7 +15,6 @@ import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -32,48 +31,49 @@ class FileListViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            fileHolderList.collect {
+            uiRepo.listFiles.collect {
                 _uiState.update { currentState ->
-                    currentState.copy(listFiles = it, emptyDirectoryText = it.isEmpty())
+                    currentState.copy(
+                        listFiles = it.map {
+                            FileHolderItem.fromFile(it)
+                        }
+                    )
                 }
             }
         }
         viewModelScope.launch {
-            dirTree.collect {
+            uiRepo.dirTree.collect {
                 _uiState.update { currentState ->
-                    currentState.copy(dirTree = it)
+                    currentState.copy(
+                        dirTree = it.map {
+                            DirectoryHolderItem.fromFile(it)
+                        }
+                    )
                 }
             }
         }
         viewModelScope.launch {
-            module.notAccessible.collect {
+            uiRepo.emptyDirectoryText.collect {
+                _uiState.update { currentState ->
+                    currentState.copy(emptyDirectoryText = it)
+                }
+            }
+        }
+        viewModelScope.launch {
+            uiRepo.notAccessible.collect {
                 _uiState.update { currentState ->
                     currentState.copy(accessFailText = it)
                 }
             }
         }
         viewModelScope.launch {
-            module.currentDirectory.withPrevious_td().collect {
+            uiRepo.currentDirectory.withPrevious_td().collect {
                 _uiState.update { currentState ->
                     currentState.copy(lastKnownDirectory = it)
                 }
             }
         }
     }
-
-    override val fileHolderList
-        get() = uiRepo.listFiles.map { list ->
-            list.map {
-                FileHolderItem.fromFile(it)
-            }
-        }
-
-    override val dirTree
-        get() = uiRepo.dirTree.map { tree ->
-            tree.map {
-                DirectoryHolderItem.fromFile(it)
-            }
-        }
 
     override fun onDirectoryClick(item: DirectoryHolderItem) {
         setCurrentDirectory(item.absolutePath)
