@@ -17,20 +17,10 @@ class NetUiRepository @Inject constructor(
     val currentServer: Flow<ServerInfo?> = _currentServer.asStateFlow()
 
     private val _loggedIn = MutableStateFlow(false)
-
-
-    fun setCurrentServer(server: ServerInfo) {
-        _currentServer.value = server
-    }
-
-    fun setLoggedIn(value: Boolean) {
-        _loggedIn.value = value
-    }
-
-    //-----------------------------
-    // ftp 접속 이후 파트
+    val loggedIn = _loggedIn.asStateFlow()
 
     val currentDirectory = netModule.currentDirectory
+    val serverListFlow = serverRepo.serverInfoFlow
 
     val itemList = combine(
         currentDirectory,
@@ -43,6 +33,14 @@ class NetUiRepository @Inject constructor(
         } else {
             emptyList()
         }
+    }
+
+    fun setCurrentServer(server: ServerInfo) {
+        _currentServer.value = server
+    }
+
+    fun setLoggedIn(value: Boolean) {
+        _loggedIn.value = value
     }
 
 }

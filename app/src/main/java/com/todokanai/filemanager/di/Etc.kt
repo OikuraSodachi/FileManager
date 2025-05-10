@@ -7,7 +7,6 @@ import androidx.work.WorkManager
 import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.repository.FileListUiRepository
-import com.todokanai.filemanager.repository.LoginUiRepository
 import com.todokanai.filemanager.repository.NetUiRepository
 import com.todokanai.filemanager.repository.ServerInfoRepository
 import com.todokanai.filemanager.tools.FileModule
@@ -60,11 +59,4 @@ class Etc {
     ): FileListUiRepository {
         return FileListUiRepository(fileModule, dataStoreRepository)
     }
-    @Provides
-    fun provideLoginUiRepository(
-        serverRepository: ServerInfoRepository
-    ): LoginUiRepository {
-        return LoginUiRepository(serverRepository)
-    }
-
 }
