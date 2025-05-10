@@ -1,23 +1,23 @@
 package com.todokanai.filemanager.repository
 
 import com.todokanai.filemanager.data.room.ServerInfo
-import com.todokanai.filemanager.tools.NetFileModule
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import javax.inject.Inject
 
-class NetUiRepository @Inject constructor(
-    val netModule: NetFileModule,
-    val serverRepo: ServerInfoRepository
+class LoginUiRepository @Inject constructor(
+    val serverRepo:ServerInfoRepository
 ) {
+
     /** Todo: 이 값이 UiRepository 에 있는 게 적절한지? (UI 로 직접 collect 하지 않는 상황임 )**/
     private val _currentServer = MutableStateFlow<ServerInfo?>(null)
     val currentServer: Flow<ServerInfo?> = _currentServer.asStateFlow()
 
     private val _loggedIn = MutableStateFlow(false)
+    val loggedIn = _loggedIn.asStateFlow()
 
+    val serverListFlow = serverRepo.serverInfoFlow
 
     fun setCurrentServer(server: ServerInfo) {
         _currentServer.value = server
@@ -25,24 +25,6 @@ class NetUiRepository @Inject constructor(
 
     fun setLoggedIn(value: Boolean) {
         _loggedIn.value = value
-    }
-
-    //-----------------------------
-    // ftp 접속 이후 파트
-
-    val currentDirectory = netModule.currentDirectory
-
-    val itemList = combine(
-        currentDirectory,
-        currentServer
-    ) { directory, server ->
-        if (server != null) {       // 로그인 여부 체크
-            netModule.getListFiles(directory).map {
-                Pair(it, directory)
-            }
-        } else {
-            emptyList()
-        }
     }
 
 }

@@ -8,6 +8,7 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import com.todokanai.filemanager.abstactlogics.MainActivityLogics
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.components.fragments.FileListFragment
+import com.todokanai.filemanager.components.fragments.LoginFragment
 import com.todokanai.filemanager.components.fragments.NetFragment
 import com.todokanai.filemanager.components.fragments.StorageFragment
 import com.todokanai.filemanager.compose.MenuBtn
@@ -29,7 +30,8 @@ class MainActivity : MainActivityLogics() {
         listOf(
             StorageFragment(pagerAdapter),
             FileListFragment(pagerAdapter),
-            NetFragment(pagerAdapter)
+            NetFragment(pagerAdapter),
+            LoginFragment(pagerAdapter)
         )
     }
 
@@ -87,7 +89,7 @@ class MainActivity : MainActivityLogics() {
                 pagerAdapter.toStorageFragment()
             }
             netButton.setOnClickListener {
-                pagerAdapter.toNetFragment()
+                pagerAdapter.toNetFiles()
             }
 
             mainViewPager.run {

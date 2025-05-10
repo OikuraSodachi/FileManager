@@ -49,27 +49,6 @@ class NetViewModel @Inject constructor(
                 }
             }
         }
-        viewModelScope.launch {
-            uiRepo.serverListFlow.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        serverList = it.map {
-                            ServerHolderItem(
-                                name = it.name,
-                                id = it.no!!  // Todo: NPE 발생 가능성 확인 필요
-                            )
-                        }
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.loggedIn.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(loggedIn = it)
-                }
-            }
-        }
     }
 
     override fun onItemClick(item: FileHolderItem) {
@@ -111,10 +90,10 @@ class NetViewModel @Inject constructor(
                 password = temp.password,
                 port = 21
             )
-            uiRepo.run {
-                setCurrentServer(serverRepo.getById(server.id))
-                setLoggedIn(true)
-            }
+//            uiRepo.run {
+//                setCurrentServer(serverRepo.getById(server.id))
+//                setLoggedIn(true)
+//            }
         }
     }
 
@@ -162,6 +141,6 @@ class NetViewModel @Inject constructor(
 data class NetUiState(
     val dirTree: List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList(),
-    val serverList: List<ServerHolderItem> = emptyList(),
-    val loggedIn: Boolean = false
+    //val serverList: List<ServerHolderItem> = emptyList(),
+    //val loggedIn: Boolean = false
 )
