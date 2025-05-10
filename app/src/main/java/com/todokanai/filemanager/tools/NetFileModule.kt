@@ -1,7 +1,11 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.FileModuleLogics
+import com.todokanai.filemanager.data.room.ServerInfo
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
@@ -11,17 +15,26 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
 
     private val ftpClient = FTPClient()
 
+    private val _currentServer = MutableStateFlow<ServerInfo?>(null)
+    val currentServer: Flow<ServerInfo?> = _currentServer.asStateFlow()
+
+    fun setCurrentServer(server: ServerInfo) {
+        _currentServer.value = server
+    }
+
     suspend fun login(
         serverIp: String,
         username: String,
         password: String,
         port: Int
-    ) = withContext(Dispatchers.Default) {
+    ) : Boolean = withContext(Dispatchers.Default) {
+        var result: Boolean
         ftpClient.run {
             connect(serverIp, port)
-            login(username, password)
+            result = login(username, password)
             enterLocalPassiveMode() // Passive Mode 사용
         }
+        return@withContext result
     }
 
 //    /** @throws IOException **/

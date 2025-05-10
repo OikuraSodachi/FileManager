@@ -14,6 +14,7 @@ import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -64,13 +65,25 @@ class NetViewModel @Inject constructor(
             }
         }
         viewModelScope.launch {
-            uiRepo.loggedIn.collect {
+            loggedIn.collect {
                 _uiState.update { currentState ->
                     currentState.copy(loggedIn = it)
                 }
             }
         }
     }
+
+    private val _loggedIn = MutableStateFlow(false)
+    val loggedIn = _loggedIn.asStateFlow()
+
+    fun setLoggedIn(value: Boolean) {
+        _loggedIn.value = value
+    }
+
+    private val _currentServer = MutableStateFlow<ServerInfo?>(null)
+    val currentServer: Flow<ServerInfo?> = _currentServer.asStateFlow()
+
+
 
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
@@ -91,7 +104,9 @@ class NetViewModel @Inject constructor(
     override fun toParent() {
         viewModelScope.launch {
             val parent = getParentAbsolutePath_td(module.currentDirectory.value)
-            parent?.let {
+            if(parent==null){
+                logout()
+            }else{
                 module.setCurrentDirectory(directory = parent)
             }
         }
@@ -105,15 +120,19 @@ class NetViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             val temp = serverRepo.getById(server.id)
 
-            module.login(
-                serverIp = temp.ip,
-                username = temp.id,
-                password = temp.password,
-                port = 21
-            )
-            uiRepo.run {
-                setCurrentServer(serverRepo.getById(server.id))
+            val result =
+                module.login(
+                    serverIp = temp.ip,
+                    username = temp.id,
+                    password = temp.password,
+                    port = 21
+                )
+            if(result) {
                 setLoggedIn(true)
+                uiRepo.run {
+                    setCurrentServer(serverRepo.getById(server.id))
+                  //  setLoggedIn(true)
+                }
             }
         }
     }
@@ -128,6 +147,10 @@ class NetViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             serverRepo.insert(ServerInfo(name, ip, id, password))
         }
+    }
+
+    fun logout(){
+        println("logout")
     }
 
     private fun convertToDirTree(absolutePath: String): List<DirectoryHolderItem> {
