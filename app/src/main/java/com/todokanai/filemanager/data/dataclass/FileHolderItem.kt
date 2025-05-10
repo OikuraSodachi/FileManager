@@ -5,7 +5,7 @@ import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import org.apache.commons.net.ftp.FTPFile
 import java.io.File
 
-/** 주의: data layer 에서 이 class 를 사용하지 말 것 **/
+/** File Item 을 나타내는 View 를 위한 data class. data layer 에서 사용하지 말 것. **/
 data class FileHolderItem(
     val absolutePath: String,
     val name: String,

@@ -3,9 +3,9 @@ package com.todokanai.filemanager.data.dataclass
 import org.apache.commons.net.ftp.FTPFile
 import java.io.File
 
+/** FileTree 를 나타내는 View 를 위한 data class. data layer 에서 사용하지 말 것. **/
 data class DirectoryHolderItem(
     val name: String,
-    /** 대응하는 File 을 특정할 수 있어야 함 **/
     val absolutePath: String
 ) {
 
