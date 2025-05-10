@@ -2,6 +2,7 @@ package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.FileModuleLogics
 import com.todokanai.filemanager.data.room.ServerInfo
+import com.todokanai.filemanager.tools.independent.loginToFTPServer_td
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,9 +15,7 @@ import org.apache.commons.net.ftp.FTPFile
 class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath) {
 
     private val ftpClient = FTPClient()
-
     private val currentServer = MutableStateFlow<ServerInfo?>(null)
-
     private val _loggedIn = MutableStateFlow(false)
     val loggedIn = _loggedIn.asStateFlow()
 
@@ -38,8 +37,9 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
         }
     }
 
-    suspend fun loginWrapper(serverInfo: ServerInfo) {
-        val result = login(
+    fun login(serverInfo: ServerInfo) {
+        val result = loginToFTPServer_td(
+            client = ftpClient,
             serverIp = serverInfo.ip,
             username = serverInfo.id,
             password = serverInfo.password,
@@ -51,27 +51,6 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
             setLoggedIn(true)
         }               // 로그인 성공했을 경우 currentServer, loggedIn 값 변경.
     }
-
-    /** @return true if login is successful. else false**/
-    suspend fun login(
-        serverIp: String,
-        username: String,
-        password: String,
-        port: Int
-    ): Boolean = withContext(Dispatchers.Default) {
-        var result: Boolean
-        ftpClient.run {
-            connect(serverIp, port)
-            result = login(username, password)
-            enterLocalPassiveMode() // Passive Mode 사용
-        }
-        return@withContext result
-    }
-
-//    /** @throws IOException **/
-//    suspend fun listFilesInFtpDirectory(directory: String): Array<FTPFile> = withContext(Dispatchers.Default) {
-//        return@withContext ftpClient.listFiles(directory)
-//    }
 
     override suspend fun getListFiles(directory: String): Array<FTPFile> =
         withContext(Dispatchers.Default) {

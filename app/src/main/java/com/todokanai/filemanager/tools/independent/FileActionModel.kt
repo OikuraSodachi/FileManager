@@ -409,3 +409,21 @@ fun listFilesInFtpDirectory_td(
     }
     return result
 }
+
+/** @param client FTPClient to Login with
+ * @return true if login is successful. else false **/
+fun loginToFTPServer_td(
+    client:FTPClient,
+    serverIp: String,
+    username: String,
+    password: String,
+    port: Int
+): Boolean {
+    var result: Boolean
+    client.run {
+        connect(serverIp, port)
+        result = login(username, password)
+        enterLocalPassiveMode() // Passive Mode 사용
+    }
+    return result
+}

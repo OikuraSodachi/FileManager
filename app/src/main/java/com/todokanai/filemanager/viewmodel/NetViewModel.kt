@@ -103,7 +103,7 @@ class NetViewModel @Inject constructor(
 
     override fun onServerClick(server: ServerHolderItem) {
         viewModelScope.launch(Dispatchers.Default) {
-            module.loginWrapper(serverRepo.getById(id = server.id))
+            module.login(serverRepo.getById(id = server.id))
         }
     }
 
