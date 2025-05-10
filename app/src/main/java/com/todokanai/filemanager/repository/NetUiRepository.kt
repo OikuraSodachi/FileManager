@@ -20,7 +20,7 @@ class NetUiRepository @Inject constructor(
     val itemList = netModule.itemList
 
     /** absolutePath 의 tree **/
-    private fun absolutePathTree(absolutePath:String):List<String>{
+    private fun absolutePathTree(absolutePath: String): List<String> {
         val result = mutableListOf<String>()
         var target = absolutePath
         while (target != "") {

@@ -44,7 +44,7 @@ class NetViewModel @Inject constructor(
             uiRepo.itemList.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        itemList = it.map{
+                        itemList = it.map {
                             FileHolderItem.fromFTPFile(it.first, it.second)
                         }
                     )
@@ -55,7 +55,7 @@ class NetViewModel @Inject constructor(
             uiRepo.serverListFlow.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        serverList = it.map{
+                        serverList = it.map {
                             ServerHolderItem(it.name, it.no!!) // Todo: NPE 발생 가능성 확인 필요
                         }
                     )
@@ -91,24 +91,19 @@ class NetViewModel @Inject constructor(
 
     override fun toParent() {
         viewModelScope.launch {
-            val parent = getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
-            if(parent==null){
+            val parent =
+                getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
+            if (parent == null) {
                 logout()
-            }else{
+            } else {
                 module.setCurrentDirectory(directory = parent)
             }
         }
     }
 
-//    fun startDownload(targetDirectory: File, targetFiles: Array<FileHolderItem>) {
-//
-//    }
-
     override fun onServerClick(server: ServerHolderItem) {
         viewModelScope.launch(Dispatchers.Default) {
-            val temp = serverRepo.getById(id = server.id)
-            println("temp: ${temp}")
-            module.loginWrapper(temp)
+            module.loginWrapper(serverRepo.getById(id = server.id))
         }
     }
 
@@ -124,7 +119,7 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    fun logout(){
+    fun logout() {
         // Todo: logout 동작
     }
 }
@@ -133,5 +128,5 @@ data class NetUiState(
     val dirTree: List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList(),
     val serverList: List<ServerHolderItem> = emptyList(),
-    val loggedIn:Boolean = false
+    val loggedIn: Boolean = false
 )

@@ -28,18 +28,17 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
     val itemList = combine(
         currentDirectory,
         currentServer
-    ){
-        directory, server ->
-        if(server!=null) {
+    ) { directory, server ->
+        if (server != null) {
             getListFiles(directory).map {
                 Pair(it, directory)
             }.toTypedArray()
-        }else{
+        } else {
             emptyArray()
         }
     }
 
-    suspend fun loginWrapper(serverInfo:ServerInfo){
+    suspend fun loginWrapper(serverInfo: ServerInfo) {
         val result = login(
             serverIp = serverInfo.ip,
             username = serverInfo.id,
@@ -47,7 +46,7 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
             port = 21
         )
 
-        if(result){
+        if (result) {
             currentServer.value = serverInfo
             setLoggedIn(true)
         }               // 로그인 성공했을 경우 currentServer, loggedIn 값 변경.
@@ -59,8 +58,8 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
         username: String,
         password: String,
         port: Int
-    ) : Boolean = withContext(Dispatchers.Default) {
-        var result : Boolean
+    ): Boolean = withContext(Dispatchers.Default) {
+        var result: Boolean
         ftpClient.run {
             connect(serverIp, port)
             result = login(username, password)

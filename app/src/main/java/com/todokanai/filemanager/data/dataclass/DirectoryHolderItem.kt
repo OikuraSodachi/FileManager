@@ -24,7 +24,7 @@ data class DirectoryHolderItem(
             )
         }
 
-        fun fromAbsolutePath(absolutePath: String):DirectoryHolderItem{
+        fun fromAbsolutePath(absolutePath: String): DirectoryHolderItem {
             return DirectoryHolderItem(
                 name = getLastSegment(absolutePath),
                 absolutePath = absolutePath
