@@ -14,7 +14,6 @@ import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -33,10 +32,10 @@ class NetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            uiRepo.currentDirectory.collect {
+            uiRepo.dirTreeNew.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        dirTree = convertToDirTree(it)
+                        dirTree = it.map { DirectoryHolderItem.fromAbsolutePath(it) }
                     )
                 }
             }
@@ -45,7 +44,9 @@ class NetViewModel @Inject constructor(
             uiRepo.itemList.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        itemList = it.map { FileHolderItem.fromFTPFile(it.first, it.second) }
+                        itemList = it.map{
+                            FileHolderItem.fromFTPFile(it.first, it.second)
+                        }
                     )
                 }
             }
@@ -54,37 +55,23 @@ class NetViewModel @Inject constructor(
             uiRepo.serverListFlow.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-//                        serverList = it.map {
-//                            ServerHolderItem(
-//                                name = it.name,
-//                                id = it.no!!  // Todo: NPE 발생 가능성 확인 필요
-//                            )
-//                        }
-                        serverList = it
+                        serverList = it.map{
+                            ServerHolderItem(it.name, it.no!!) // Todo: NPE 발생 가능성 확인 필요
+                        }
                     )
                 }
             }
         }
         viewModelScope.launch {
-            loggedIn.collect {
+            uiRepo.loggedIn.collect {
                 _uiState.update { currentState ->
-                    currentState.copy(loggedIn = it)
+                    currentState.copy(
+                        loggedIn = it
+                    )
                 }
             }
         }
     }
-
-    private val _loggedIn = MutableStateFlow(false)
-    val loggedIn = _loggedIn.asStateFlow()
-
-    fun setLoggedIn(value: Boolean) {
-        _loggedIn.value = value
-    }
-
-    private val _currentServer = MutableStateFlow<ServerInfo?>(null)
-    val currentServer: Flow<ServerInfo?> = _currentServer.asStateFlow()
-
-
 
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
@@ -104,7 +91,7 @@ class NetViewModel @Inject constructor(
 
     override fun toParent() {
         viewModelScope.launch {
-            val parent = getParentAbsolutePath_td(module.currentDirectory.value)
+            val parent = getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
             if(parent==null){
                 logout()
             }else{
@@ -119,22 +106,9 @@ class NetViewModel @Inject constructor(
 
     override fun onServerClick(server: ServerHolderItem) {
         viewModelScope.launch(Dispatchers.Default) {
-            val temp = serverRepo.getById(server.id)
-
-            val result =
-                module.login(
-                    serverIp = temp.ip,
-                    username = temp.id,
-                    password = temp.password,
-                    port = 21
-                )
-            if(result) {
-                setLoggedIn(true)
-                uiRepo.run {
-                    setCurrentServer(serverRepo.getById(server.id))
-                  //  setLoggedIn(true)
-                }
-            }
+            val temp = serverRepo.getById(id = server.id)
+            println("temp: ${temp}")
+            module.loginWrapper(temp)
         }
     }
 
@@ -151,35 +125,7 @@ class NetViewModel @Inject constructor(
     }
 
     fun logout(){
-        println("logout")
-    }
-
-    private fun convertToDirTree(absolutePath: String): List<DirectoryHolderItem> {
-        val result = mutableListOf<DirectoryHolderItem>()
-        var target = absolutePath
-        while (target != "") {
-            result.add(
-                DirectoryHolderItem(
-                    name = getLastSegment(target),
-                    absolutePath = target
-                )
-            )
-            target = testRegex(target)
-        }
-        result.reverse()
-        return result
-    }
-
-    private fun testRegex(path: String): String {
-        val regex = """(.*)/[^/]*$""".toRegex()
-        val matchResult = regex.find(path)
-        return matchResult?.groups?.get(1)?.value ?: ""
-    }
-
-    private fun getLastSegment(path: String): String {
-        val regex = """[^/]*$""".toRegex()
-        val matchResult = regex.find(path)
-        return matchResult?.value ?: ""
+        // Todo: logout 동작
     }
 }
 
@@ -187,5 +133,5 @@ data class NetUiState(
     val dirTree: List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList(),
     val serverList: List<ServerHolderItem> = emptyList(),
-    val loggedIn: Boolean = false
+    val loggedIn:Boolean = false
 )

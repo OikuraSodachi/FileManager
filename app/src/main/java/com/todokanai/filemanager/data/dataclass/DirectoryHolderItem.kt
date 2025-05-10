@@ -23,5 +23,18 @@ data class DirectoryHolderItem(
                 absolutePath = "$directory/${ftpFile.name}"
             )
         }
+
+        fun fromAbsolutePath(absolutePath: String):DirectoryHolderItem{
+            return DirectoryHolderItem(
+                name = getLastSegment(absolutePath),
+                absolutePath = absolutePath
+            )
+        }
+
+        private fun getLastSegment(path: String): String {
+            val regex = """[^/]*$""".toRegex()
+            val matchResult = regex.find(path)
+            return matchResult?.value ?: ""
+        }
     }
 }

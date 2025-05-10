@@ -3,7 +3,6 @@ package com.todokanai.filemanager.tools
 import com.todokanai.filemanager.abstracts.FileModuleLogics
 import com.todokanai.filemanager.data.room.ServerInfo
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
@@ -16,11 +15,14 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
 
     private val ftpClient = FTPClient()
 
-    private val _currentServer = MutableStateFlow<ServerInfo?>(null)
-    val currentServer: Flow<ServerInfo?> = _currentServer.asStateFlow()
+    private val currentServer = MutableStateFlow<ServerInfo?>(null)
 
-    fun setCurrentServer(server: ServerInfo) {
-        _currentServer.value = server
+    private val _loggedIn = MutableStateFlow(false)
+    val loggedIn = _loggedIn.asStateFlow()
+
+    /** loggedIn 의 setter **/
+    private fun setLoggedIn(value: Boolean) {
+        _loggedIn.value = value
     }
 
     val itemList = combine(
@@ -37,13 +39,28 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
         }
     }
 
+    suspend fun loginWrapper(serverInfo:ServerInfo){
+        val result = login(
+            serverIp = serverInfo.ip,
+            username = serverInfo.id,
+            password = serverInfo.password,
+            port = 21
+        )
+
+        if(result){
+            currentServer.value = serverInfo
+            setLoggedIn(true)
+        }               // 로그인 성공했을 경우 currentServer, loggedIn 값 변경.
+    }
+
+    /** @return true if login is successful. else false**/
     suspend fun login(
         serverIp: String,
         username: String,
         password: String,
         port: Int
     ) : Boolean = withContext(Dispatchers.Default) {
-        var result: Boolean
+        var result : Boolean
         ftpClient.run {
             connect(serverIp, port)
             result = login(username, password)

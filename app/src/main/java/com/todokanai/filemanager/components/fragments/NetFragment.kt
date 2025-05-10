@@ -57,7 +57,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 layoutManager = horizontalManager
             }
             netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
-                binding.netBottomMenuLayout.visibility =
+                netBottomMenuLayout.visibility =
                     if (it) {
                         View.VISIBLE
                     } else {
