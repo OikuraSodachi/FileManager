@@ -52,6 +52,13 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
         }               // 로그인 성공했을 경우 currentServer, loggedIn 값 변경.
     }
 
+    fun logout(){
+        ftpClient.run{
+            logout()
+            disconnect()
+        }       // Todo: 아직 미검증 상태
+    }
+
     override suspend fun getListFiles(directory: String): Array<FTPFile> =
         withContext(Dispatchers.Default) {
             return@withContext ftpClient.listFiles(directory)

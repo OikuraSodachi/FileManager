@@ -120,7 +120,9 @@ class NetViewModel @Inject constructor(
     }
 
     fun logout() {
-        // Todo: logout 동작
+        viewModelScope.launch {
+            module.logout()
+        }
     }
 }
 
