@@ -54,12 +54,13 @@ class NetViewModel @Inject constructor(
             uiRepo.serverListFlow.collect {
                 _uiState.update { currentState ->
                     currentState.copy(
-                        serverList = it.map {
-                            ServerHolderItem(
-                                name = it.name,
-                                id = it.no!!  // Todo: NPE 발생 가능성 확인 필요
-                            )
-                        }
+//                        serverList = it.map {
+//                            ServerHolderItem(
+//                                name = it.name,
+//                                id = it.no!!  // Todo: NPE 발생 가능성 확인 필요
+//                            )
+//                        }
+                        serverList = it
                     )
                 }
             }

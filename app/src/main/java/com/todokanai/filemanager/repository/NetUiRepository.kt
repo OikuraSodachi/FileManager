@@ -1,8 +1,9 @@
 package com.todokanai.filemanager.repository
 
+import com.todokanai.filemanager.data.dataclass.ServerHolderItem
 import com.todokanai.filemanager.data.room.ServerInfo
 import com.todokanai.filemanager.tools.NetFileModule
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class NetUiRepository @Inject constructor(
@@ -10,26 +11,16 @@ class NetUiRepository @Inject constructor(
     val serverRepo: ServerInfoRepository
 ) {
 
-    val currentServer = netModule.currentServer
     val currentDirectory = netModule.currentDirectory
-    val serverListFlow = serverRepo.serverInfoFlow
-
-    val itemList = combine(
-        currentDirectory,
-        currentServer
-    ) { directory, server ->
-        if (server != null) {       // 로그인 여부 체크
-            netModule.getListFiles(directory).map {
-                Pair(it, directory)
-            }
-        } else {
-            emptyList()
+    val serverListFlow = serverRepo.serverInfoFlow.map { serverInfo ->
+        serverInfo.map{
+            ServerHolderItem(it.id, it.no!!) // Todo: NPE 발생 가능성 확인 필요
         }
     }
 
-//    val itemList = currentDirectory.map {
-//        netModule.getListFiles(it)
-//    }
+    val itemList = netModule.itemList.map {
+        it.toList()
+    }
 
     fun setCurrentServer(server: ServerInfo) = netModule.setCurrentServer(server)
 

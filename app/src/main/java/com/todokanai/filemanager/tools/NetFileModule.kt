@@ -6,6 +6,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
@@ -20,6 +21,20 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
 
     fun setCurrentServer(server: ServerInfo) {
         _currentServer.value = server
+    }
+
+    val itemList = combine(
+        currentDirectory,
+        currentServer
+    ){
+        directory, server ->
+        if(server!=null) {
+            getListFiles(directory).map {
+                Pair(it, directory)
+            }.toTypedArray()
+        }else{
+            emptyArray()
+        }
     }
 
     suspend fun login(
