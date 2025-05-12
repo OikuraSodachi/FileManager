@@ -14,64 +14,43 @@ import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class NetViewModel @Inject constructor(
+    uiRepo: NetUiRepository,
     val serverRepo: ServerInfoRepository,
-    val uiRepo: NetUiRepository,
     val module: NetFileModule
 ) : ViewModel(), NetViewModelLogics {
 
-    private val _uiState = MutableStateFlow(NetUiState())
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            uiRepo.dirTreeNew.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        dirTree = it.map { DirectoryHolderItem.fromAbsolutePath(it) }
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.itemList.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        itemList = it.map {
-                            FileHolderItem.fromFTPFile(it.first, it.second)
-                        }
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.serverListFlow.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        serverList = it.map {
-                            ServerHolderItem(it.name, it.no!!) // Todo: NPE 발생 가능성 확인 필요
-                        }
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.loggedIn.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        loggedIn = it
-                    )
-                }
-            }
-        }
-    }
+    val uiState = combine(
+        uiRepo.dirTreeNew,
+        uiRepo.itemList,
+        uiRepo.serverListFlow,
+        uiRepo.loggedIn
+    ) { dirTree, itemList, serverList, loggedIn ->
+        NetUiState(
+            dirTree = dirTree.map { DirectoryHolderItem.fromAbsolutePath(it) },
+            itemList = itemList.map {
+                FileHolderItem.fromFTPFile(it.first, it.second)
+            },
+            serverList = serverList.map {
+                ServerHolderItem(
+                    it.name,
+                    it.no!!
+                )
+            },  // Todo: NPE 발생 가능성 확인 필요
+            loggedIn = loggedIn
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = NetUiState()
+    )
 
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
