@@ -88,6 +88,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             netAdapter.submitList(uiState.itemList)
             directoryAdapter.submitList(uiState.dirTree)
             serverAdapter.submitList(uiState.serverList)
+            binding.netEmptyDirectoryText.visibility = if(uiState.emptyDirectoryText) View.VISIBLE else View.INVISIBLE
             if (uiState.loggedIn) {
                 binding.run {
                     netLayout.visibility = View.VISIBLE

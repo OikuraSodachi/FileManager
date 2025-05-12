@@ -30,6 +30,7 @@ class NetViewModel @Inject constructor(
     val uiState = combine(
         uiRepo.dirTreeNew,
         uiRepo.itemList,
+      //  uiRepo.emptyDirectoryText,
         uiRepo.serverListFlow,
         uiRepo.loggedIn
     ) { dirTree, itemList, serverList, loggedIn ->
@@ -38,6 +39,7 @@ class NetViewModel @Inject constructor(
             itemList = itemList.map {
                 FileHolderItem.fromFTPFile(it.first, it.second)
             },
+            emptyDirectoryText = itemList.isEmpty(),
             serverList = serverList.map {
                 ServerHolderItem(
                     it.name,
@@ -108,6 +110,7 @@ class NetViewModel @Inject constructor(
 data class NetUiState(
     val dirTree: List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList(),
+    val emptyDirectoryText: Boolean = false,
     val serverList: List<ServerHolderItem> = emptyList(),
     val loggedIn: Boolean = false
 )
