@@ -3,6 +3,7 @@ package com.todokanai.filemanager.components.fragments
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.BaseFragment
@@ -62,7 +63,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             )
         }
 
-        fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) { enabled ->
+        fileListAdapter.bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) { enabled ->
             binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
         }
     }

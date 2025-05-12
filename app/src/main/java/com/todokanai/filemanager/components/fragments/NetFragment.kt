@@ -3,6 +3,7 @@ package com.todokanai.filemanager.components.fragments
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.BaseFragment
@@ -56,7 +57,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
             }
-            netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
+            netAdapter.bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) {
                 netBottomMenuLayout.visibility =
                     if (it) {
                         View.VISIBLE
