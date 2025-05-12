@@ -13,67 +13,38 @@ import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
 class FileListViewModel @Inject constructor(
-    private val uiRepo: FileListUiRepository,
+    uiRepo: FileListUiRepository,
     val module: FileModule
 ) : ViewModel(), FileListViewModelLogics {
 
-    private val _uiState = MutableStateFlow(FileListUiState())
-    val uiState = _uiState.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            uiRepo.listFiles.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        listFiles = it.map {
-                            FileHolderItem.fromFile(it)
-                        }
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.dirTree.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(
-                        dirTree = it.map {
-                            DirectoryHolderItem.fromFile(it)
-                        }
-                    )
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.emptyDirectoryText.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(emptyDirectoryText = it)
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.notAccessible.collect {
-                _uiState.update { currentState ->
-                    currentState.copy(accessFailText = it)
-                }
-            }
-        }
-        viewModelScope.launch {
-            uiRepo.currentDirectory.withPrevious_td().collect {
-                _uiState.update { currentState ->
-                    currentState.copy(lastKnownDirectory = it)
-                }
-            }
-        }
-    }
+    val uiState = combine(
+        uiRepo.listFiles,
+        uiRepo.dirTree,
+        uiRepo.emptyDirectoryText,
+        uiRepo.notAccessible,
+        uiRepo.currentDirectory.withPrevious_td()
+    ) { listFiles, dirTree, emptyDirectoryText, notAccessible, lastKnownDirectory ->
+        FileListUiState(
+            listFiles = listFiles.map { FileHolderItem.fromFile(it) },
+            dirTree = dirTree.map { DirectoryHolderItem.fromFile(it) },
+            emptyDirectoryText = emptyDirectoryText,
+            accessFailText = notAccessible,
+            lastKnownDirectory = lastKnownDirectory
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5),
+        initialValue = FileListUiState()
+    )
 
     override fun onDirectoryClick(item: DirectoryHolderItem) {
         setCurrentDirectory(item.absolutePath)
