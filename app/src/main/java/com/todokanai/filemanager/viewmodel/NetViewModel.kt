@@ -41,9 +41,9 @@ class NetViewModel @Inject constructor(
             serverList = serverList.map {
                 ServerHolderItem(
                     it.name,
-                    it.no!!
+                    it.no!!       // Todo: NPE 발생 가능성 확인 필요
                 )
-            },  // Todo: NPE 발생 가능성 확인 필요
+            },
             loggedIn = loggedIn
         )
     }.stateIn(
