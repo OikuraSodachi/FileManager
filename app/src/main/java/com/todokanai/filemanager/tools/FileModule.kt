@@ -17,7 +17,11 @@ class FileModule(defaultPath: String) : FileModuleLogics<File>(defaultPath) {
     /** whether currentPath is Accessible **/
     val notAccessible = currentDirectory.map { !isDirectoryValid(it) }
 
-    override suspend fun getListFiles(directory: String): Array<File> {
+    val listFiles = currentDirectory.map{
+        getContentFiles(it)
+    }
+
+    private suspend fun getContentFiles(directory: String): Array<File> {
         return File(directory).listFiles() ?: emptyArray()
     }
 

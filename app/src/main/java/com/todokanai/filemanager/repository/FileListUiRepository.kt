@@ -1,7 +1,6 @@
 package com.todokanai.filemanager.repository
 
 import com.todokanai.filemanager.tools.FileModule
-import com.todokanai.filemanager.tools.independent.sortedFileList_td
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -16,10 +15,10 @@ class FileListUiRepository @Inject constructor(
 
     /** 경로 내 File 목록 **/
     val listFiles = combine(
-        currentDirectory,
+        module.listFiles,
         dsRepo.sortBy
-    ) { directory, mode ->
-        sortedFileList_td(module.getListFiles(directory), mode)
+    ) { listFiles, mode ->
+        listFileSorter(listFiles,mode)
     }
 
     /** directory 가 비어있는지 여부 **/
@@ -30,6 +29,14 @@ class FileListUiRepository @Inject constructor(
     val dirTree = module.dirTree.map { tree ->
         tree.map {
             File(it)
+        }
+    }
+
+    /** Todo: listFiles 정렬 로직 만들기 **/
+    private fun listFileSorter(listFiles: Array<File>, sortMode: String?):List<File>{
+        return when (sortMode) {
+            "" -> listFiles.sortedBy{it.name}
+            else -> listFiles.sortedBy{it.name}
         }
     }
 }

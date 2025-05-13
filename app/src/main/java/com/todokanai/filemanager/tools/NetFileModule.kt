@@ -59,7 +59,7 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
         }       // Todo: 아직 미검증 상태
     }
 
-    override suspend fun getListFiles(directory: String): Array<FTPFile> =
+    suspend fun getListFiles(directory: String): Array<FTPFile> =
         withContext(Dispatchers.Default) {
             return@withContext ftpClient.listFiles(directory)
         }

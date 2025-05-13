@@ -16,10 +16,6 @@ abstract class FileModuleLogics<Type : Any>(initialPath: String) {
         }
     }
 
-    /** @param directory current directory
-     * @return files in directory **/
-    abstract suspend fun getListFiles(directory: String): Array<Type>
-
     /** @param directory absolutePath of directory to open
      * @return whether directory is accessible **/
     abstract suspend fun isDirectoryValid(directory: String): Boolean
