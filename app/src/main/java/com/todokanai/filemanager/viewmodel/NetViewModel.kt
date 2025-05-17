@@ -30,7 +30,6 @@ class NetViewModel @Inject constructor(
     val uiState = combine(
         uiRepo.dirTreeNew,
         uiRepo.itemList,
-      //  uiRepo.emptyDirectoryText,
         uiRepo.serverListFlow,
         uiRepo.loggedIn
     ) { dirTree, itemList, serverList, loggedIn ->
@@ -57,7 +56,7 @@ class NetViewModel @Inject constructor(
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
             if (item.isDirectory) {
-                module.setCurrentDirectory(item.absolutePath)
+                setCurrentDirectory(item.absolutePath)
             } else {
                 println("this is a File")
             }
@@ -66,7 +65,7 @@ class NetViewModel @Inject constructor(
 
     override fun onDirectoryClick(item: DirectoryHolderItem) {
         viewModelScope.launch {
-            module.setCurrentDirectory(item.absolutePath)
+            setCurrentDirectory(item.absolutePath)
         }
     }
 
@@ -77,7 +76,7 @@ class NetViewModel @Inject constructor(
             if (parent == null) {
                 logout()
             } else {
-                module.setCurrentDirectory(directory = parent)
+                setCurrentDirectory(directory = parent)
             }
         }
     }
@@ -99,6 +98,8 @@ class NetViewModel @Inject constructor(
             serverRepo.insert(ServerInfo(name, ip, id, password))
         }
     }
+
+    private suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
 
     fun logout() {
         viewModelScope.launch {

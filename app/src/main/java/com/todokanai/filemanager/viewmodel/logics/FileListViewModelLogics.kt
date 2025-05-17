@@ -10,6 +10,4 @@ interface FileListViewModelLogics {
 
     fun onFileClick(context: Context, item: FileHolderItem)
 
-    fun setCurrentDirectory(directory: String)
-
 }

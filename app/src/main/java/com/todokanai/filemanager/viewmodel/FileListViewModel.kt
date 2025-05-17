@@ -42,12 +42,14 @@ class FileListViewModel @Inject constructor(
         )
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5),
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = FileListUiState()
     )
 
     override fun onDirectoryClick(item: DirectoryHolderItem) {
-        setCurrentDirectory(item.absolutePath)
+        viewModelScope.launch {
+            setCurrentDirectory(item.absolutePath)
+        }
     }
 
     override fun onFileClick(context: Context, item: FileHolderItem) {
@@ -65,18 +67,17 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    override fun setCurrentDirectory(directory: String) {
+    fun onBackPressed() {
+        val parent = File(module.currentDirectory.value).parentFile
         viewModelScope.launch {
-            module.setCurrentDirectory(directory)
+            parent?.let {
+                setCurrentDirectory(it.absolutePath)
+            }
         }
     }
 
-    fun onBackPressed() {
-        val parent = File(module.currentDirectory.value).parentFile
-        parent?.let {
-            setCurrentDirectory(it.absolutePath)
-        }
-    }
+    private suspend fun setCurrentDirectory(directory:String) = module.setCurrentDirectory(directory)
+
 
     /** 새 경로로 이동할 때, scroll 할 위치 가져오기 ( auto scroll 이 필요하다면 ) **/
     fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
