@@ -78,7 +78,6 @@ class FileListViewModel @Inject constructor(
 
     private suspend fun setCurrentDirectory(directory:String) = module.setCurrentDirectory(directory)
 
-
     /** 새 경로로 이동할 때, scroll 할 위치 가져오기 ( auto scroll 이 필요하다면 ) **/
     fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
         return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
