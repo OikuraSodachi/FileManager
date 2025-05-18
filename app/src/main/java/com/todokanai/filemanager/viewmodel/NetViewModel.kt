@@ -74,8 +74,8 @@ class NetViewModel @Inject constructor(
 
     override fun toParent() {
         viewModelScope.launch {
-            val parent =
-                getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
+            //val parent = getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
+            val parent = getParent()
             if (parent == null) {
                 logout()
             } else {
@@ -86,9 +86,8 @@ class NetViewModel @Inject constructor(
 
     override fun onServerClick(context: Context,server: ServerHolderItem) {
         viewModelScope.launch(Dispatchers.Default) {
-            //module.login(serverRepo.getById(id = server.id))
             val serverInfo = serverRepo.getById(id = server.id)
-            val success = module.login(serverInfo)
+            val success = login(serverInfo)
             if(success){
                 NetService.currentServer = serverInfo
                 context.startForegroundService(Intent(context, NetService::class.java))
@@ -111,12 +110,15 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    private suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
+    //private suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
 
+    override fun login(serverInfo: ServerInfo) = module.login(serverInfo)
+
+    override fun getParent(): String? = getParentAbsolutePath_td(module.currentDirectory.value)
+
+    override suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
     fun logout() {
-        viewModelScope.launch {
-            module.logout()
-        }
+
     }
 }
 
