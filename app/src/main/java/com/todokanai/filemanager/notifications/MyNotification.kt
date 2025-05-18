@@ -56,6 +56,14 @@ class MyNotification(val manager: NotificationManager) {
 //    }
 
 
+    fun basicNotification(context: Context, title: String?, message: String?) : NotificationCompat.Builder {
+        return NotificationCompat.Builder(context, silentChannel.id)
+            .setSmallIcon(icon)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+    }
+
     fun ongoingNotiTest(context: Context) = Notification.Builder(context, silentChannel.id)
         .setSmallIcon(icon)
         .setPriority(Notification.PRIORITY_DEFAULT)

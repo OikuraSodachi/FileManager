@@ -37,7 +37,7 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
         }
     }
 
-    fun login(serverInfo: ServerInfo) {
+    fun login(serverInfo: ServerInfo): Boolean {
         val result = loginToFTPServer_td(
             client = ftpClient,
             serverIp = serverInfo.ip,
@@ -50,6 +50,7 @@ class NetFileModule(defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath
             currentServer.value = serverInfo
             setLoggedIn(true)
         }               // 로그인 성공했을 경우 currentServer, loggedIn 값 변경.
+        return result
     }
 
     fun logout() {

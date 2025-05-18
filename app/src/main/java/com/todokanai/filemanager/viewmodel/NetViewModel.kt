@@ -1,7 +1,10 @@
 package com.todokanai.filemanager.viewmodel
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.todokanai.filemanager.components.service.NetService
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.data.dataclass.ServerHolderItem
@@ -81,9 +84,18 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    override fun onServerClick(server: ServerHolderItem) {
+    override fun onServerClick(context: Context,server: ServerHolderItem) {
         viewModelScope.launch(Dispatchers.Default) {
-            module.login(serverRepo.getById(id = server.id))
+            //module.login(serverRepo.getById(id = server.id))
+            val serverInfo = serverRepo.getById(id = server.id)
+            val success = module.login(serverInfo)
+            if(success){
+                NetService.currentServer = serverInfo
+                context.startForegroundService(Intent(context, NetService::class.java))
+               // context.startService(Intent(context, NetService::class.java))
+            }else{
+                println("login failed")
+            }
         }
     }
 

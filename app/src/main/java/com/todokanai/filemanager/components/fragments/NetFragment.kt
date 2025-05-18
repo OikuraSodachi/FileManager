@@ -37,7 +37,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
         serverAdapter = ServerRecyclerAdapter(
             onDeleteServer = { viewModel.deleteServer(it) },
-            onItemClick = { viewModel.onServerClick(it) }
+            onItemClick = { viewModel.onServerClick(requireActivity(),it) }
         )
     }
 
