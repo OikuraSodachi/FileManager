@@ -4,7 +4,6 @@ import android.content.Context
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.data.dataclass.ServerHolderItem
-import com.todokanai.filemanager.data.room.ServerInfo
 
 interface NetViewModelLogics {
 
@@ -24,8 +23,7 @@ interface NetViewModelLogics {
     fun onDirectoryClick(item: DirectoryHolderItem)
     fun toParent()
     //-----------
-    fun login(serverInfo: ServerInfo):Boolean
-    fun getParent():String?
-    suspend fun setCurrentDirectory(directory: String)
-
+//    fun login(serverInfo: ServerInfo):Boolean
+//    fun getParent():String?
+//    suspend fun setCurrentDirectory(directory: String)
 }

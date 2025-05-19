@@ -16,6 +16,9 @@ class NetService : NetServiceLogic() {
         lateinit var currentServer: ServerInfo
     }
 
+//    @Inject
+//    lateinit var netModule:NetFileModule
+
     @Inject
     lateinit var myNoti: MyNotification
 

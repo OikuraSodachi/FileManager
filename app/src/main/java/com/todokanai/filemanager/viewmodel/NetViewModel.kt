@@ -13,6 +13,7 @@ import com.todokanai.filemanager.repository.NetUiRepository
 import com.todokanai.filemanager.repository.ServerInfoRepository
 import com.todokanai.filemanager.tools.NetFileModule
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
+import com.todokanai.filemanager.tools.independent.loginToFTPServer_td
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -21,13 +22,15 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.apache.commons.net.ftp.FTPClient
 import javax.inject.Inject
 
 @HiltViewModel
 class NetViewModel @Inject constructor(
     uiRepo: NetUiRepository,
     val serverRepo: ServerInfoRepository,
-    val module: NetFileModule
+    val module: NetFileModule,
+    val ftpClient: FTPClient
 ) : ViewModel(), NetViewModelLogics {
 
     val uiState = combine(
@@ -55,6 +58,10 @@ class NetViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = NetUiState()
     )
+
+    //  데이터 흐름 방향이 위쪽 ( ViewModel -> UI )
+    //---------------------------------------------------
+    //  데이터 흐름 방향이 아래쪽 ( UI -> ViewModel )
 
     override fun onItemClick(item: FileHolderItem) {
         viewModelScope.launch {
@@ -110,13 +117,19 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    //private suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
+    private fun login(serverInfo: ServerInfo):Boolean{
+        return loginToFTPServer_td(
+            client = ftpClient,
+            serverIp = serverInfo.ip,
+            username = serverInfo.id,
+            password = serverInfo.password,
+            port = 21
+        )
+    }
 
-    override fun login(serverInfo: ServerInfo) = module.login(serverInfo)
+    private fun getParent(): String? = getParentAbsolutePath_td(module.currentDirectory.value)
 
-    override fun getParent(): String? = getParentAbsolutePath_td(module.currentDirectory.value)
-
-    override suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
+    private suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
     fun logout() {
 
     }

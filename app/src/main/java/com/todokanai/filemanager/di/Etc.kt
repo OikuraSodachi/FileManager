@@ -16,6 +16,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import org.apache.commons.net.ftp.FTPClient
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -30,8 +31,8 @@ class Etc {
 
     @Singleton
     @Provides
-    fun provideNetFileModule(): NetFileModule {
-        return NetFileModule(defaultPath = "")
+    fun provideNetFileModule(ftpClient: FTPClient): NetFileModule {
+        return NetFileModule(ftpClient,defaultPath = "")
     }
 
     @Provides
@@ -58,5 +59,12 @@ class Etc {
         dataStoreRepository: DataStoreRepository
     ): FileListUiRepository {
         return FileListUiRepository(fileModule, dataStoreRepository)
+    }
+
+    @Singleton
+    @Provides
+    /** 동시에 한 개의 서버에만 접속하는 상황을 전제로 선언했음. **/
+    fun provideFTPClient():FTPClient{
+        return FTPClient()
     }
 }

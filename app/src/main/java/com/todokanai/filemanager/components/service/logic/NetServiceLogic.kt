@@ -3,8 +3,11 @@ package com.todokanai.filemanager.components.service.logic
 import android.app.Service
 import android.content.Intent
 import androidx.core.app.NotificationCompat
+import com.todokanai.filemanager.data.room.ServerInfo
 
 abstract class NetServiceLogic(): Service() {
+
+    lateinit var serverInfo: ServerInfo
 
     override fun onCreate() {
         super.onCreate()
@@ -20,5 +23,7 @@ abstract class NetServiceLogic(): Service() {
         super.onDestroy()
     }
 
+    /** @return foreground notification **/
     abstract fun netNotification(title:String,message:String):NotificationCompat.Builder
+
 }
