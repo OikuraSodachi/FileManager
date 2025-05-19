@@ -1,16 +1,25 @@
 package com.todokanai.filemanager.components.fragments
 
 import androidx.activity.OnBackPressedCallback
-import androidx.viewbinding.ViewBinding
+import androidx.fragment.app.viewModels
 import com.todokanai.filemanager.abstracts.BaseFragment
+import com.todokanai.filemanager.adapters.ServerRecyclerAdapter
+import com.todokanai.filemanager.adapters.ViewPagerAdapter
+import com.todokanai.filemanager.databinding.FragmentLoginBinding
+import com.todokanai.filemanager.viewmodel.LoginViewModel
 
-class LoginFragment : BaseFragment() {
+class LoginFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
-    override val binding: ViewBinding
-        get() = TODO("Not yet implemented")
+    override val binding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
+    lateinit var serverAdapter: ServerRecyclerAdapter
+
+    private val viewModel: LoginViewModel by viewModels()
 
     override fun prepareLateInit() {
-        TODO("Not yet implemented")
+        serverAdapter = ServerRecyclerAdapter(
+            onDeleteServer = { viewModel.deleteServer(it) },
+            onItemClick = { viewModel.onServerClick(requireActivity(),it) }
+        )
     }
 
     override fun prepareView() {
