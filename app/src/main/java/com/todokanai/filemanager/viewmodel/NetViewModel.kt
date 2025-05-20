@@ -66,12 +66,12 @@ class NetViewModel @Inject constructor(
         viewModelScope.launch {
             val parent = getParent()
             if (parent == null) {
-                withContext(Dispatchers.Default) {
+             //   withContext(Dispatchers.Default) {
                     module.logout()
                     withContext(Dispatchers.Main){
                         onLogout(ftpClient.isConnected)
                     }
-                }
+             //   }
             } else {
                 setCurrentDirectory(directory = parent)
             }

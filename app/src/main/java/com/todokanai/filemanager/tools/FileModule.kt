@@ -2,11 +2,13 @@ package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.FileModuleLogics
 import com.todokanai.filemanager.tools.independent.dirTree_td
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
-class FileModule(defaultPath: String) : FileModuleLogics<File>(defaultPath) {
+class FileModule(val coroutineDispatcher: CoroutineDispatcher, defaultPath: String) : FileModuleLogics<File>(defaultPath) {
 
     val dirTree = currentDirectory.map {
         dirTree_td(File(it)).map {
@@ -17,16 +19,12 @@ class FileModule(defaultPath: String) : FileModuleLogics<File>(defaultPath) {
     /** whether currentPath is Accessible **/
     val notAccessible = currentDirectory.map { !isDirectoryValid(it) }
 
-    val listFiles = currentDirectory.map{
-        getContentFiles(it)
+    val listFiles = currentDirectory.map{ directory ->
+        File(directory).listFiles() ?: emptyArray()
     }
 
-    private suspend fun getContentFiles(directory: String): Array<File> {
-        return File(directory).listFiles() ?: emptyArray()
-    }
-
-    override suspend fun isDirectoryValid(directory: String): Boolean {
-        return File(directory).listFiles() != null
+    override suspend fun isDirectoryValid(directory: String): Boolean = withContext(coroutineDispatcher) {
+        return@withContext File(directory).listFiles() != null
     }
 
 //    /** file.isDirectory == true일 경우, currentPath 값을 update

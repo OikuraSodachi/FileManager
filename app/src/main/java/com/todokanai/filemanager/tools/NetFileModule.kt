@@ -1,7 +1,7 @@
 package com.todokanai.filemanager.tools
 
 import com.todokanai.filemanager.abstracts.FileModuleLogics
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -10,15 +10,15 @@ import org.apache.commons.net.ftp.FTPFile
 import javax.inject.Inject
 
 /** Todo: Dispatchers 주입식으로 바꾸기...? **/
-class NetFileModule @Inject constructor(val ftpClient: FTPClient, defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath) {
+class NetFileModule @Inject constructor(val coroutineDispatcher:CoroutineDispatcher, val ftpClient: FTPClient, defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath) {
 
     val itemList = currentDirectory.map{ directory ->
         ftpClient.listFiles(directory).map {
             Pair(it, directory)
         }.toTypedArray()
-    }.flowOn(Dispatchers.Default)
+    }.flowOn(coroutineDispatcher)
 
-    fun logout() {
+    suspend fun logout() = withContext(coroutineDispatcher){
         ftpClient.run {
             logout()
             disconnect()
@@ -26,7 +26,7 @@ class NetFileModule @Inject constructor(val ftpClient: FTPClient, defaultPath: S
     }
 
     override suspend fun isDirectoryValid(directory: String): Boolean =
-        withContext(Dispatchers.Default) {
+        withContext(coroutineDispatcher) {
             try {
                 ftpClient.mlistFile(directory)
                 return@withContext true

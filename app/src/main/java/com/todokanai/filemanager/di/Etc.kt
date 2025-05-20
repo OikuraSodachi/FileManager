@@ -16,6 +16,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.Dispatchers
 import org.apache.commons.net.ftp.FTPClient
 import javax.inject.Singleton
 
@@ -26,13 +27,13 @@ class Etc {
     @Singleton
     @Provides
     fun provideFileModule(): FileModule {
-        return FileModule(Environment.getExternalStorageDirectory().absolutePath)
+        return FileModule(Dispatchers.IO, Environment.getExternalStorageDirectory().absolutePath)
     }
 
     @Singleton
     @Provides
     fun provideNetFileModule(ftpClient: FTPClient): NetFileModule {
-        return NetFileModule(ftpClient,defaultPath = "")
+        return NetFileModule(Dispatchers.Default, ftpClient,defaultPath = "")
     }
 
     @Provides
