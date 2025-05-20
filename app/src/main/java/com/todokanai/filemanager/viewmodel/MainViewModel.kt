@@ -14,11 +14,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import org.apache.commons.net.ftp.FTPClient
 import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(val workManager: WorkManager) : ViewModel() {
+class MainViewModel @Inject constructor(val workManager: WorkManager, val ftpClient: FTPClient) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainActivityUiState())
     val uiState = _uiState.asStateFlow()
@@ -38,6 +39,11 @@ class MainViewModel @Inject constructor(val workManager: WorkManager) : ViewMode
     }
 
     fun exit(activity: Activity) = exit_td(activity)
+
+    /** @return whether if logged in to FTP Server **/
+    fun isLoggedIn():Boolean{
+        return ftpClient.isConnected
+    }
 
     fun workRequestTest() {
         val request = Requests().copyRequest(emptyArray(), File(""))

@@ -9,11 +9,13 @@ class ViewPagerAdapter(activity: AppCompatActivity, val viewPager: ViewPager2) :
     FragmentStateAdapter(activity) {
     var fragmentList = listOf<Fragment>()
 
-    /** 1: StorageFragment
+    /** 0: StorageFragment
      *
-     * 2: FileListFragment
+     * 1: FileListFragment
      *
-     * 3: NetFragment **/
+     * 2: NetFragment
+     *
+     * 3: LoginFragment **/
 
     override fun getItemCount(): Int {
         return fragmentList.size
@@ -31,7 +33,12 @@ class ViewPagerAdapter(activity: AppCompatActivity, val viewPager: ViewPager2) :
         viewPager.setCurrentItem(1, false)
     }
 
-    fun toNetFragment() {
-        viewPager.setCurrentItem(2, false)
+    /** @param isLoggedIn whether if logged in to FTP Server **/
+    fun toNetFragment(isLoggedIn:Boolean) {
+        if(isLoggedIn) {
+            viewPager.setCurrentItem(2, false)      // netFragment
+        }else{
+            viewPager.setCurrentItem(3, false)      // loginFragment
+        }
     }
 }

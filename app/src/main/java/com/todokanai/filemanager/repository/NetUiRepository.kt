@@ -1,7 +1,6 @@
 package com.todokanai.filemanager.repository
 
 import com.todokanai.filemanager.tools.NetFileModule
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -10,7 +9,7 @@ class NetUiRepository @Inject constructor(
     serverRepo: ServerInfoRepository
 ) {
 
-    val loggedIn : StateFlow<Boolean> = netModule.loggedIn
+    //val loggedIn : StateFlow<Boolean> = netModule.loggedIn
 
     val dirTreeNew = netModule.currentDirectory.map {
         absolutePathTree(it)

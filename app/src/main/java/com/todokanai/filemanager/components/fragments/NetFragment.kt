@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.NetRecyclerAdapter
-import com.todokanai.filemanager.adapters.ServerRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentNetBinding
 import com.todokanai.filemanager.viewmodel.NetViewModel
@@ -20,7 +19,6 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
     lateinit var netAdapter: NetRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
-    lateinit var serverAdapter: ServerRecyclerAdapter
 
     override val binding by lazy { FragmentNetBinding.inflate(layoutInflater) }
     private val viewModel: NetViewModel by viewModels()
@@ -33,11 +31,6 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         }
         directoryAdapter = DirectoryRecyclerAdapter(
             onClick = { viewModel.onDirectoryClick(it) }
-        )
-
-        serverAdapter = ServerRecyclerAdapter(
-            onDeleteServer = { viewModel.deleteServer(it) },
-            onItemClick = { viewModel.onServerClick(requireActivity(),it) }
         )
     }
 
@@ -65,21 +58,6 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                         View.GONE
                     }
             }
-            serverRecyclerView.run {
-                val linearManager =
-                    LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-                adapter = serverAdapter
-                layoutManager = linearManager
-                DividerItemDecoration(context, linearManager.orientation)
-            }
-            serverAddButton.setOnClickListener {
-                viewModel.saveServerInfo(
-                    name = nameEditText.text.toString(),
-                    ip = ipEditText.text.toString(),
-                    id = idEditText.text.toString(),
-                    password = passwordEditText.text.toString()
-                )
-            }
         }
     }
 
@@ -87,19 +65,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         viewModel.uiState.collect { uiState ->
             netAdapter.submitList(uiState.itemList)
             directoryAdapter.submitList(uiState.dirTree)
-            serverAdapter.submitList(uiState.serverList)
             binding.netEmptyDirectoryText.visibility = if(uiState.emptyDirectoryText) View.VISIBLE else View.INVISIBLE
-            if (uiState.loggedIn) {
-                binding.run {
-                    netLayout.visibility = View.VISIBLE
-                    loginLayout.visibility = View.GONE
-                }
-            } else {
-                binding.run {
-                    netLayout.visibility = View.GONE
-                    loginLayout.visibility = View.VISIBLE
-                }
-            }
         }
 //        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
 //            binding.netBottomMenuLayout.visibility =
@@ -117,7 +83,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 if (netAdapter.selectionTracker.hasSelection()) {
                     netAdapter.selectionTracker.clearSelection()
                 } else {
-                    viewModel.toParent()
+                    viewModel.toParent({viewPagerAdapter.toNetFragment(viewModel.isLoggedIn())})
                 }
             }
         }
