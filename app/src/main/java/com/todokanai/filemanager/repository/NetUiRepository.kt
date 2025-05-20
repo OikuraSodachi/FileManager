@@ -9,8 +9,6 @@ class NetUiRepository @Inject constructor(
     serverRepo: ServerInfoRepository
 ) {
 
-    //val loggedIn : StateFlow<Boolean> = netModule.loggedIn
-
     val dirTreeNew = netModule.currentDirectory.map {
         absolutePathTree(it)
     }
