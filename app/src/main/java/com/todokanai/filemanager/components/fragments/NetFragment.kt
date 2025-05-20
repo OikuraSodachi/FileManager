@@ -83,7 +83,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 if (netAdapter.selectionTracker.hasSelection()) {
                     netAdapter.selectionTracker.clearSelection()
                 } else {
-                    viewModel.toParent({viewPagerAdapter.toNetFragment(viewModel.isLoggedIn())})
+                    viewModel.toParent({viewPagerAdapter.toNetFragment(it)})
                 }
             }
         }

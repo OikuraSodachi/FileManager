@@ -34,13 +34,7 @@ class NetViewModel @Inject constructor(
             itemList = itemList.map {
                 FileHolderItem.fromFTPFile(it.first, it.second)
             },
-            emptyDirectoryText = itemList.isEmpty(),
-//            serverList = serverList.map {
-//                ServerHolderItem(
-//                    it.name,
-//                    it.no!!       // Todo: NPE 발생 가능성 확인 필요
-//                )
-//            },
+            emptyDirectoryText = itemList.isEmpty()
         )
     }.stateIn(
         scope = viewModelScope,
@@ -68,15 +62,14 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    override fun toParent(onLogout: () -> Unit) {
+    override fun toParent(onLogout: (Boolean) -> Unit) {
         viewModelScope.launch {
-            //val parent = getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
             val parent = getParent()
             if (parent == null) {
                 withContext(Dispatchers.Default) {
                     module.logout()
                     withContext(Dispatchers.Main){
-                        onLogout()
+                        onLogout(ftpClient.isConnected)
                     }
                 }
             } else {
@@ -85,11 +78,7 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    fun isLoggedIn():Boolean {
-        return ftpClient.isConnected
-    }
-
-    private fun getParent(): String? = getParentAbsolutePath_td(module.currentDirectory.value)
+    private fun getParent(): String? = getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
 
     private suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
 }
@@ -97,6 +86,5 @@ class NetViewModel @Inject constructor(
 data class NetUiState(
     val dirTree: List<DirectoryHolderItem> = emptyList(),
     val itemList: List<FileHolderItem> = emptyList(),
-    val emptyDirectoryText: Boolean = false,
-  //  val serverList: List<ServerHolderItem> = emptyList(),
+    val emptyDirectoryText: Boolean = false
 )
