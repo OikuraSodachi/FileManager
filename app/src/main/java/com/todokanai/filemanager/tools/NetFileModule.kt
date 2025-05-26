@@ -9,7 +9,6 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import javax.inject.Inject
 
-/** Todo: Dispatchers 주입식으로 바꾸기...? **/
 class NetFileModule @Inject constructor(val coroutineDispatcher:CoroutineDispatcher, val ftpClient: FTPClient, defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath) {
 
     val itemList = currentDirectory.map{ directory ->

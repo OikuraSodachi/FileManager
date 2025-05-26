@@ -85,14 +85,15 @@ class FileListViewModel @Inject constructor(
 
     fun popupMenuList(selected: Set<FileHolderItem>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf<Pair<String, () -> Unit>>()
-        result.add(
-            Pair(
-                "Upload",
-                {
-                    println("${selected.map { it.name }}")
-                }
-            )
-        )
+        result.run{
+            add(Pair("Upload", { println("${selected.map { it.name }}") }))
+            add(Pair("Zip",{}))
+            add(Pair("Copy",{}))
+            add(Pair("Info",{}))
+            if(selected.size == 1){
+                add(Pair("Rename",{}))
+            }
+        }
         return result
     }
 }
