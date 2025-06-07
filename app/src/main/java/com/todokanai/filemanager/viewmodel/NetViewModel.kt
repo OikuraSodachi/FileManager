@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
-import com.todokanai.filemanager.repository.NetUiRepository
 import com.todokanai.filemanager.tools.NetFileModule
 import com.todokanai.filemanager.tools.independent.getParentAbsolutePath_td
 import com.todokanai.filemanager.viewmodel.logics.NetViewModelLogics
@@ -12,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -20,14 +20,43 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NetViewModel @Inject constructor(
-    uiRepo: NetUiRepository,
     val module: NetFileModule,
     val ftpClient: FTPClient
 ) : ViewModel(), NetViewModelLogics {
 
+    val dirTreeNew = module.currentDirectory.map {
+        absolutePathTree(it)
+    }
+
+    /** absolutePath 의 tree **/
+    private fun absolutePathTree(absolutePath: String): List<String> {
+        val result = mutableListOf<String>()
+        var target = absolutePath
+        while (target != "") {
+            result.add(
+                getLastSegment(target)
+            )
+            target = parentDirectory(target)
+        }
+        result.reverse()
+        return result
+    }
+
+    private fun parentDirectory(path: String): String {
+        val regex = """(.*)/[^/]*$""".toRegex()
+        val matchResult = regex.find(path)
+        return matchResult?.groups?.get(1)?.value ?: ""
+    }
+
+    private fun getLastSegment(path: String): String {
+        val regex = """[^/]*$""".toRegex()
+        val matchResult = regex.find(path)
+        return matchResult?.value ?: ""
+    }
+
     val uiState = combine(
-        uiRepo.dirTreeNew,
-        uiRepo.itemList,
+        dirTreeNew,
+        module.itemList,
     ) { dirTree, itemList ->
         NetUiState(
             dirTree = dirTree.map { DirectoryHolderItem.fromAbsolutePath(it) },

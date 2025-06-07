@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.components.service.NetService
 import com.todokanai.filemanager.data.dataclass.ServerHolderItem
 import com.todokanai.filemanager.data.room.ServerInfo
-import com.todokanai.filemanager.repository.NetUiRepository
 import com.todokanai.filemanager.repository.ServerInfoRepository
 import com.todokanai.filemanager.tools.independent.loginToFTPServer_td
 import com.todokanai.filemanager.viewmodel.logics.LoginViewModelLogics
@@ -24,12 +23,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    uiRepo:NetUiRepository,
     val serverRepo: ServerInfoRepository,
     val ftpClient: FTPClient
 ): ViewModel(), LoginViewModelLogics {
 
-    val uiState = uiRepo.serverListFlow.map{ serverList ->
+    val uiState = serverRepo.serverInfoFlow.map{ serverList ->
         LoginUiState(
             serverList = serverList.map {
                 ServerHolderItem(
