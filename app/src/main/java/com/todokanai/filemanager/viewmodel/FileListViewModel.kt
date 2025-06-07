@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
-import com.todokanai.filemanager.repository.FileListUiRepository
+import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.FileModule
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
@@ -15,6 +15,7 @@ import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
@@ -22,21 +23,44 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FileListViewModel @Inject constructor(
-    uiRepo: FileListUiRepository,
-    val module: FileModule
+    val module: FileModule,
+    val dsRepo:DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
 
+    /** 경로 내 File 목록
+     *
+     * Todo: Sort 작업은 마지막에 한번만 하는 게 나을 듯? **/
+    private val listFiles = combine(
+        module.listFiles,
+        dsRepo.sortBy
+    ) { listFiles, mode ->
+        listFileSorter(listFiles,mode)
+    }
+
+    private val dirTree = module.dirTree.map { tree ->
+        tree.map {
+            File(it)
+        }
+    }
+
+    /** Todo: listFiles 정렬 로직 만들기 **/
+    private fun listFileSorter(listFiles: Array<File>, sortMode: String?):List<File>{
+        return when (sortMode) {
+            "" -> listFiles.sortedBy{it.name}
+            else -> listFiles.sortedBy{it.name}
+        }
+    }
+
     val uiState = combine(
-        uiRepo.listFiles,
-        uiRepo.dirTree,
-        uiRepo.emptyDirectoryText,
-        uiRepo.notAccessible,
-        uiRepo.currentDirectory.withPrevious_td()
-    ) { listFiles, dirTree, emptyDirectoryText, notAccessible, lastKnownDirectory ->
+        listFiles,
+        dirTree,
+        module.notAccessible,
+        module.currentDirectory.withPrevious_td()
+    ) { listFiles, dirTree, notAccessible, lastKnownDirectory ->
         FileListUiState(
             listFiles = listFiles.map { FileHolderItem.fromFile(it) },
             dirTree = dirTree.map { DirectoryHolderItem.fromFile(it) },
-            emptyDirectoryText = emptyDirectoryText,
+            emptyDirectoryText = listFiles.isEmpty(),
             accessFailText = notAccessible,
             lastKnownDirectory = lastKnownDirectory
         )
