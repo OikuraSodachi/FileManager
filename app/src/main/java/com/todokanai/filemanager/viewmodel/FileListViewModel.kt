@@ -26,7 +26,7 @@ class FileListViewModel @Inject constructor(
     dsRepo:DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
 
-    val uiState = combine(
+    override val uiState = combine(
         module.listFiles,
         module.dirTree,
         module.notAccessible,
@@ -75,7 +75,7 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    fun onBackPressed() {
+    override fun onBackPressed() {
         val parent = File(module.currentDirectory.value).parentFile
         viewModelScope.launch {
             parent?.let {
@@ -87,11 +87,11 @@ class FileListViewModel @Inject constructor(
     private suspend fun setCurrentDirectory(directory:String) = module.setCurrentDirectory(directory)
 
     /** 새 경로로 이동할 때, scroll 할 위치 가져오기 ( auto scroll 이 필요하다면 ) **/
-    fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
+    override fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
         return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
     }
 
-    fun popupMenuList(selected: Set<FileHolderItem>): List<Pair<String, () -> Unit>> {
+    override fun popupMenuList(selected: Set<FileHolderItem>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf<Pair<String, () -> Unit>>()
         result.run{
             add(Pair("Upload", { println("${selected.map { it.name }}") }))

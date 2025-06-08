@@ -50,7 +50,7 @@ class NetViewModel @Inject constructor(
         return matchResult?.value ?: ""
     }
 
-    val uiState = combine(
+    override val uiState = combine(
         module.currentDirectory.map { absolutePathTree(it) },
         module.itemList,
     ) { dirTree, itemList ->

@@ -23,11 +23,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    val serverRepo: ServerInfoRepository,
+    private val serverRepo: ServerInfoRepository,
     val ftpClient: FTPClient
 ): ViewModel(), LoginViewModelLogics {
 
-    val uiState = serverRepo.serverInfoFlow.map{ serverList ->
+    override val uiState = serverRepo.serverInfoFlow.map{ serverList ->
         LoginUiState(
             serverList = serverList.map {
                 ServerHolderItem(
