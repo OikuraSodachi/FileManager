@@ -24,10 +24,6 @@ class NetViewModel @Inject constructor(
     val ftpClient: FTPClient
 ) : ViewModel(), NetViewModelLogics {
 
-    val dirTreeNew = module.currentDirectory.map {
-        absolutePathTree(it)
-    }
-
     /** absolutePath 의 tree **/
     private fun absolutePathTree(absolutePath: String): List<String> {
         val result = mutableListOf<String>()
@@ -55,7 +51,7 @@ class NetViewModel @Inject constructor(
     }
 
     val uiState = combine(
-        dirTreeNew,
+        module.currentDirectory.map { absolutePathTree(it) },
         module.itemList,
     ) { dirTree, itemList ->
         NetUiState(

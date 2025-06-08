@@ -15,7 +15,6 @@ import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import java.io.File
@@ -24,42 +23,19 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(
     val module: FileModule,
-    val dsRepo:DataStoreRepository
+    dsRepo:DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
 
-    /** 경로 내 File 목록
-     *
-     * Todo: Sort 작업은 마지막에 한번만 하는 게 나을 듯? **/
-    private val listFiles = combine(
-        module.listFiles,
-        dsRepo.sortBy
-    ) { listFiles, mode ->
-        listFileSorter(listFiles,mode)
-    }
-
-    private val dirTree = module.dirTree.map { tree ->
-        tree.map {
-            File(it)
-        }
-    }
-
-    /** Todo: listFiles 정렬 로직 만들기 **/
-    private fun listFileSorter(listFiles: Array<File>, sortMode: String?):List<File>{
-        return when (sortMode) {
-            "" -> listFiles.sortedBy{it.name}
-            else -> listFiles.sortedBy{it.name}
-        }
-    }
-
     val uiState = combine(
-        listFiles,
-        dirTree,
+        module.listFiles,
+        module.dirTree,
         module.notAccessible,
-        module.currentDirectory.withPrevious_td()
-    ) { listFiles, dirTree, notAccessible, lastKnownDirectory ->
+        module.currentDirectory.withPrevious_td(),
+        dsRepo.sortBy
+    ) { listFiles, dirTree, notAccessible, lastKnownDirectory, sortMode ->
         FileListUiState(
-            listFiles = listFiles.map { FileHolderItem.fromFile(it) },
-            dirTree = dirTree.map { DirectoryHolderItem.fromFile(it) },
+            listFiles = sortLogic(listFiles,sortMode).map { FileHolderItem.fromFile(it) },
+            dirTree = dirTree.map{File(it)}.map { DirectoryHolderItem.fromFile(it) },
             emptyDirectoryText = listFiles.isEmpty(),
             accessFailText = notAccessible,
             lastKnownDirectory = lastKnownDirectory
@@ -88,6 +64,14 @@ class FileListViewModel @Inject constructor(
                     mimeType = getMimeType_td(item.absolutePath)
                 )
             }
+        }
+    }
+
+    /** Todo: listFiles 정렬 로직 만들기 **/
+    private fun sortLogic(array: Array<File>, sortMode: String?): List<File> {
+        return when (sortMode) {
+            "" -> array.sortedBy{it.name}
+            else -> array.sortedBy{it.name}
         }
     }
 
