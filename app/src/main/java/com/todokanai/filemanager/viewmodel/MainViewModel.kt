@@ -4,9 +4,7 @@ import android.app.Activity
 import android.os.Environment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import com.todokanai.filemanager.myobjects.Variables
-import com.todokanai.filemanager.tools.Requests
 import com.todokanai.filemanager.tools.independent.exit_td
 import com.todokanai.filemanager.tools.independent.getPhysicalStorages_td
 import com.todokanai.filemanager.tools.independent.requestStorageManageAccess_td
@@ -19,7 +17,7 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor(val workManager: WorkManager, val ftpClient: FTPClient) : ViewModel() {
+class MainViewModel @Inject constructor( val ftpClient: FTPClient) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainActivityUiState())
     val uiState = _uiState.asStateFlow()
@@ -44,12 +42,6 @@ class MainViewModel @Inject constructor(val workManager: WorkManager, val ftpCli
     fun isLoggedIn():Boolean{
         return ftpClient.isConnected
     }
-
-    fun workRequestTest() {
-        val request = Requests().copyRequest(emptyArray(), File(""))
-        workManager.enqueue(request)
-    }
-
 }
 
 data class MainActivityUiState(

@@ -1,16 +1,13 @@
 package com.todokanai.filemanager.di
 
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Environment
-import androidx.work.WorkManager
 import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.tools.FileModule
 import com.todokanai.filemanager.tools.NetFileModule
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.Dispatchers
 import org.apache.commons.net.ftp.FTPClient
@@ -37,10 +34,10 @@ class Etc {
         return MyNotification(notificationManager)
     }
 
-    @Provides
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
-        return WorkManager.getInstance(context)
-    }
+//    @Provides
+//    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
+//        return WorkManager.getInstance(context)
+//    }
 
     @Singleton
     @Provides

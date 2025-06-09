@@ -53,7 +53,7 @@ android {
 }
 
 dependencies {
-    implementation("androidx.work:work-runtime-ktx:2.9.1")
+//    implementation("androidx.work:work-runtime-ktx:2.9.1")
     implementation("androidx.databinding:library:3.2.0-alpha11")
     implementation("androidx.recyclerview:recyclerview-selection:1.1.0")
     val composeBom = platform("androidx.compose:compose-bom:2024.06.00")
