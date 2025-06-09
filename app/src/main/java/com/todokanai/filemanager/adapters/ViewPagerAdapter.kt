@@ -34,10 +34,10 @@ class ViewPagerAdapter(activity: AppCompatActivity, val viewPager: ViewPager2) :
     }
 
     /** @param isLoggedIn whether if logged in to FTP Server **/
-    fun toNetFragment(isLoggedIn:Boolean) {
-        if(isLoggedIn) {
+    fun toNetFragment(isLoggedIn: Boolean) {
+        if (isLoggedIn) {
             viewPager.setCurrentItem(2, false)      // netFragment
-        }else{
+        } else {
             viewPager.setCurrentItem(3, false)      // loginFragment
         }
     }

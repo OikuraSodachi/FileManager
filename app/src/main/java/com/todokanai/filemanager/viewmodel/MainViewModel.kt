@@ -17,7 +17,7 @@ import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
-class MainViewModel @Inject constructor( val ftpClient: FTPClient) : ViewModel() {
+class MainViewModel @Inject constructor(val ftpClient: FTPClient) : ViewModel() {
 
     private val _uiState = MutableStateFlow(MainActivityUiState())
     val uiState = _uiState.asStateFlow()
@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor( val ftpClient: FTPClient) : ViewModel()
     fun exit(activity: Activity) = exit_td(activity)
 
     /** @return whether if logged in to FTP Server **/
-    fun isLoggedIn():Boolean{
+    fun isLoggedIn(): Boolean {
         return ftpClient.isConnected
     }
 }

@@ -91,21 +91,23 @@ class NetViewModel @Inject constructor(
         viewModelScope.launch {
             val parent = getParent()
             if (parent == null) {
-             //   withContext(Dispatchers.Default) {
-                    module.logout()
-                    withContext(Dispatchers.Main){
-                        onLogout(ftpClient.isConnected)
-                    }
-             //   }
+                //   withContext(Dispatchers.Default) {
+                module.logout()
+                withContext(Dispatchers.Main) {
+                    onLogout(ftpClient.isConnected)
+                }
+                //   }
             } else {
                 setCurrentDirectory(directory = parent)
             }
         }
     }
 
-    private fun getParent(): String? = getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
+    private fun getParent(): String? =
+        getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
 
-    private suspend fun setCurrentDirectory(directory: String) = module.setCurrentDirectory(directory)
+    private suspend fun setCurrentDirectory(directory: String) =
+        module.setCurrentDirectory(directory)
 }
 
 data class NetUiState(

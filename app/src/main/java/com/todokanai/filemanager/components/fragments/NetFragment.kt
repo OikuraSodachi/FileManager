@@ -65,7 +65,8 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         viewModel.uiState.collect { uiState ->
             netAdapter.submitList(uiState.itemList)
             directoryAdapter.submitList(uiState.dirTree)
-            binding.netEmptyDirectoryText.visibility = if(uiState.emptyDirectoryText) View.VISIBLE else View.INVISIBLE
+            binding.netEmptyDirectoryText.visibility =
+                if (uiState.emptyDirectoryText) View.VISIBLE else View.INVISIBLE
         }
 //        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
 //            binding.netBottomMenuLayout.visibility =
@@ -83,7 +84,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 if (netAdapter.selectionTracker.hasSelection()) {
                     netAdapter.selectionTracker.clearSelection()
                 } else {
-                    viewModel.toParent({viewPagerAdapter.toNetFragment(it)})
+                    viewModel.toParent({ viewPagerAdapter.toNetFragment(it) })
                 }
             }
         }

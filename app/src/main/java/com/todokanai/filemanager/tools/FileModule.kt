@@ -8,7 +8,8 @@ import kotlinx.coroutines.withContext
 import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
-class FileModule(val coroutineDispatcher: CoroutineDispatcher, defaultPath: String) : FileModuleLogics<File>(defaultPath) {
+class FileModule(val coroutineDispatcher: CoroutineDispatcher, defaultPath: String) :
+    FileModuleLogics<File>(defaultPath) {
 
     val dirTree = currentDirectory.map {
         dirTree_td(File(it)).map {
@@ -19,13 +20,14 @@ class FileModule(val coroutineDispatcher: CoroutineDispatcher, defaultPath: Stri
     /** whether currentPath is Accessible **/
     val notAccessible = currentDirectory.map { !isDirectoryValid(it) }
 
-    val listFiles = currentDirectory.map{ directory ->
+    val listFiles = currentDirectory.map { directory ->
         File(directory).listFiles() ?: emptyArray()
     }
 
-    override suspend fun isDirectoryValid(directory: String): Boolean = withContext(coroutineDispatcher) {
-        return@withContext File(directory).listFiles() != null
-    }
+    override suspend fun isDirectoryValid(directory: String): Boolean =
+        withContext(coroutineDispatcher) {
+            return@withContext File(directory).listFiles() != null
+        }
 
 //    /** file.isDirectory == true일 경우, currentPath 값을 update
 //     *

@@ -25,9 +25,9 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val serverRepo: ServerInfoRepository,
     val ftpClient: FTPClient
-): ViewModel(), LoginViewModelLogics {
+) : ViewModel(), LoginViewModelLogics {
 
-    override val uiState = serverRepo.serverInfoFlow.map{ serverList ->
+    override val uiState = serverRepo.serverInfoFlow.map { serverList ->
         LoginUiState(
             serverList = serverList.map {
                 ServerHolderItem(
@@ -42,18 +42,22 @@ class LoginViewModel @Inject constructor(
         initialValue = LoginUiState()
     )
 
-    override fun onServerClick(context: Context,server: ServerHolderItem,onLoginResult: (Boolean)->Unit) {
+    override fun onServerClick(
+        context: Context,
+        server: ServerHolderItem,
+        onLoginResult: (Boolean) -> Unit
+    ) {
         viewModelScope.launch(Dispatchers.Default) {
             val serverInfo = serverRepo.getById(id = server.id)
             val success = login(serverInfo)
-            if(success){
+            if (success) {
                 NetService.currentServer = serverInfo
                 context.startForegroundService(Intent(context, NetService::class.java))
                 // context.startService(Intent(context, NetService::class.java))
-            }else{
+            } else {
                 println("login failed")
             }
-            withContext(Dispatchers.Main){ onLoginResult(success)}
+            withContext(Dispatchers.Main) { onLoginResult(success) }
         }
     }
 
@@ -69,7 +73,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun login(serverInfo: ServerInfo):Boolean{
+    private fun login(serverInfo: ServerInfo): Boolean {
         return loginToFTPServer_td(
             client = ftpClient,
             serverIp = serverInfo.ip,
@@ -79,7 +83,7 @@ class LoginViewModel @Inject constructor(
         )
     }
 
-    fun test(){
+    fun test() {
         val temp = ftpClient.isConnected
     }
 }

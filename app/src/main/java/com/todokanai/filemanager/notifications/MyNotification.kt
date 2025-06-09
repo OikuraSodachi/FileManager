@@ -56,7 +56,11 @@ class MyNotification(val manager: NotificationManager) {
 //    }
 
 
-    fun basicNotification(context: Context, title: String?, message: String?) : NotificationCompat.Builder {
+    fun basicNotification(
+        context: Context,
+        title: String?,
+        message: String?
+    ): NotificationCompat.Builder {
         return NotificationCompat.Builder(context, silentChannel.id)
             .setSmallIcon(icon)
             .setContentTitle(title)

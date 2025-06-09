@@ -32,7 +32,7 @@ class NetService : NetServiceLogic() {
     }
 
     override fun netNotification(title: String, message: String): NotificationCompat.Builder {
-        return myNoti.basicNotification(this,title,message)
+        return myNoti.basicNotification(this, title, message)
     }
 
 }

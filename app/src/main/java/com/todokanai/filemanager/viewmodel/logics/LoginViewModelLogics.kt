@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 
 interface LoginViewModelLogics {
 
-    val uiState : Flow<LoginUiState>
+    val uiState: Flow<LoginUiState>
 
     fun deleteServer(server: ServerHolderItem)
 
-    fun onServerClick(context: Context, server: ServerHolderItem,onLoginResult: (Boolean)->Unit)
+    fun onServerClick(context: Context, server: ServerHolderItem, onLoginResult: (Boolean) -> Unit)
 
     fun saveServerInfo(name: String, ip: String, id: String, password: String)
 }

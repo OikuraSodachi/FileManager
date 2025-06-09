@@ -23,7 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FileListViewModel @Inject constructor(
     val module: FileModule,
-    dsRepo:DataStoreRepository
+    dsRepo: DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
 
     override val uiState = combine(
@@ -34,8 +34,8 @@ class FileListViewModel @Inject constructor(
         dsRepo.sortBy
     ) { listFiles, dirTree, notAccessible, lastKnownDirectory, sortMode ->
         FileListUiState(
-            listFiles = sortLogic(listFiles,sortMode).map { FileHolderItem.fromFile(it) },
-            dirTree = dirTree.map{File(it)}.map { DirectoryHolderItem.fromFile(it) },
+            listFiles = sortLogic(listFiles, sortMode).map { FileHolderItem.fromFile(it) },
+            dirTree = dirTree.map { File(it) }.map { DirectoryHolderItem.fromFile(it) },
             emptyDirectoryText = listFiles.isEmpty(),
             accessFailText = notAccessible,
             lastKnownDirectory = lastKnownDirectory
@@ -70,8 +70,8 @@ class FileListViewModel @Inject constructor(
     /** Todo: listFiles 정렬 로직 만들기 **/
     private fun sortLogic(array: Array<File>, sortMode: String?): List<File> {
         return when (sortMode) {
-            "" -> array.sortedBy{it.name}
-            else -> array.sortedBy{it.name}
+            "" -> array.sortedBy { it.name }
+            else -> array.sortedBy { it.name }
         }
     }
 
@@ -84,7 +84,8 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    private suspend fun setCurrentDirectory(directory:String) = module.setCurrentDirectory(directory)
+    private suspend fun setCurrentDirectory(directory: String) =
+        module.setCurrentDirectory(directory)
 
     /** 새 경로로 이동할 때, scroll 할 위치 가져오기 ( auto scroll 이 필요하다면 ) **/
     override fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
@@ -93,13 +94,13 @@ class FileListViewModel @Inject constructor(
 
     override fun popupMenuList(selected: Set<FileHolderItem>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf<Pair<String, () -> Unit>>()
-        result.run{
+        result.run {
             add(Pair("Upload", { println("${selected.map { it.name }}") }))
-            add(Pair("Zip",{}))
-            add(Pair("Copy",{}))
-            add(Pair("Info",{}))
-            if(selected.size == 1){
-                add(Pair("Rename",{}))
+            add(Pair("Zip", {}))
+            add(Pair("Copy", {}))
+            add(Pair("Info", {}))
+            if (selected.size == 1) {
+                add(Pair("Rename", {}))
             }
         }
         return result

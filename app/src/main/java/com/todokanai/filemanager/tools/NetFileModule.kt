@@ -9,15 +9,19 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPFile
 import javax.inject.Inject
 
-class NetFileModule @Inject constructor(val coroutineDispatcher:CoroutineDispatcher, val ftpClient: FTPClient, defaultPath: String) : FileModuleLogics<FTPFile>(defaultPath) {
+class NetFileModule @Inject constructor(
+    val coroutineDispatcher: CoroutineDispatcher,
+    val ftpClient: FTPClient,
+    defaultPath: String
+) : FileModuleLogics<FTPFile>(defaultPath) {
 
-    val itemList = currentDirectory.map{ directory ->
+    val itemList = currentDirectory.map { directory ->
         ftpClient.listFiles(directory).map {
             Pair(it, directory)
         }.toTypedArray()
     }.flowOn(coroutineDispatcher)
 
-    suspend fun logout() = withContext(coroutineDispatcher){
+    suspend fun logout() = withContext(coroutineDispatcher) {
         ftpClient.run {
             logout()
             disconnect()

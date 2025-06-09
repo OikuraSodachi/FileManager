@@ -5,7 +5,7 @@ import android.content.Intent
 import androidx.core.app.NotificationCompat
 import com.todokanai.filemanager.data.room.ServerInfo
 
-abstract class NetServiceLogic(): Service() {
+abstract class NetServiceLogic() : Service() {
 
     lateinit var serverInfo: ServerInfo
 
@@ -14,8 +14,8 @@ abstract class NetServiceLogic(): Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val notification = netNotification("title","message")
-        startForeground(1,notification.build())
+        val notification = netNotification("title", "message")
+        startForeground(1, notification.build())
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -24,6 +24,6 @@ abstract class NetServiceLogic(): Service() {
     }
 
     /** @return foreground notification **/
-    abstract fun netNotification(title:String,message:String):NotificationCompat.Builder
+    abstract fun netNotification(title: String, message: String): NotificationCompat.Builder
 
 }

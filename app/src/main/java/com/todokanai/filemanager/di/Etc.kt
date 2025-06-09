@@ -26,7 +26,7 @@ class Etc {
     @Singleton
     @Provides
     fun provideNetFileModule(ftpClient: FTPClient): NetFileModule {
-        return NetFileModule(Dispatchers.Default, ftpClient,defaultPath = "")
+        return NetFileModule(Dispatchers.Default, ftpClient, defaultPath = "")
     }
 
     @Provides
@@ -41,8 +41,8 @@ class Etc {
 
     @Singleton
     @Provides
-    /** 동시에 한 개의 서버에만 접속하는 상황을 전제로 선언했음. **/
-    fun provideFTPClient():FTPClient{
+            /** 동시에 한 개의 서버에만 접속하는 상황을 전제로 선언했음. **/
+    fun provideFTPClient(): FTPClient {
         return FTPClient()
     }
 }

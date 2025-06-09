@@ -54,7 +54,8 @@ data class FileHolderItem(
                 } else {
                     readableFileSize_td(ftpFile.size)
                 }
-            val lastModified = ftpFile.timestamp.timeInMillis // Todo: 값이 의도와는 다르게 찍히고 있음. 내부 로직이 File.lastModified() 와 조금 다른 듯?
+            val lastModified =
+                ftpFile.timestamp.timeInMillis // Todo: 값이 의도와는 다르게 찍히고 있음. 내부 로직이 File.lastModified() 와 조금 다른 듯?
             return FileHolderItem(
                 absolutePath = absolutePathTemp,
                 name = ftpFile.name,
