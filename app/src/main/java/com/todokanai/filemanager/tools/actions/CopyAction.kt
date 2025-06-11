@@ -8,10 +8,10 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-/** @param selectedFiles absolutePath of selected files
+/** @param selectedFiles absolutePaths of selected files
  *  @param targetDirectory absolutePath of target directory **/
 class CopyAction(
-    val selectedFiles: Array<String>,
+    val selectedFiles: Collection<String>,
     val targetDirectory: String
 ) {
     var progress: Int = 0

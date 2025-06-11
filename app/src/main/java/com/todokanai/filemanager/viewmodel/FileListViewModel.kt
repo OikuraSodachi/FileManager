@@ -93,9 +93,9 @@ class FileListViewModel @Inject constructor(
         return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
     }
 
-    override fun popupMenuList(selected: Set<FileHolderItem>): List<Pair<String, () -> Unit>> {
+    override fun popupMenuList(selected: Collection<FileHolderItem>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf<Pair<String, () -> Unit>>()
-        val files = selected.map{it.absolutePath}.toTypedArray()
+        val files = selected.map{it.absolutePath}
         result.run {
             add(Pair("Upload", { println("${selected.map { it.name }}") }))
             add(Pair("Zip", {}))
