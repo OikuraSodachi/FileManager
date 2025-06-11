@@ -8,20 +8,23 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
-/** dummy class (?) **/
+/** @param selectedFiles absolutePath of selected files
+ *  @param targetDirectory absolutePath of target directory **/
 class CopyAction(
-    val selectedFiles: Array<File>,
-    val targetDirectory: File
+    val selectedFiles: Array<String>,
+    val targetDirectory: String
 ) {
     var progress: Int = 0
-    private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
+    private val selected = selectedFiles.map { File(it) }.toTypedArray()
+    private val directory = File(targetDirectory)
+    private val fileQuantity = getFileAndFoldersNumber_td(selected)
     private lateinit var currentFileInProcess: File
 
     fun main() {
         CoroutineScope(Dispatchers.IO).launch {
             copyFiles_Recursive_td(
-                selected = selectedFiles,
-                targetDirectory = targetDirectory,
+                selected = selected,
+                targetDirectory = directory,
                 onProgress = {
                     progress++
 //        myNoti.sendSilentNotification(
