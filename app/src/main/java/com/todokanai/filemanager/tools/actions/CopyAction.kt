@@ -11,7 +11,7 @@ import java.nio.file.StandardCopyOption
 /** @param selectedFiles absolutePaths of selected files
  *  @param targetDirectory absolutePath of target directory **/
 class CopyAction(
-    val selectedFiles: Collection<String>,
+    val selectedFiles: Array<String>,
     val targetDirectory: String
 ) {
     var progress: Int = 0
