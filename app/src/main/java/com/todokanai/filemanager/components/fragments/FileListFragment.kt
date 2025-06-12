@@ -59,7 +59,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             popupMenu_td(
                 context = requireActivity(),
                 anchor = it,
-                itemList = viewModel.popupMenuList(fileListAdapter.selectedItems())
+                itemList = viewModel.popupMenuList(fileListAdapter.selectedItems().toTypedArray())
             )
         }
 
