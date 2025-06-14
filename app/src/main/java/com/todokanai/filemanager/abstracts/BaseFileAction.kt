@@ -21,7 +21,7 @@ abstract class BaseFileAction(
     abstract suspend fun action(file: File)
 
     /** Gemini generated code
-     * Todo: copy 작업 외에도 (zip 압축 등) 대응 가능하도록 짤 것. **/
+     * Todo: copy 작업 외에도 (zip 압축 등) 대응 가능하도록 ( abstraction ) 짤 것. **/
     fun copyFileWithProgress(sourceFile: File, destinationFile: File, byteProgressCallback:(Long)->Unit, bufferSize: Int = 8192) {
 
         var bytesCopied: Long = 0
