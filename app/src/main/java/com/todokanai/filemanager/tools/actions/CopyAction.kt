@@ -1,7 +1,6 @@
 package com.todokanai.filemanager.tools.actions
 
 import com.todokanai.filemanager.abstracts.IOProgressAction
-import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
 import com.todokanai.filemanager.tools.independent.getTotalSize_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,10 +15,10 @@ class CopyAction(
     val selectedFiles: Array<File>,
     val targetDirectory: File
 ):IOProgressAction{
-    private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
     private val fileSize = getTotalSize_td(selectedFiles)
 
-    fun main() {
+    fun start() {
+        println("CopyAction - start")
         CoroutineScope(Dispatchers.IO).launch {
             copyFiles_Recursive_td(
                 selected = selectedFiles,
@@ -52,6 +51,6 @@ class CopyAction(
     }
 
     override fun byteProgressCallback(bytesWritten: Long) {
-        println("byteProgress: ${bytesWritten}")
+        println("byteProgress: ${ 100*(bytesWritten/fileSize).toInt() } %")
     }
 }

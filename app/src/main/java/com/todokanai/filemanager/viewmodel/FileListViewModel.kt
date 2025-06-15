@@ -99,7 +99,7 @@ class FileListViewModel @Inject constructor(
         result.run {
             add(Pair("Upload", { println("${selected.map { it.name }}") }))
             add(Pair("Zip", {}))
-            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = getCurrentDirectory()) }))
+            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = getCurrentDirectory()).start() }))
             add(Pair("Info", {}))
             if (selected.size == 1) {
                 add(Pair("Rename", {}))
@@ -109,7 +109,9 @@ class FileListViewModel @Inject constructor(
     }
 
     fun getCurrentDirectory():File{
-        TODO()
+        val result = File(uiState.value.dirTree.last().absolutePath)
+        println("getCurrentDirectory: ${result.absolutePath}")
+        return result
     }
 }
 
