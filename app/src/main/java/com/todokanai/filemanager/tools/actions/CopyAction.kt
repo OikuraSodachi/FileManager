@@ -16,7 +16,7 @@ class CopyAction(
     val targetDirectory: File
 ):IOProgressAction{
     private val fileSize = getTotalSize_td(selectedFiles)
-
+    private var bytesDone:Long = 0
     fun start() {
         println("CopyAction - start")
         CoroutineScope(Dispatchers.IO).launch {
@@ -33,12 +33,13 @@ class CopyAction(
     ) {
         selected.forEach { file ->
             val target = targetDirectory.resolve(file.name)
+            println("target: ${target.absolutePath}")
             if (file.isDirectory) {
                 target.mkdirs()
                 file.listFiles()?.forEach {
                     doIOStreamWithProgress(
                         inputStream = FileInputStream(it),
-                        outputStream = FileOutputStream(target)
+                        outputStream = FileOutputStream(target.resolve(it.name))
                     )
                 }
             } else {
@@ -51,6 +52,7 @@ class CopyAction(
     }
 
     override fun byteProgressCallback(bytesWritten: Long) {
+        bytesDone = bytesDone+bytesWritten      // progress 상황 로직 미완성
         println("byteProgress: ${ 100*(bytesWritten/fileSize).toInt() } %")
     }
 }

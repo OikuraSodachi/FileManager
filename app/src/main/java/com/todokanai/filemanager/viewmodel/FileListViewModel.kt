@@ -14,6 +14,7 @@ import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -27,13 +28,15 @@ class FileListViewModel @Inject constructor(
     dsRepo: DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
 
+    val confirmMode = MutableStateFlow<Boolean>(false)
+
     override val uiState = combine(
         module.listFiles,
         module.dirTree,
         module.notAccessible,
         module.currentDirectory.withPrevious_td(),
-        dsRepo.sortBy
-    ) { listFiles, dirTree, notAccessible, lastKnownDirectory, sortMode ->
+        dsRepo.sortBy,
+    ) { listFiles, dirTree, notAccessible, lastKnownDirectory, sortMode->
         FileListUiState(
             listFiles = sortLogic(listFiles, sortMode).map { FileHolderItem.fromFile(it) },
             dirTree = dirTree.map { File(it) }.map { DirectoryHolderItem.fromFile(it) },
@@ -99,7 +102,8 @@ class FileListViewModel @Inject constructor(
         result.run {
             add(Pair("Upload", { println("${selected.map { it.name }}") }))
             add(Pair("Zip", {}))
-            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = getCurrentDirectory()).start() }))
+            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = File("/storage/emulated/0/tmp")).start() }))
+//            add(Pair("Copy", {  }))
             add(Pair("Info", {}))
             if (selected.size == 1) {
                 add(Pair("Rename", {}))
@@ -113,6 +117,7 @@ class FileListViewModel @Inject constructor(
         println("getCurrentDirectory: ${result.absolutePath}")
         return result
     }
+
 }
 
 data class FileListUiState(
