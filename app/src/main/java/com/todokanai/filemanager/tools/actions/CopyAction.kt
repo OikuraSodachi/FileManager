@@ -1,13 +1,13 @@
 package com.todokanai.filemanager.tools.actions
 
 import com.todokanai.filemanager.abstracts.IOProgressAction
+import com.todokanai.filemanager.tools.independent.getFileNumber_td
 import com.todokanai.filemanager.tools.independent.getTotalSize_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
 
 /** @param selectedFiles selected files
  *  @param targetDirectory target directory **/
@@ -16,43 +16,49 @@ class CopyAction(
     val targetDirectory: File
 ):IOProgressAction{
     private val fileSize = getTotalSize_td(selectedFiles)
-    private var bytesDone:Long = 0
-    fun start() {
-        println("CopyAction - start")
-        CoroutineScope(Dispatchers.IO).launch {
-            copyFiles_Recursive_td(
-                selected = selectedFiles,
-                targetDirectory = targetDirectory
-            )
-        }
-    }
+    private val fileQuantity = getFileNumber_td(selectedFiles)
 
-    fun copyFiles_Recursive_td(
-        selected: Array<File>,
-        targetDirectory: File
-    ) {
-        selected.forEach { file ->
-            val target = targetDirectory.resolve(file.name)
-            println("target: ${target.absolutePath}")
-            if (file.isDirectory) {
-                target.mkdirs()
-                file.listFiles()?.forEach {
-                    doIOStreamWithProgress(
-                        inputStream = FileInputStream(it),
-                        outputStream = FileOutputStream(target.resolve(it.name))
-                    )
+    private lateinit var currentSourceFile : File
+    private var bytesDone:Long = 0
+    private var filesDone:Int = 0
+
+    fun start() {
+        CoroutineScope(Dispatchers.IO).launch {
+            selectedFiles.forEach { file ->
+                val target = targetDirectory.resolve(file.name)
+                if (file.isDirectory) {
+                    target.mkdirs()
+                    file.listFiles()?.forEach {
+                        doIOStreamWithProgress_Wrapper(it,target.resolve(it.name))
+                    }
+                } else {
+                    doIOStreamWithProgress_Wrapper(file,target)
                 }
-            } else {
-                doIOStreamWithProgress(
-                    inputStream = FileInputStream(file),
-                    outputStream = FileOutputStream(target)
-                )
             }
         }
     }
 
-    override fun byteProgressCallback(bytesWritten: Long) {
-        bytesDone = bytesDone+bytesWritten      // Todo : progress 상황 로직 미완성
-        println("byteProgress: ${ 100*(bytesWritten/fileSize).toInt() } %")
+    private suspend fun doIOStreamWithProgress_Wrapper(sourceFile: File, targetFile:File){
+        currentSourceFile = sourceFile
+        doIOStreamWithProgress(
+            inputStream = FileInputStream(currentSourceFile),
+            outputFile = targetFile
+        )
+        filesDone += 1
+    }
+
+    override suspend fun byteProgressCallback(outputFileInProgress: File, bytesRead: Long, bytesWritten: Long) {
+        bytesDone += bytesRead
+       // val temp = readableFileSize_td(bytesDone)
+      //  println("${fileInProgress.name} : ${ (100*bytesDone)/fileSize } %")
+
+        val totalNumber = fileQuantity
+        val currentNumber = filesDone
+
+        val totalProgress = (100*bytesDone)/fileSize
+        val currentFileProgress = (100*bytesWritten)/currentSourceFile.length()
+     //   println("bytesWritten: ${readableFileSize_td(bytesWritten)}, size: ${readableFileSize_td(outputFileInProgress.length())}")
+
+        println("number: $currentNumber/$totalNumber, fileProgress: $currentFileProgress%, progress: $totalProgress%")
     }
 }
