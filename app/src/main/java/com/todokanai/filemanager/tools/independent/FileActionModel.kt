@@ -44,7 +44,7 @@ fun readableFileSize_td(size: Long): String {
 
 /** Todokanai
  *
- * get the total size of [files]:Array<[File]> and its subdirectories
+ * get the total size of [files]:Array<[File]> and its subdirectories ( does not include the size of directory instance )
  * @param files Array of [File]
  * @return the total size
  * */
