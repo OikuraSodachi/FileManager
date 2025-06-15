@@ -52,7 +52,7 @@ class CopyAction(
     }
 
     override fun byteProgressCallback(bytesWritten: Long) {
-        bytesDone = bytesDone+bytesWritten      // progress 상황 로직 미완성
+        bytesDone = bytesDone+bytesWritten      // Todo : progress 상황 로직 미완성
         println("byteProgress: ${ 100*(bytesWritten/fileSize).toInt() } %")
     }
 }
