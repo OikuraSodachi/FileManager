@@ -1,57 +1,57 @@
 package com.todokanai.filemanager.tools.actions
 
+import com.todokanai.filemanager.abstracts.IOProgressAction
 import com.todokanai.filemanager.tools.independent.getFileAndFoldersNumber_td
+import com.todokanai.filemanager.tools.independent.getTotalSize_td
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
+import java.io.FileInputStream
+import java.io.FileOutputStream
 
-/** @param selectedFiles absolutePaths of selected files
- *  @param targetDirectory absolutePath of target directory **/
+/** @param selectedFiles selected files
+ *  @param targetDirectory target directory **/
 class CopyAction(
-    val selectedFiles: Array<String>,
-    val targetDirectory: String
-) {
-    var progress: Int = 0
-    private val selected = selectedFiles.map { File(it) }.toTypedArray()
-    private val directory = File(targetDirectory)
-    private val fileQuantity = getFileAndFoldersNumber_td(selected)
-    private lateinit var currentFileInProcess: File
+    val selectedFiles: Array<File>,
+    val targetDirectory: File
+):IOProgressAction{
+    private val fileQuantity = getFileAndFoldersNumber_td(selectedFiles)
+    private val fileSize = getTotalSize_td(selectedFiles)
 
     fun main() {
         CoroutineScope(Dispatchers.IO).launch {
             copyFiles_Recursive_td(
-                selected = selected,
-                targetDirectory = directory,
-                onProgress = {
-                    progress++
-//        myNoti.sendSilentNotification(
-//            title = currentFileInProcess.name,
-//            message = "$progress/$fileQuantity"
-//        )
-                }
+                selected = selectedFiles,
+                targetDirectory = targetDirectory
             )
         }
     }
 
-
     fun copyFiles_Recursive_td(
         selected: Array<File>,
-        targetDirectory: File,
-        onProgress: (File) -> Unit
+        targetDirectory: File
     ) {
         selected.forEach { file ->
             val target = targetDirectory.resolve(file.name)
-            currentFileInProcess = target
             if (file.isDirectory) {
                 target.mkdirs()
-                copyFiles_Recursive_td(file.listFiles() ?: arrayOf(), target, onProgress)
+                file.listFiles()?.forEach {
+                    doIOStreamWithProgress(
+                        inputStream = FileInputStream(it),
+                        outputStream = FileOutputStream(target)
+                    )
+                }
             } else {
-                Files.copy(file.toPath(), target.toPath(), StandardCopyOption.REPLACE_EXISTING)
+                doIOStreamWithProgress(
+                    inputStream = FileInputStream(file),
+                    outputStream = FileOutputStream(target)
+                )
             }
-            onProgress(file)
         }
+    }
+
+    override fun byteProgressCallback(bytesWritten: Long) {
+        println("byteProgress: ${bytesWritten}")
     }
 }

@@ -95,11 +95,11 @@ class FileListViewModel @Inject constructor(
 
     override fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf<Pair<String, () -> Unit>>()
-        val files = selected.map{it.absolutePath}
+        val files = selected.map{File(it.absolutePath)}.toTypedArray()
         result.run {
             add(Pair("Upload", { println("${selected.map { it.name }}") }))
             add(Pair("Zip", {}))
-            add(Pair("Copy", { CopyAction(selectedFiles = files.toTypedArray(), targetDirectory = getCurrentDirectory()) }))
+            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = getCurrentDirectory()) }))
             add(Pair("Info", {}))
             if (selected.size == 1) {
                 add(Pair("Rename", {}))
@@ -108,7 +108,7 @@ class FileListViewModel @Inject constructor(
         return result
     }
 
-    fun getCurrentDirectory():String{
+    fun getCurrentDirectory():File{
         TODO()
     }
 }
