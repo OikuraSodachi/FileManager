@@ -14,7 +14,6 @@ import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -27,8 +26,6 @@ class FileListViewModel @Inject constructor(
     val module: FileModule,
     dsRepo: DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
-
-    val confirmMode = MutableStateFlow<Boolean>(false)
 
     override val uiState = combine(
         module.listFiles,
