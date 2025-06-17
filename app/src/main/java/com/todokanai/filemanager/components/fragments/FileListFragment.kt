@@ -10,13 +10,26 @@ import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
+
+    companion object{
+        private val COPY_MODE : Int = 1
+        private val MOVE_MODE : Int = 2
+
+    }
+
+    private val _bottomMenuEnabled = MutableStateFlow<Boolean>(false)
+    val bottomMenuEnabled = _bottomMenuEnabled.asStateFlow()
 
     override val binding by lazy { FragmentFileListBinding.inflate(layoutInflater) }
     private val viewModel: FileListViewModel by viewModels()
@@ -25,9 +38,8 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
-            onFileClick = {
-                viewModel.onFileClick(requireActivity(), it)
-            },
+            onFileClick = { viewModel.onFileClick(requireActivity(), it) },
+            enableBottomMenu = {_bottomMenuEnabled.value = it}
         ).apply {
             setHasStableIds(true)
         }
@@ -59,13 +71,36 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             popupMenu_td(
                 context = requireActivity(),
                 anchor = it,
-                itemList = viewModel.popupMenuList(fileListAdapter.selectedItems().toTypedArray())
+                itemList = popupMenuList(fileListAdapter.selectedItems().toTypedArray())
             )
         }
+        binding.confirmBtn.setOnClickListener {
 
-        fileListAdapter.bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) { enabled ->
+        }
+
+        bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) { enabled ->
             binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
         }
+    }
+
+    fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>> {
+        val result = mutableListOf<Pair<String, () -> Unit>>()
+        val files = selected.map{ File(it.absolutePath) }.toTypedArray()
+        result.run {
+            add(Pair("Upload", { println("${selected.map { it.name }}") }))
+            add(Pair("Zip", {}))
+            add(Pair("Copy", {  }))
+//            add(Pair("Copy", {  }))
+            add(Pair("Info", {}))
+            if (selected.size == 1) {
+                add(Pair("Rename", {}))
+            }
+        }
+        return result
+    }
+
+    fun onConfirm(){
+
     }
 
     override suspend fun collectUIState() {

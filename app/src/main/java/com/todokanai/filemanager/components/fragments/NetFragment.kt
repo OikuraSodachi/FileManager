@@ -13,6 +13,8 @@ import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentNetBinding
 import com.todokanai.filemanager.viewmodel.NetViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 @AndroidEntryPoint
 class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
@@ -23,9 +25,13 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     override val binding by lazy { FragmentNetBinding.inflate(layoutInflater) }
     private val viewModel: NetViewModel by viewModels()
 
+    private val _bottomMenuEnabled = MutableStateFlow<Boolean>(false)
+    val bottomMenuEnabled = _bottomMenuEnabled.asStateFlow()
+
     override fun prepareLateInit() {
         netAdapter = NetRecyclerAdapter(
-            onItemClick = { viewModel.onItemClick(it) }
+            onItemClick = { viewModel.onItemClick(it) },
+            enableBottomMenu = {_bottomMenuEnabled.value = it}
         ).apply {
             setHasStableIds(true)
         }
@@ -50,7 +56,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
             }
-            netAdapter.bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) {
+            bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) {
                 netBottomMenuLayout.visibility =
                     if (it) {
                         View.VISIBLE
@@ -68,14 +74,6 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             binding.netEmptyDirectoryText.visibility =
                 if (uiState.emptyDirectoryText) View.VISIBLE else View.INVISIBLE
         }
-//        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
-//            binding.netBottomMenuLayout.visibility =
-//                if (it) {
-//                    View.VISIBLE
-//                } else {
-//                    View.GONE
-//                }
-//        }
     }
 
     override val overrideBackButton: OnBackPressedCallback =

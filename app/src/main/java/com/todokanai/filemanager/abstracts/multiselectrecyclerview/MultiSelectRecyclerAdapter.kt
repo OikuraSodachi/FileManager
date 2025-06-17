@@ -28,10 +28,11 @@ abstract class MultiSelectRecyclerAdapter<E : Any, VH : RecyclerView.ViewHolder>
         }.toSet()
     }
 
-    /** called when a change occurs in the selection
-     *
-     * view 의 갱신 처리 등 작업은 여기서 하는 게 맞는 듯? **/
+    /** called when a change occurs in the selection **/
     abstract fun onSelectionChanged(index: Int, item: E)
+
+    /** @param isSelectionNotEmpty whether if a selection instance exists **/
+    abstract fun onSelectionInstance(isSelectionNotEmpty:Boolean)
 
     @CallSuper
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -57,6 +58,8 @@ abstract class MultiSelectRecyclerAdapter<E : Any, VH : RecyclerView.ViewHolder>
                             onSelectionChanged(index, item)
                         }
                     }
+                    onSelectionInstance(selectionTracker.hasSelection())
+
                 }
             )
         )

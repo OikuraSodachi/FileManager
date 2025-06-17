@@ -16,8 +16,6 @@ interface FileListViewModelLogics {
 
     fun onFileClick(context: Context, item: FileHolderItem)
 
-    fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>>
-
     fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int
 
 }
