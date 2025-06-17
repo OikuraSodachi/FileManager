@@ -10,10 +10,12 @@ import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
@@ -59,7 +61,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             popupMenu_td(
                 context = requireActivity(),
                 anchor = it,
-                itemList = viewModel.popupMenuList(fileListAdapter.selectedItems().toTypedArray())
+                itemList = popupMenuList(fileListAdapter.selectedItems().toTypedArray())
             )
         }
 
@@ -107,4 +109,20 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 }
             }
         }
+
+    fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>> {
+        val result = mutableListOf<Pair<String, () -> Unit>>()
+        val files = selected.map{ File(it.absolutePath) }.toTypedArray()
+        result.run {
+            add(Pair("Upload", { println("${selected.map { it.name }}") }))
+            add(Pair("Zip", {}))
+            add(Pair("Copy", { }))
+            add(Pair("Move", {  }))
+            add(Pair("Info", {}))
+            if (selected.size == 1) {
+                add(Pair("Rename", {}))
+            }
+        }
+        return result
+    }
 }

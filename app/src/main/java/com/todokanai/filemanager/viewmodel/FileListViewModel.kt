@@ -8,7 +8,6 @@ import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.FileModule
-import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
@@ -91,22 +90,6 @@ class FileListViewModel @Inject constructor(
     /** 새 경로로 이동할 때, scroll 할 위치 가져오기 ( auto scroll 이 필요하다면 ) **/
     override fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
         return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
-    }
-
-    override fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>> {
-        val result = mutableListOf<Pair<String, () -> Unit>>()
-        val files = selected.map{File(it.absolutePath)}.toTypedArray()
-        result.run {
-            add(Pair("Upload", { println("${selected.map { it.name }}") }))
-            add(Pair("Zip", {}))
-            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = File("/storage/emulated/0/tmp")).start() }))
-//            add(Pair("Copy", {  }))
-            add(Pair("Info", {}))
-            if (selected.size == 1) {
-                add(Pair("Rename", {}))
-            }
-        }
-        return result
     }
 
     fun getCurrentDirectory():File{
