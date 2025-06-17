@@ -12,6 +12,10 @@ import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_COPY
+import com.todokanai.filemanager.myobjects.Constants.CONFIRM_MODE_MOVE
+import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
+import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -22,11 +26,8 @@ import java.io.File
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
-    companion object{
-        private val COPY_MODE : Int = 1
-        private val MOVE_MODE : Int = 2
-
-    }
+    val fragMode = Variables.fileListMode
+    val selectedTemp = Variables.selectedFilesTemp
 
     private val _bottomMenuEnabled = MutableStateFlow<Boolean>(false)
     val bottomMenuEnabled = _bottomMenuEnabled.asStateFlow()
@@ -75,7 +76,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             )
         }
         binding.confirmBtn.setOnClickListener {
-
+            onConfirm(fragMode.value)
         }
 
         bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) { enabled ->
@@ -89,8 +90,11 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         result.run {
             add(Pair("Upload", { println("${selected.map { it.name }}") }))
             add(Pair("Zip", {}))
-            add(Pair("Copy", {  }))
-//            add(Pair("Copy", {  }))
+            add(Pair("Copy", {
+                selectedTemp.value = files
+                fragMode.value = CONFIRM_MODE_COPY
+            }))
+            add(Pair("Move", { fragMode.value = CONFIRM_MODE_MOVE }))
             add(Pair("Info", {}))
             if (selected.size == 1) {
                 add(Pair("Rename", {}))
@@ -99,8 +103,11 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         return result
     }
 
-    fun onConfirm(){
-
+    fun onConfirm(fragMode:Int){
+        when(fragMode){
+            CONFIRM_MODE_COPY -> { viewModel.copyActionTemp(selectedTemp.value,viewModel.getCurrentDirectory()) }
+            CONFIRM_MODE_MOVE -> {}
+        }
     }
 
     override suspend fun collectUIState() {
@@ -140,6 +147,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             override fun handleOnBackPressed() {
                 if (fileListAdapter.selectionTracker.hasSelection()) {
                     fileListAdapter.selectionTracker.clearSelection()
+                    fragMode.value = DEFAULT_MODE
                 } else {
                     viewModel.onBackPressed()
                 }

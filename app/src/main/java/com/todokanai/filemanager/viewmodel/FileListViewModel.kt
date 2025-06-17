@@ -8,7 +8,6 @@ import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.FileModule
-import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
@@ -110,8 +109,11 @@ class FileListViewModel @Inject constructor(
 //    }
 
 
-    fun copyActionTemp(files: Array<File>){
-        CopyAction(selectedFiles = files, targetDirectory = File("/storage/emulated/0/tmp")).start()
+    fun copyActionTemp(files: Array<File>,targetDirectory:File){
+        println("target: ${targetDirectory.absolutePath}")
+        println("items: ${files.map{it.name}}")
+
+      //  CopyAction(selectedFiles = files, targetDirectory = targetDirectory).start()
     }
 
     fun getCurrentDirectory():File{
