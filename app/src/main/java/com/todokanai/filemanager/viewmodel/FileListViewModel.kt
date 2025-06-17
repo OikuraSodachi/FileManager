@@ -8,11 +8,13 @@ import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.FileModule
+import com.todokanai.filemanager.tools.actions.CopyAction
 import com.todokanai.filemanager.tools.independent.getMimeType_td
 import com.todokanai.filemanager.tools.independent.openFileFromUri_td
 import com.todokanai.filemanager.tools.independent.withPrevious_td
 import com.todokanai.filemanager.viewmodel.logics.FileListViewModelLogics
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
@@ -25,6 +27,8 @@ class FileListViewModel @Inject constructor(
     val module: FileModule,
     dsRepo: DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
+
+    val confirmMode = MutableStateFlow<Boolean>(false)
 
     override val uiState = combine(
         module.listFiles,
@@ -92,28 +96,20 @@ class FileListViewModel @Inject constructor(
         return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
     }
 
-//    override fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>> {
-//        val result = mutableListOf<Pair<String, () -> Unit>>()
-//        val files = selected.map{File(it.absolutePath)}.toTypedArray()
-//        result.run {
-//            add(Pair("Upload", { println("${selected.map { it.name }}") }))
-//            add(Pair("Zip", {}))
-//            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = File("/storage/emulated/0/tmp")).start() }))
-////            add(Pair("Copy", {  }))
-//            add(Pair("Info", {}))
-//            if (selected.size == 1) {
-//                add(Pair("Rename", {}))
-//            }
-//        }
-//        return result
-//    }
-
-
-    fun copyActionTemp(files: Array<File>,targetDirectory:File){
-        println("target: ${targetDirectory.absolutePath}")
-        println("items: ${files.map{it.name}}")
-
-      //  CopyAction(selectedFiles = files, targetDirectory = targetDirectory).start()
+    override fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>> {
+        val result = mutableListOf<Pair<String, () -> Unit>>()
+        val files = selected.map{File(it.absolutePath)}.toTypedArray()
+        result.run {
+            add(Pair("Upload", { println("${selected.map { it.name }}") }))
+            add(Pair("Zip", {}))
+            add(Pair("Copy", { CopyAction(selectedFiles = files, targetDirectory = File("/storage/emulated/0/tmp")).start() }))
+//            add(Pair("Copy", {  }))
+            add(Pair("Info", {}))
+            if (selected.size == 1) {
+                add(Pair("Rename", {}))
+            }
+        }
+        return result
     }
 
     fun getCurrentDirectory():File{

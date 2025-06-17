@@ -7,10 +7,11 @@ import com.todokanai.filemanager.abstracts.multiselectrecyclerview.MultiSelectRe
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.databinding.FilelistRecyclerBinding
 import com.todokanai.filemanager.holders.FileItemHolder
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class NetRecyclerAdapter(
-    private val onItemClick: (FileHolderItem) -> Unit,
-    private val enableBottomMenu:(Boolean)->Unit
+    private val onItemClick: (FileHolderItem) -> Unit
 ) : MultiSelectRecyclerAdapter<FileHolderItem, FileItemHolder>(
     object : DiffUtil.ItemCallback<FileHolderItem>() {
         override fun areItemsTheSame(oldItem: FileHolderItem, newItem: FileHolderItem): Boolean {
@@ -23,11 +24,11 @@ class NetRecyclerAdapter(
     }
 ) {
 
+    /** Todo: 이거 여기에 두는게 적절한지 의문... **/
+    private val _bottomMenuEnabled = MutableStateFlow<Boolean>(false)
+    val bottomMenuEnabled = _bottomMenuEnabled.asStateFlow()
 
     override val selectionId = "netSelectionId"
-    override fun onSelectionInstance(isSelectionNotEmpty: Boolean) {
-        enableBottomMenu(isSelectionNotEmpty)
-    }
 
     override fun onSelectionChanged(index: Int, item: FileHolderItem) {
         if (selectionTracker.selection.contains(index.toLong())) {
@@ -35,6 +36,7 @@ class NetRecyclerAdapter(
         } else {
             item.isSelected = false
         }
+        _bottomMenuEnabled.value = selectionTracker.hasSelection()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
