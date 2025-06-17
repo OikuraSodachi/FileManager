@@ -1,8 +1,6 @@
 package com.todokanai.filemanager.di
 
-import android.app.NotificationManager
 import android.os.Environment
-import com.todokanai.filemanager.notifications.MyNotification
 import com.todokanai.filemanager.tools.FileModule
 import com.todokanai.filemanager.tools.NetFileModule
 import dagger.Module
@@ -27,11 +25,6 @@ class Etc {
     @Provides
     fun provideNetFileModule(ftpClient: FTPClient): NetFileModule {
         return NetFileModule(Dispatchers.Default, ftpClient, defaultPath = "")
-    }
-
-    @Provides
-    fun provideMyNotification(notificationManager: NotificationManager): MyNotification {
-        return MyNotification(notificationManager)
     }
 
 //    @Provides
