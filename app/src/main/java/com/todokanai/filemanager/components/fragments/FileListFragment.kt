@@ -95,9 +95,6 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                     View.GONE
                 }
         }
-//        fileListAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) { enabled ->
-//            binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
-//        }
     }
 
     override val overrideBackButton: OnBackPressedCallback =
