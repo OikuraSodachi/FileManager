@@ -9,7 +9,6 @@ class Variables {
         /** Todo: 얘 여기에 배치하는게 맞는지? **/
         val storages = MutableStateFlow<Array<File>>(emptyArray())
 
-        /** 아마 [com.todokanai.filemanager.adapters.ViewPagerAdapter] 에 배치해야 할 듯? **/
         val selectedItems = MutableStateFlow<Array<String>>(emptyArray())
 
     }

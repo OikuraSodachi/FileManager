@@ -10,21 +10,15 @@ import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
+import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
-import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.map
 import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
-
-    private val selected = Variables.selectedItems
-    private val bottomMenuEnabled = selected.map{
-        it.isNotEmpty()
-    }
 
     override val binding by lazy { FragmentFileListBinding.inflate(layoutInflater) }
     private val viewModel: FileListViewModel by viewModels()
@@ -42,7 +36,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
         directoryAdapter = DirectoryRecyclerAdapter(
             {
-                if (!selected.value.isEmpty()) {
+                if (!fileListAdapter.selectionTracker.hasSelection()) {
                     viewModel.onDirectoryClick(it)
                 }
             },
@@ -67,11 +61,11 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             popupMenu_td(
                 context = requireActivity(),
                 anchor = it,
-                itemList = popupMenuList(selected.value)
+                itemList = popupMenuList(fileListAdapter.selectedItems().toTypedArray())
             )
         }
 
-        bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) { enabled ->
+        fileListAdapter.bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) { enabled ->
             binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
         }
     }
@@ -108,15 +102,19 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.onBackPressed()
+                if (fileListAdapter.selectionTracker.hasSelection()) {
+                    fileListAdapter.selectionTracker.clearSelection()
+                } else {
+                    viewModel.onBackPressed()
+                }
             }
         }
 
-    fun popupMenuList(selected: Array<String>): List<Pair<String, () -> Unit>> {
+    fun popupMenuList(selected: Array<FileHolderItem>): List<Pair<String, () -> Unit>> {
         val result = mutableListOf<Pair<String, () -> Unit>>()
-        val files = selected.map{ File(it) }.toTypedArray()
+        val files = selected.map{ File(it.absolutePath) }.toTypedArray()
         result.run {
-            add(Pair("Upload", { println("${selected}") }))
+            add(Pair("Upload", { println("${selected.map { it.name }}") }))
             add(Pair("Zip", {}))
             add(Pair("Copy", { }))
             add(Pair("Move", {  }))

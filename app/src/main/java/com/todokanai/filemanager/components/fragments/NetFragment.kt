@@ -11,18 +11,11 @@ import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.NetRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentNetBinding
-import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.viewmodel.NetViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.map
 
 @AndroidEntryPoint
 class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
-
-    private val selected = Variables.selectedItems
-    private val bottomMenuEnabled = selected.map {
-        it.isNotEmpty()
-    }
 
     lateinit var netAdapter: NetRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
@@ -57,7 +50,7 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 adapter = directoryAdapter
                 layoutManager = horizontalManager
             }
-            bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) {
+            netAdapter.bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) {
                 netBottomMenuLayout.visibility =
                     if (it) {
                         View.VISIBLE
@@ -75,12 +68,24 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             binding.netEmptyDirectoryText.visibility =
                 if (uiState.emptyDirectoryText) View.VISIBLE else View.INVISIBLE
         }
+//        netAdapter.bottomMenuEnabled.observe(viewLifecycleOwner) {
+//            binding.netBottomMenuLayout.visibility =
+//                if (it) {
+//                    View.VISIBLE
+//                } else {
+//                    View.GONE
+//                }
+//        }
     }
 
     override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.toParent({ viewPagerAdapter.toNetFragment(it) })
+                if (netAdapter.selectionTracker.hasSelection()) {
+                    netAdapter.selectionTracker.clearSelection()
+                } else {
+                    viewModel.toParent({ viewPagerAdapter.toNetFragment(it) })
+                }
             }
         }
 }
