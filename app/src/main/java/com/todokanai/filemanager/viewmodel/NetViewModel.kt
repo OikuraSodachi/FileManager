@@ -81,6 +81,10 @@ class NetViewModel @Inject constructor(
         }
     }
 
+    override fun onItemLongClick(item: FileHolderItem) {
+
+    }
+
     override fun onDirectoryClick(item: DirectoryHolderItem) {
         viewModelScope.launch {
             setCurrentDirectory(item.absolutePath)

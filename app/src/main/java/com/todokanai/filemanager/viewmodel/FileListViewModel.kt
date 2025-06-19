@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
+import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.FileModule
@@ -88,6 +89,16 @@ class FileListViewModel @Inject constructor(
         }
     }
 
+    override fun onFileLongClick(item: FileHolderItem) {
+        val mode = selectMode.value
+        when(mode){
+            DEFAULT_MODE -> {
+                selectMode.value = MULTI_SELECT_MODE
+                selectedItems.value = arrayOf(item.absolutePath)
+            }
+        }
+    }
+
     /** Todo: listFiles 정렬 로직 만들기 **/
     private fun sortLogic(array: Array<File>, sortMode: String?): List<File> {
         return when (sortMode) {
@@ -97,11 +108,17 @@ class FileListViewModel @Inject constructor(
     }
 
     override fun onBackPressed() {
-        val parent = File(module.currentDirectory.value).parentFile
-        viewModelScope.launch {
-            parent?.let {
-                setCurrentDirectory(it.absolutePath)
+        val mode = selectMode.value
+        if(mode != MULTI_SELECT_MODE ) {
+
+            val parent = File(module.currentDirectory.value).parentFile
+            viewModelScope.launch {
+                parent?.let {
+                    setCurrentDirectory(it.absolutePath)
+                }
             }
+        } else{
+            selectMode.value = DEFAULT_MODE
         }
     }
 

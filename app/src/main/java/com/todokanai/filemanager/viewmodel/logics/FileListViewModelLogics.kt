@@ -16,6 +16,8 @@ interface FileListViewModelLogics {
 
     fun onFileClick(context: Context, item: FileHolderItem)
 
+    fun onFileLongClick(item: FileHolderItem)
+
     fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int
 
 }

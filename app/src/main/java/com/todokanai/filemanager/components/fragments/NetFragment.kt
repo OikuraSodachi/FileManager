@@ -32,7 +32,8 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
     override fun prepareLateInit() {
         netAdapter = NetRecyclerAdapter(
-            onItemClick = { viewModel.onItemClick(it) }
+            onItemClick = { viewModel.onItemClick(it) },
+            onItemLongClick = { viewModel.onItemLongClick(it) }
         ).apply {
             setHasStableIds(true)
         }

@@ -15,7 +15,8 @@ import java.text.DateFormat
 
 class FileItemHolder(
     val binding: FilelistRecyclerBinding,
-    private val onClick: (FileHolderItem) -> Unit
+    private val onClick: (FileHolderItem) -> Unit,
+    private val onLongClick: (FileHolderItem)->Unit
 ) :
     RecyclerView.ViewHolder(binding.root) {
 
@@ -27,7 +28,13 @@ class FileItemHolder(
             fileSize.text = item.size
             lastModified.text = DateFormat.getDateTimeInstance().format(item.lastModified)
         }
-        itemView.setOnClickListener { onClick(item) }
+        itemView.run{
+            setOnClickListener { onClick(item) }
+            setOnLongClickListener{
+                onLongClick(item)
+                true
+            }
+        }
         onSelectionChanged(item.isSelected)
     }
 

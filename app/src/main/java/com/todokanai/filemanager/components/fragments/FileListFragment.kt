@@ -3,7 +3,6 @@ package com.todokanai.filemanager.components.fragments
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.asLiveData
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.todokanai.filemanager.abstracts.BaseFragment
@@ -12,46 +11,35 @@ import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
-import com.todokanai.filemanager.myobjects.Variables
+import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.map
 import java.io.File
 
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
-
-
-    val selected = Variables.selectedItems
-    val selectMode = Variables.selectMode
-
 
     override val binding by lazy { FragmentFileListBinding.inflate(layoutInflater) }
     private val viewModel: FileListViewModel by viewModels()
     lateinit var fileListAdapter: FileListRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
 
-    private val bottomMenuEnabled = selectMode.map{
-        when(it){
-            DEFAULT_MODE -> false
-
-            else -> true
-        }
-    }
-
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
             onFileClick = {
                 viewModel.onFileClick(requireActivity(), it)
             },
+            onFileLongClick = {
+                viewModel.onFileLongClick(it)
+            }
         ).apply {
             setHasStableIds(true)
         }
 
         directoryAdapter = DirectoryRecyclerAdapter(
             {
-                if (!selected.value.isEmpty()) {
+                if (viewModel.uiState.value.selectMode != MULTI_SELECT_MODE ) {
                     viewModel.onDirectoryClick(it)
                 }
             },
@@ -76,12 +64,8 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             popupMenu_td(
                 context = requireActivity(),
                 anchor = it,
-                itemList = popupMenuList(selected.value)
+                itemList = popupMenuList(viewModel.uiState.value.selectedItems)
             )
-        }
-
-        bottomMenuEnabled.asLiveData().observe(viewLifecycleOwner) { enabled ->
-            binding.bottomMenuLayout.visibility = if (enabled) View.VISIBLE else View.GONE
         }
     }
 
@@ -109,6 +93,12 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                 if (it.accessFailText == true) {
                     View.VISIBLE
                 } else {
+                    View.GONE
+                }
+            binding.bottomMenuLayout.visibility =
+                if(it.selectMode != DEFAULT_MODE){
+                    View.VISIBLE
+                }else{
                     View.GONE
                 }
         }

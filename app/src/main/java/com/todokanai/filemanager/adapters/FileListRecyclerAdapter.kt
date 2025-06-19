@@ -9,7 +9,8 @@ import com.todokanai.filemanager.databinding.FilelistRecyclerBinding
 import com.todokanai.filemanager.holders.FileItemHolder
 
 class FileListRecyclerAdapter(
-    private val onFileClick: (FileHolderItem) -> Unit
+    private val onFileClick: (FileHolderItem) -> Unit,
+    private val onFileLongClick:(FileHolderItem)->Unit
 ) : ListAdapter<FileHolderItem, FileItemHolder>(
     object : DiffUtil.ItemCallback<FileHolderItem>() {
         override fun areItemsTheSame(oldItem: FileHolderItem, newItem: FileHolderItem): Boolean {
@@ -25,7 +26,7 @@ class FileListRecyclerAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FileItemHolder {
         val binding =
             FilelistRecyclerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FileItemHolder(binding, onFileClick)
+        return FileItemHolder(binding, onFileClick, onFileLongClick)
     }
 
     override fun onBindViewHolder(holder: FileItemHolder, position: Int) {
