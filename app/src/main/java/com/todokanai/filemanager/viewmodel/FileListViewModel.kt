@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
+import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
+import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.repository.DataStoreRepository
 import com.todokanai.filemanager.tools.FileModule
 import com.todokanai.filemanager.tools.independent.getMimeType_td
@@ -26,19 +28,38 @@ class FileListViewModel @Inject constructor(
     dsRepo: DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
 
-    override val uiState = combine(
+    private val selectMode = Variables.selectMode
+    private val selectedItems = Variables.selectedItems
+
+    private val uiStateTemp = combine(
         module.listFiles,
         module.dirTree,
         module.notAccessible,
         module.currentDirectory.withPrevious_td(),
-        dsRepo.sortBy,
+        dsRepo.sortBy
     ) { listFiles, dirTree, notAccessible, lastKnownDirectory, sortMode->
         FileListUiState(
             listFiles = sortLogic(listFiles, sortMode).map { FileHolderItem.fromFile(it) },
             dirTree = dirTree.map { File(it) }.map { DirectoryHolderItem.fromFile(it) },
             emptyDirectoryText = listFiles.isEmpty(),
             accessFailText = notAccessible,
-            lastKnownDirectory = lastKnownDirectory
+            lastKnownDirectory = lastKnownDirectory,
+        )
+    }
+
+    override val uiState = combine(
+        uiStateTemp,
+        selectMode,
+        selectedItems
+    ){ state, mode,items ->
+        FileListUiState(
+            listFiles = state.listFiles,
+            dirTree = state.dirTree,
+            emptyDirectoryText = state.emptyDirectoryText,
+            accessFailText = state.accessFailText,
+            lastKnownDirectory = state.lastKnownDirectory,
+            selectMode = mode,
+            selectedItems = items
         )
     }.stateIn(
         scope = viewModelScope,
@@ -105,5 +126,7 @@ data class FileListUiState(
     val dirTree: List<DirectoryHolderItem> = emptyList(),
     val emptyDirectoryText: Boolean = false,
     val accessFailText: Boolean = false,
-    val lastKnownDirectory: String? = null
+    val lastKnownDirectory: String? = null,
+    val selectMode:Int = DEFAULT_MODE,
+    val selectedItems: Array<String> = emptyArray()
 )

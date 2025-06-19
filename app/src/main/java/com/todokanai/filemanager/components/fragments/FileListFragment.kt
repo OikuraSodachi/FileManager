@@ -11,6 +11,7 @@ import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
 import com.todokanai.filemanager.myobjects.Variables
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
@@ -21,16 +22,23 @@ import java.io.File
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
-    private val selected = Variables.selectedItems
-    private val bottomMenuEnabled = selected.map{
-        it.isNotEmpty()
-    }
+
+    val selected = Variables.selectedItems
     val selectMode = Variables.selectMode
+
 
     override val binding by lazy { FragmentFileListBinding.inflate(layoutInflater) }
     private val viewModel: FileListViewModel by viewModels()
     lateinit var fileListAdapter: FileListRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
+
+    private val bottomMenuEnabled = selectMode.map{
+        when(it){
+            DEFAULT_MODE -> false
+
+            else -> true
+        }
+    }
 
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
