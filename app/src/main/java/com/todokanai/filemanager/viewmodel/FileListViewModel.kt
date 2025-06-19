@@ -33,16 +33,12 @@ class FileListViewModel @Inject constructor(
     private val selectedItems = Variables.selectedItems
 
     private val uiStateTemp = combine(
-        module.listFiles,
         module.dirTree,
         module.notAccessible,
         module.currentDirectory.withPrevious_td(),
-        dsRepo.sortBy
-    ) { listFiles, dirTree, notAccessible, lastKnownDirectory, sortMode->
+    ) {dirTree, notAccessible, lastKnownDirectory->
         FileListUiState(
-            listFiles = sortLogic(listFiles, sortMode).map { FileHolderItem.fromFile(it) },
             dirTree = dirTree.map { File(it) }.map { DirectoryHolderItem.fromFile(it) },
-            emptyDirectoryText = listFiles.isEmpty(),
             accessFailText = notAccessible,
             lastKnownDirectory = lastKnownDirectory,
         )
@@ -50,13 +46,15 @@ class FileListViewModel @Inject constructor(
 
     override val uiState = combine(
         uiStateTemp,
+        module.listFiles,
         selectMode,
-        selectedItems
-    ){ state, mode,items ->
+        selectedItems,
+        dsRepo.sortBy
+    ){ state, listFiles, mode,items,sortMode ->
         FileListUiState(
-            listFiles = state.listFiles,
+            listFiles = sortLogic(listFiles, sortMode).map { FileHolderItem.fromFile(it) },
             dirTree = state.dirTree,
-            emptyDirectoryText = state.emptyDirectoryText,
+            emptyDirectoryText = listFiles.isEmpty(),
             accessFailText = state.accessFailText,
             lastKnownDirectory = state.lastKnownDirectory,
             selectMode = mode,
@@ -107,8 +105,7 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    override fun onBackPressed() {
-        val mode = selectMode.value
+    override fun onBackPressed(mode:Int) {
         if(mode != MULTI_SELECT_MODE ) {
 
             val parent = File(module.currentDirectory.value).parentFile

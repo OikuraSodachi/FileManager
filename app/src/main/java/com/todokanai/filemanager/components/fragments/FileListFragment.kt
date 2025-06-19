@@ -25,6 +25,8 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     lateinit var fileListAdapter: FileListRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
 
+    fun selectMode() = viewModel.uiState.value.selectMode
+
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
             onFileClick = {
@@ -39,7 +41,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
 
         directoryAdapter = DirectoryRecyclerAdapter(
             {
-                if (viewModel.uiState.value.selectMode != MULTI_SELECT_MODE ) {
+                if ( selectMode() != MULTI_SELECT_MODE ) {
                     viewModel.onDirectoryClick(it)
                 }
             },
@@ -107,7 +109,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.onBackPressed()
+                viewModel.onBackPressed( selectMode() )
             }
         }
 

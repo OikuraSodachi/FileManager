@@ -29,7 +29,7 @@ data class FileHolderItem(
 
     companion object {
 
-        fun fromFile(file: File): FileHolderItem {
+        fun fromFile(file: File,selectedItems:Array<File> = emptyArray()): FileHolderItem {
 
             val sizeText =
                 if (file.isDirectory) {
@@ -42,7 +42,8 @@ data class FileHolderItem(
                 name = file.name,
                 size = sizeText,
                 lastModified = file.lastModified(),
-                isDirectory = file.isDirectory
+                isDirectory = file.isDirectory,
+                isSelected = selectedItems.contains(file)
             )
         }
 

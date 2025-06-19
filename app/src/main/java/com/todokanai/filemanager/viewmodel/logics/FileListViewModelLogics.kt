@@ -12,7 +12,7 @@ interface FileListViewModelLogics {
 
     fun onDirectoryClick(item: DirectoryHolderItem)
 
-    fun onBackPressed()
+    fun onBackPressed(mode:Int)
 
     fun onFileClick(context: Context, item: FileHolderItem)
 
