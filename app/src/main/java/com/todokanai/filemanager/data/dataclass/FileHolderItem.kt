@@ -29,7 +29,7 @@ data class FileHolderItem(
 
     companion object {
 
-        fun fromFile(file: File,selectedItems:Array<File> = emptyArray()): FileHolderItem {
+        fun fromFile(file: File,selectedItems:Array<String> = emptyArray()): FileHolderItem {
 
             val sizeText =
                 if (file.isDirectory) {
@@ -43,7 +43,7 @@ data class FileHolderItem(
                 size = sizeText,
                 lastModified = file.lastModified(),
                 isDirectory = file.isDirectory,
-                isSelected = selectedItems.contains(file)
+                isSelected = selectedItems.contains(file.absolutePath)
             )
         }
 

@@ -35,9 +35,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             onFileLongClick = {
                 viewModel.onFileLongClick(it)
             }
-        ).apply {
-            setHasStableIds(true)
-        }
+        )
 
         directoryAdapter = DirectoryRecyclerAdapter(
             {

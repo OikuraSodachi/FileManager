@@ -52,7 +52,7 @@ class FileListViewModel @Inject constructor(
         dsRepo.sortBy
     ){ state, listFiles, mode,items,sortMode ->
         FileListUiState(
-            listFiles = sortLogic(listFiles, sortMode).map { FileHolderItem.fromFile(it) },
+            listFiles = sortLogic(listFiles, sortMode).map { FileHolderItem.fromFile(it,items) },
             dirTree = state.dirTree,
             emptyDirectoryText = listFiles.isEmpty(),
             accessFailText = state.accessFailText,
