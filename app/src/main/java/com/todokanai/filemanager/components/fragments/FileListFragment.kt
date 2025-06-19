@@ -30,17 +30,17 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
             onFileClick = {
-                viewModel.onFileClick(requireActivity(), it)
+                viewModel.onFileClick(requireActivity(), it, selectMode())
             },
             onFileLongClick = {
-                viewModel.onFileLongClick(it)
+                viewModel.onFileLongClick(it, selectMode())
             }
         )
 
         directoryAdapter = DirectoryRecyclerAdapter(
             {
                 if ( selectMode() != MULTI_SELECT_MODE ) {
-                    viewModel.onDirectoryClick(it)
+                    viewModel.onDirectoryClick(it, selectMode())
                 }
             },
         )

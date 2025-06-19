@@ -66,29 +66,40 @@ class FileListViewModel @Inject constructor(
         initialValue = FileListUiState()
     )
 
-    override fun onDirectoryClick(item: DirectoryHolderItem) {
+    override fun onDirectoryClick(item: DirectoryHolderItem,mode:Int) {
         viewModelScope.launch {
-            setCurrentDirectory(item.absolutePath)
-        }
-    }
-
-    override fun onFileClick(context: Context, item: FileHolderItem) {
-        viewModelScope.launch {
-            if (item.isDirectory) {
+            if(mode != MULTI_SELECT_MODE) {
                 setCurrentDirectory(item.absolutePath)
-            } else {
-                println("this is a file: ${item.name}")
-                openFileFromUri_td(
-                    context = context,
-                    uri = File(item.absolutePath).toUri(),
-                    mimeType = getMimeType_td(item.absolutePath)
-                )
             }
         }
     }
 
-    override fun onFileLongClick(item: FileHolderItem) {
-        val mode = selectMode.value
+    override fun onFileClick(context: Context, item: FileHolderItem,mode:Int) {
+        val selected = selectedItems.value
+        viewModelScope.launch {
+            if(mode == MULTI_SELECT_MODE){
+                if(selected.contains(item.absolutePath)){
+                    selectedItems.value = selected.toList().minus(item.absolutePath).toTypedArray()
+                }else{
+                    selectedItems.value = selected.toList().plus(item.absolutePath).toTypedArray()
+                }
+            }else {
+
+                if (item.isDirectory) {
+                    setCurrentDirectory(item.absolutePath)
+                } else {
+                    println("this is a file: ${item.name}")
+                    openFileFromUri_td(
+                        context = context,
+                        uri = File(item.absolutePath).toUri(),
+                        mimeType = getMimeType_td(item.absolutePath)
+                    )
+                }
+            }
+        }
+    }
+
+    override fun onFileLongClick(item: FileHolderItem,mode:Int) {
         when(mode){
             DEFAULT_MODE -> {
                 selectMode.value = MULTI_SELECT_MODE
@@ -126,12 +137,12 @@ class FileListViewModel @Inject constructor(
     override fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
         return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
     }
-
-    fun getCurrentDirectory():File{
-        val result = File(uiState.value.dirTree.last().absolutePath)
-        println("getCurrentDirectory: ${result.absolutePath}")
-        return result
-    }
+//
+//    fun getCurrentDirectory():File{
+//        val result = File(uiState.value.dirTree.last().absolutePath)
+//        println("getCurrentDirectory: ${result.absolutePath}")
+//        return result
+//    }
 
 }
 
