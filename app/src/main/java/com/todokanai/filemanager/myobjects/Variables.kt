@@ -1,8 +1,9 @@
 package com.todokanai.filemanager.myobjects
 
-import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
+import com.todokanai.filemanager.tools.SelectModeManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import java.io.File
+
 /** 기능 구현을 위해 일단 companion object 로 선언한 변수들. 나중에 이동시킬 것 ( memory leak )**/
 class Variables {
 
@@ -12,8 +13,6 @@ class Variables {
 
         /** 아마 data layer 에 배치해야 할 듯? **/
         val selectedItems = MutableStateFlow<Array<String>>(emptyArray())
-
-        /** 아마 [com.todokanai.filemanager.adapters.ViewPagerAdapter] 에 배치해야 할 듯? **/
-        val selectMode = MutableStateFlow<Int>(DEFAULT_MODE)
+        val selectModeManager = SelectModeManager( onDefaultMode = { selectedItems.value = emptyArray() })
     }
 }

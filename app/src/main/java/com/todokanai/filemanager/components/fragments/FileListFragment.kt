@@ -96,9 +96,9 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
                     View.GONE
                 }
             binding.bottomMenuLayout.visibility =
-                if(it.selectMode != DEFAULT_MODE){
+                if (it.selectMode != DEFAULT_MODE) {
                     View.VISIBLE
-                }else{
+                } else {
                     View.GONE
                 }
         }

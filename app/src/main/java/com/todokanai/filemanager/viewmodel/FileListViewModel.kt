@@ -29,7 +29,7 @@ class FileListViewModel @Inject constructor(
     dsRepo: DataStoreRepository
 ) : ViewModel(), FileListViewModelLogics {
 
-    private val selectMode = Variables.selectMode
+    private val modeManager = Variables.selectModeManager
     private val selectedItems = Variables.selectedItems
 
     private val uiStateTemp = combine(
@@ -47,7 +47,7 @@ class FileListViewModel @Inject constructor(
     override val uiState = combine(
         uiStateTemp,
         module.listFiles,
-        selectMode,
+        modeManager.selectMode,
         selectedItems,
         dsRepo.sortBy
     ){ state, listFiles, mode,items,sortMode ->
@@ -102,7 +102,7 @@ class FileListViewModel @Inject constructor(
     override fun onFileLongClick(item: FileHolderItem,mode:Int) {
         when(mode){
             DEFAULT_MODE -> {
-                selectMode.value = MULTI_SELECT_MODE
+                modeManager.toMultiSelectMode()
                 selectedItems.value = arrayOf(item.absolutePath)
             }
         }
@@ -126,7 +126,7 @@ class FileListViewModel @Inject constructor(
                 }
             }
         } else{
-            selectMode.value = DEFAULT_MODE
+            modeManager.toDefaultMode()
         }
     }
 
