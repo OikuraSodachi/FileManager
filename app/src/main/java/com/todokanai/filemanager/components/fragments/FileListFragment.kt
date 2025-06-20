@@ -2,9 +2,11 @@ package com.todokanai.filemanager.components.fragments
 
 import android.view.View
 import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
@@ -119,11 +121,17 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             add(Pair("Zip", {}))
             add(Pair("Copy", { }))
             add(Pair("Move", {  }))
-            add(Pair("Info", {}))
+            add(Pair("Info", {info()}))
             if (selected.size == 1) {
                 add(Pair("Rename", {}))
             }
         }
         return result
+    }
+
+    private fun info(){
+        AlertDialog.Builder(requireActivity())
+            .setView(R.layout.fileinfo_dialog)
+            .show()
     }
 }
