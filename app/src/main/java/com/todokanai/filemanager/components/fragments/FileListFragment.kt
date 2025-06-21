@@ -6,18 +6,22 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.todokanai.filemanager.R
 import com.todokanai.filemanager.abstracts.BaseFragment
 import com.todokanai.filemanager.adapters.DirectoryRecyclerAdapter
 import com.todokanai.filemanager.adapters.FileListRecyclerAdapter
 import com.todokanai.filemanager.adapters.ViewPagerAdapter
+import com.todokanai.filemanager.databinding.FileinfoDialogBinding
+import com.todokanai.filemanager.databinding.FilesinfoDialogBinding
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
 import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
+import com.todokanai.filemanager.tools.independent.getTotalSize_td
 import com.todokanai.filemanager.tools.independent.popupMenu_td
+import com.todokanai.filemanager.tools.independent.readableFileSize_td
 import com.todokanai.filemanager.viewmodel.FileListViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
+import java.text.DateFormat
 
 @AndroidEntryPoint
 class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
@@ -121,7 +125,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             add(Pair("Zip", {}))
             add(Pair("Copy", { }))
             add(Pair("Move", {  }))
-            add(Pair("Info", {info()}))
+            add(Pair("Info", {info(files)}))
             if (selected.size == 1) {
                 add(Pair("Rename", {}))
             }
@@ -129,9 +133,31 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         return result
     }
 
-    private fun info(){
+    private fun info(files: Array<File>){
+        if(files.size == 1){
+            fileInfoDialog(files.first())
+        }else if (files.size > 1){
+            filesInfoDialog(files)
+        }
+    }
+
+    private fun fileInfoDialog(file:File){
+        val binding = FileinfoDialogBinding.inflate(layoutInflater).apply {
+            fileInfoDialogFileNameText.text = file.name
+            fileInfoDialogLastModified.text = DateFormat.getDateTimeInstance().format(file.lastModified())
+        }
         AlertDialog.Builder(requireActivity())
-            .setView(R.layout.fileinfo_dialog)
+            .setView(binding.root)
+            .show()
+    }
+
+    private fun filesInfoDialog(files: Array<File>){
+        val binding = FilesinfoDialogBinding.inflate(layoutInflater).apply {
+            filesInfoDialogFilesNumberText.text = "${files.size} files"
+            filesInfoDialogFileSizeText.text = readableFileSize_td(getTotalSize_td(files))
+        }
+        AlertDialog.Builder(requireActivity())
+            .setView(binding.root)
             .show()
     }
 }

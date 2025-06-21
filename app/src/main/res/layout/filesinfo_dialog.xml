@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/fileInfo_dialog_fileNameText"
+        android:id="@+id/filesInfo_dialog_filesNumberText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -18,7 +18,7 @@
         android:background="?android:attr/listDivider" />
 
     <TextView
-        android:id="@+id/fileInfo_dialog_textView3"
+        android:id="@+id/filesInfo_dialog_textView3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -26,28 +26,7 @@
         android:text="FilesSize" />
 
     <TextView
-        android:id="@+id/fileInfo_dialog_sizeText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="TextView" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="?android:attr/listDivider" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="4dp"
-        android:text="LastModified" />
-
-    <TextView
-        android:id="@+id/fileInfo_dialog_last_modified"
+        android:id="@+id/filesInfo_dialog_file_sizeText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
