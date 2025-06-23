@@ -91,9 +91,9 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    override fun toParent(onLogout: (Boolean) -> Unit) {
+    override fun toParent(currentDirectory: String,onLogout: (Boolean) -> Unit) {
         viewModelScope.launch {
-            val parent = getParent()
+            val parent = getParent(currentDirectory)
             if (parent == null) {
                 //   withContext(Dispatchers.Default) {
                 module.logout()
@@ -107,8 +107,8 @@ class NetViewModel @Inject constructor(
         }
     }
 
-    private fun getParent(): String? =
-        getParentAbsolutePath_td(module.currentDirectory.value)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
+    private fun getParent(currentDirectory:String): String? =
+        getParentAbsolutePath_td(currentDirectory)  // Todo: module.currentDirectory 가 여기서 보이는게 바람직한지?
 
     private suspend fun setCurrentDirectory(directory: String) =
         module.setCurrentDirectory(directory)

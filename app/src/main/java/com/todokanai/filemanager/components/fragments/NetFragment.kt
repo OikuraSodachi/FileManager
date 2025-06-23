@@ -81,7 +81,10 @@ class NetFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.toParent({ viewPagerAdapter.toNetFragment(it) })
+                viewModel.toParent(
+                    currentDirectory = viewModel.uiState.value.dirTree.last().absolutePath,
+                    onLogout = { viewPagerAdapter.toNetFragment(it) }
+                )
             }
         }
 }

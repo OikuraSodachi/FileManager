@@ -1,6 +1,5 @@
 package com.todokanai.filemanager.di
 
-import android.os.Environment
 import com.todokanai.filemanager.tools.FileModule
 import com.todokanai.filemanager.tools.NetFileModule
 import dagger.Module
@@ -18,13 +17,13 @@ class Etc {
     @Singleton
     @Provides
     fun provideFileModule(): FileModule {
-        return FileModule(Dispatchers.IO, Environment.getExternalStorageDirectory().absolutePath)
+        return FileModule(Dispatchers.IO)
     }
 
     @Singleton
     @Provides
     fun provideNetFileModule(ftpClient: FTPClient): NetFileModule {
-        return NetFileModule(Dispatchers.Default, ftpClient, defaultPath = "")
+        return NetFileModule(Dispatchers.Default, ftpClient)
     }
 
 //    @Provides

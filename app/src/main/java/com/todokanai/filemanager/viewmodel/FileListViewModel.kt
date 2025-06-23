@@ -66,6 +66,12 @@ class FileListViewModel @Inject constructor(
         initialValue = FileListUiState()
     )
 
+    override fun refresh(currentDirectory: String){
+        viewModelScope.launch {
+            setCurrentDirectory(currentDirectory)
+        }
+    }
+
     override fun onDirectoryClick(item: DirectoryHolderItem,mode:Int) {
         viewModelScope.launch {
             if(mode != MULTI_SELECT_MODE) {
@@ -116,10 +122,10 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    override fun onBackPressed(mode:Int) {
+    override fun onBackPressed(mode:Int,currentDirectory: String) {
         if(mode != MULTI_SELECT_MODE ) {
 
-            val parent = File(module.currentDirectory.value).parentFile
+            val parent = File(currentDirectory).parentFile
             viewModelScope.launch {
                 parent?.let {
                     setCurrentDirectory(it.absolutePath)
@@ -137,12 +143,11 @@ class FileListViewModel @Inject constructor(
     override fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int {
         return listFiles.map { it.absolutePath }.indexOf(lastKnownDirectory)
     }
-//
-//    fun getCurrentDirectory():File{
-//        val result = File(uiState.value.dirTree.last().absolutePath)
-//        println("getCurrentDirectory: ${result.absolutePath}")
-//        return result
-//    }
+
+    override fun renameFile(file: File, newName: String) {
+        file.renameTo(File(file.parentFile, newName))
+        modeManager.toDefaultMode()
+    }
 
 }
 

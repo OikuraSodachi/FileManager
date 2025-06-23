@@ -11,9 +11,8 @@ import javax.inject.Inject
 
 class NetFileModule @Inject constructor(
     val coroutineDispatcher: CoroutineDispatcher,
-    val ftpClient: FTPClient,
-    defaultPath: String
-) : FileModuleLogics<FTPFile>(defaultPath) {
+    val ftpClient: FTPClient
+) : FileModuleLogics<FTPFile>() {
 
     val itemList = currentDirectory.map { directory ->
         ftpClient.listFiles(directory).map {

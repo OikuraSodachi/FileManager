@@ -1,18 +1,17 @@
 package com.todokanai.filemanager.abstracts
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
-/** @param Type type of file (File, FTPFile, etc...)
- * @param initialPath initial absolutePath **/
-abstract class FileModuleLogics<Type : Any>(initialPath: String) {
+/** @param Type type of file (File, FTPFile, etc...) **/
+abstract class FileModuleLogics<Type : Any> {
 
-    private val _currentDirectory = MutableStateFlow<String>(initialPath)
-    val currentDirectory = _currentDirectory.asStateFlow()
+    private val _currentDirectory = MutableSharedFlow<String>(1)
+    val currentDirectory = _currentDirectory.asSharedFlow()
 
     suspend fun setCurrentDirectory(directory: String) {
         if (isDirectoryValid(directory)) {
-            _currentDirectory.value = directory
+            _currentDirectory.emit(directory)
         }
     }
 

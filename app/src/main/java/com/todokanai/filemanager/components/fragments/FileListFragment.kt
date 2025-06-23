@@ -1,5 +1,6 @@
 package com.todokanai.filemanager.components.fragments
 
+import android.content.DialogInterface
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
@@ -13,6 +14,7 @@ import com.todokanai.filemanager.adapters.ViewPagerAdapter
 import com.todokanai.filemanager.databinding.FileinfoDialogBinding
 import com.todokanai.filemanager.databinding.FilesinfoDialogBinding
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
+import com.todokanai.filemanager.databinding.RenameDialogBinding
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
 import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.tools.independent.getTotalSize_td
@@ -113,7 +115,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.onBackPressed( selectMode() )
+                viewModel.onBackPressed( selectMode() , viewModel.uiState.value.dirTree.last().absolutePath)
             }
         }
 
@@ -127,7 +129,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
             add(Pair("Move", {  }))
             add(Pair("Info", {info(files)}))
             if (selected.size == 1) {
-                add(Pair("Rename", {}))
+                add(Pair("Rename", {renameDialog(files.first())}))
             }
         }
         return result
@@ -144,6 +146,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     private fun fileInfoDialog(file:File){
         val binding = FileinfoDialogBinding.inflate(layoutInflater).apply {
             fileInfoDialogFileNameText.text = file.name
+            fileInfoDialogSizeText.text = readableFileSize_td(getTotalSize_td(arrayOf(file)))
             fileInfoDialogLastModified.text = DateFormat.getDateTimeInstance().format(file.lastModified())
         }
         AlertDialog.Builder(requireActivity())
@@ -158,6 +161,20 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         }
         AlertDialog.Builder(requireActivity())
             .setView(binding.root)
+            .show()
+    }
+
+    private fun renameDialog(file:File){
+        val binding = RenameDialogBinding.inflate(layoutInflater).apply{
+            renameDialogInputText.setText(file.name)
+        }
+        val listener = DialogInterface.OnClickListener { dialogInterface, i ->
+            viewModel.renameFile(file,binding.renameDialogInputText.text.toString())
+            file.parent?.let { viewModel.refresh(it) }
+        }
+        AlertDialog.Builder(requireActivity())
+            .setView(binding.root)
+            .setPositiveButton("Confirm",listener)
             .show()
     }
 }

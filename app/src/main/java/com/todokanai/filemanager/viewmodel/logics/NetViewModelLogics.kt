@@ -10,6 +10,6 @@ interface NetViewModelLogics {
     fun onItemClick(item: FileHolderItem)
     fun onItemLongClick(item: FileHolderItem)
     fun onDirectoryClick(item: DirectoryHolderItem)
-    fun toParent(onLogout: (Boolean) -> Unit)
+    fun toParent(currentDirectory:String,onLogout: (Boolean) -> Unit)
 
 }
