@@ -6,13 +6,12 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import org.apache.commons.net.ftp.FTPClient
-import org.apache.commons.net.ftp.FTPFile
 import javax.inject.Inject
 
 class NetFileModule @Inject constructor(
     val coroutineDispatcher: CoroutineDispatcher,
     val ftpClient: FTPClient
-) : FileModuleLogics<FTPFile>() {
+) : FileModuleLogics() {
 
     val itemList = currentDirectory.map { directory ->
         ftpClient.listFiles(directory).map {

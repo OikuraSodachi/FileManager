@@ -9,7 +9,7 @@ import java.io.File
 
 /** 파일탐색기 기능을 위한 class **/
 class FileModule(val coroutineDispatcher: CoroutineDispatcher) :
-    FileModuleLogics<File>() {
+    FileModuleLogics() {
 
     val dirTree = currentDirectory.map {
         dirTree_td(File(it)).map {
