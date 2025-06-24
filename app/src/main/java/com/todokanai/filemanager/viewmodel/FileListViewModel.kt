@@ -6,6 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.todokanai.filemanager.data.dataclass.DirectoryHolderItem
 import com.todokanai.filemanager.data.dataclass.FileHolderItem
+import com.todokanai.filemanager.myobjects.Constants.BY_DATE_ASCENDING
+import com.todokanai.filemanager.myobjects.Constants.BY_DATE_DESCENDING
+import com.todokanai.filemanager.myobjects.Constants.BY_NAME_ASCENDING
+import com.todokanai.filemanager.myobjects.Constants.BY_NAME_DESCENDING
+import com.todokanai.filemanager.myobjects.Constants.BY_SIZE_ASCENDING
+import com.todokanai.filemanager.myobjects.Constants.BY_SIZE_DESCENDING
+import com.todokanai.filemanager.myobjects.Constants.BY_TYPE_ASCENDING
+import com.todokanai.filemanager.myobjects.Constants.BY_TYPE_DESCENDING
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
 import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.myobjects.Variables
@@ -117,9 +125,16 @@ class FileListViewModel @Inject constructor(
     /** Todo: listFiles 정렬 로직 만들기 **/
     private fun sortLogic(array: Array<File>, sortMode: String?): List<File> {
         return when (sortMode) {
-            "" -> array.sortedBy { it.name }
+            BY_NAME_ASCENDING -> array.sortedBy { it.name }
+            BY_NAME_DESCENDING -> array.sortedByDescending { it.name }
+            BY_SIZE_ASCENDING -> array.sortedBy { it.length() }
+            BY_SIZE_DESCENDING -> array.sortedByDescending { it.length() }
+            BY_DATE_ASCENDING -> array.sortedBy { it.lastModified() }
+            BY_DATE_DESCENDING -> array.sortedByDescending { it.lastModified() }
+            BY_TYPE_ASCENDING -> array.sortedBy { it.extension }
+            BY_TYPE_DESCENDING -> array.sortedByDescending { it.extension }
             else -> array.sortedBy { it.name }
-        }
+        }.sortedWith(compareByDescending{ it.isDirectory })     // Directory 를 앞쪽으로 정렬
     }
 
     override fun onBackPressed(mode:Int,currentDirectory: String) {

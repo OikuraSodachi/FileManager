@@ -112,6 +112,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
         }
     }
 
+    // Todo: currentDirectory 값 가져오는 방식 고민할 것
     override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
