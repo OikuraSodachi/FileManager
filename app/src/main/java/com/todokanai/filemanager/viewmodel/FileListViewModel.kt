@@ -74,13 +74,16 @@ class FileListViewModel @Inject constructor(
         initialValue = FileListUiState()
     )
 
+    private fun currentMode() = modeManager.currentMode()
+
     override fun refresh(currentDirectory: String){
         viewModelScope.launch {
             setCurrentDirectory(currentDirectory)
         }
     }
 
-    override fun onDirectoryClick(item: DirectoryHolderItem,mode:Int) {
+    override fun onDirectoryClick(item: DirectoryHolderItem) {
+        val mode = currentMode()
         viewModelScope.launch {
             if(mode != MULTI_SELECT_MODE) {
                 setCurrentDirectory(item.absolutePath)
@@ -88,8 +91,9 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    override fun onFileClick(context: Context, item: FileHolderItem,mode:Int) {
+    override fun onFileClick(context: Context, item: FileHolderItem) {
         val selected = selectedItems.value
+        val mode = currentMode()
         viewModelScope.launch {
             if(mode == MULTI_SELECT_MODE){
                 if(selected.contains(item.absolutePath)){
@@ -113,7 +117,8 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    override fun onFileLongClick(item: FileHolderItem,mode:Int) {
+    override fun onFileLongClick(item: FileHolderItem) {
+        val mode = currentMode()
         when(mode){
             DEFAULT_MODE -> {
                 modeManager.toMultiSelectMode()
@@ -122,7 +127,6 @@ class FileListViewModel @Inject constructor(
         }
     }
 
-    /** Todo: listFiles 정렬 로직 만들기 **/
     private fun sortLogic(array: Array<File>, sortMode: String?): List<File> {
         return when (sortMode) {
             BY_NAME_ASCENDING -> array.sortedBy { it.name }
@@ -137,7 +141,9 @@ class FileListViewModel @Inject constructor(
         }.sortedWith(compareByDescending{ it.isDirectory })     // Directory 를 앞쪽으로 정렬
     }
 
-    override fun onBackPressed(mode:Int,currentDirectory: String) {
+    override fun onBackPressed(currentDirectory: String) {
+        val mode = currentMode()
+
         if(mode != MULTI_SELECT_MODE ) {
 
             val parent = File(currentDirectory).parentFile

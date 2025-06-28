@@ -13,13 +13,13 @@ interface FileListViewModelLogics {
 
     fun refresh(currentDirectory: String)
 
-    fun onDirectoryClick(item: DirectoryHolderItem,mode:Int)
+    fun onDirectoryClick(item: DirectoryHolderItem)
 
-    fun onBackPressed(mode:Int,currentDirectory: String)
+    fun onBackPressed(currentDirectory: String)
 
-    fun onFileClick(context: Context, item: FileHolderItem,mode:Int)
+    fun onFileClick(context: Context, item: FileHolderItem)
 
-    fun onFileLongClick(item: FileHolderItem,mode:Int)
+    fun onFileLongClick(item: FileHolderItem)
 
     fun scrollPosition(listFiles: List<FileHolderItem>, lastKnownDirectory: String?): Int
 

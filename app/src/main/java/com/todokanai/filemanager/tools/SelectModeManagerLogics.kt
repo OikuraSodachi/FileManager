@@ -12,6 +12,8 @@ abstract class SelectModeManagerLogics {
     private val _selectMode = MutableStateFlow<Int>(DEFAULT_MODE)
     val selectMode = _selectMode.asStateFlow()
 
+    fun currentMode() = selectMode.value
+
     @CallSuper
     open fun toDefaultMode(){
         _selectMode.value = DEFAULT_MODE

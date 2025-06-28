@@ -16,7 +16,6 @@ import com.todokanai.filemanager.databinding.FilesinfoDialogBinding
 import com.todokanai.filemanager.databinding.FragmentFileListBinding
 import com.todokanai.filemanager.databinding.RenameDialogBinding
 import com.todokanai.filemanager.myobjects.Constants.DEFAULT_MODE
-import com.todokanai.filemanager.myobjects.Constants.MULTI_SELECT_MODE
 import com.todokanai.filemanager.tools.independent.getTotalSize_td
 import com.todokanai.filemanager.tools.independent.popupMenu_td
 import com.todokanai.filemanager.tools.independent.readableFileSize_td
@@ -33,25 +32,18 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     lateinit var fileListAdapter: FileListRecyclerAdapter
     lateinit var directoryAdapter: DirectoryRecyclerAdapter
 
-    fun selectMode() = viewModel.uiState.value.selectMode
-
     override fun prepareLateInit() {
         fileListAdapter = FileListRecyclerAdapter(
             onFileClick = {
-                viewModel.onFileClick(requireActivity(), it, selectMode())
+                viewModel.onFileClick(requireActivity(), it)
             },
             onFileLongClick = {
-                viewModel.onFileLongClick(it, selectMode())
+                viewModel.onFileLongClick(it)
             }
         )
 
-        directoryAdapter = DirectoryRecyclerAdapter(
-            {
-                if ( selectMode() != MULTI_SELECT_MODE ) {
-                    viewModel.onDirectoryClick(it, selectMode())
-                }
-            },
-        )
+        directoryAdapter = DirectoryRecyclerAdapter{ viewModel.onDirectoryClick(it) }
+
     }
 
     override fun prepareView() {
@@ -116,7 +108,7 @@ class FileListFragment(viewPagerAdapter: ViewPagerAdapter) : BaseFragment() {
     override val overrideBackButton: OnBackPressedCallback =
         object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                viewModel.onBackPressed( selectMode() , viewModel.uiState.value.dirTree.last().absolutePath)
+                viewModel.onBackPressed(viewModel.uiState.value.dirTree.last().absolutePath)
             }
         }
 
