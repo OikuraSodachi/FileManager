@@ -46,7 +46,7 @@ class FileListViewModel @Inject constructor(
         module.currentDirectory.withPrevious_td(),
     ) {dirTree, notAccessible, lastKnownDirectory->
         FileListUiState(
-            dirTree = dirTree.map { File(it) }.map { DirectoryHolderItem.fromFile(it) },
+            dirTree = dirTree.map { DirectoryHolderItem.fromFile(it) },
             accessFailText = notAccessible,
             lastKnownDirectory = lastKnownDirectory,
         )

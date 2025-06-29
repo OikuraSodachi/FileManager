@@ -12,9 +12,7 @@ class FileModule(val coroutineDispatcher: CoroutineDispatcher) :
     FileModuleLogics() {
 
     val dirTree = currentDirectory.map {
-        dirTree_td(File(it)).map {
-            it.absolutePath
-        }
+        dirTree_td(File(it))
     }
 
     /** whether currentPath is Accessible **/
